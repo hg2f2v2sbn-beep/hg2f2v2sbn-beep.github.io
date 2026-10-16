@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /demo.html
+Disallow: /auth.html
+Disallow: /payment-complete/
+Disallow: /mypage/
+Disallow: /profile-edit/
+Disallow: /demo-payment/
+
+Sitemap: https://gwiinsaju.com/sitemap.xml
