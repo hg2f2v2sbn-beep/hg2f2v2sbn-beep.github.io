@@ -1,0 +1,238 @@
+name: Guiin Saju - site-only bootstrap and Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+concurrency:
+  group: guiin-pages
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout clean public site repository
+        uses: actions/checkout@v4
+        with:
+          path: publish
+          persist-credentials: true
+      - name: Checkout legacy public repository only for one-time bootstrap
+        if: ${{ hashFiles('publish/index.html') == '' }}
+        uses: actions/checkout@v4
+        with:
+          repository: hg2f2v2sbn-beep/guiin-saju
+          ref: main
+          path: legacy
+          persist-credentials: false
+      - name: Import allowlisted site files once and build strict artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$GITHUB_WORKSPACE"
+          # New repository has no site assets yet. Import exactly the allowlist from the old PUBLIC repository.
+          if [ ! -f publish/index.html ]; then
+            test -f legacy/index.html || { echo '::error::legacy repository checkout failed'; exit 1; }
+            for f in \
+          2026-fortune.html \
+          2027-fortune.html \
+          auth.html \
+          cheon-eul-gwiin.html \
+          company.html \
+          compatibility-interpreter.js \
+          compatibility.html \
+          deep-interpretation-v3.js \
+          demo.html \
+          expert-interpreter.js \
+          guiin-b3-fix.js \
+          guiin-b6-features.js \
+          guiin-deep-ai.js \
+          guiin-deep-compat-b3.js \
+          guiin-deep-compat.js \
+          guiin-deep-voice-b3.js \
+          guiin-deep-voice.js \
+          guiin-fortune-v2.js \
+          guiin-home-polish.js \
+          guiin-interpretation-v4-b3.js \
+          guiin-mobile-hardening-v6.27.css \
+          guiin-production-guard-v6.27.js \
+          guiin-runtime-config.js \
+          guiin-scene-art.js \
+          guiin-star-art.js \
+          guiin-theme.css \
+          index.html \
+          inquiry.html \
+          manse-view.js \
+          manse.html \
+          member-data-v1.js \
+          naver42a6e1da66e3379907c3b3e230a603d8.html \
+          naverb3e67070d710fa601ecf02256b3e1646.html \
+          payment-info.html \
+          privacy.html \
+          refund.html \
+          robots.txt \
+          saju-compatibility-guide.html \
+          saju-engine.js \
+          saju-words.html \
+          sitemap.xml \
+          terms.html \
+          today.html \
+          toss-payment.js; do
+              test -f "legacy/$f" || { echo "::error::site asset missing in old repo: $f"; exit 1; }
+              cp "legacy/$f" "publish/$f"
+            done
+            shopt -s nullglob
+            for f in legacy/*.webp legacy/*.jpg legacy/*.jpeg legacy/*.png legacy/*.svg legacy/*.ico legacy/*.gif; do
+              cp "$f" publish/
+            done
+            touch publish/.nojekyll
+            cd publish
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            # Only selected site assets are added. NEVER stage `legacy` or server files.
+            for f in \
+          2026-fortune.html \
+          2027-fortune.html \
+          auth.html \
+          cheon-eul-gwiin.html \
+          company.html \
+          compatibility-interpreter.js \
+          compatibility.html \
+          deep-interpretation-v3.js \
+          demo.html \
+          expert-interpreter.js \
+          guiin-b3-fix.js \
+          guiin-b6-features.js \
+          guiin-deep-ai.js \
+          guiin-deep-compat-b3.js \
+          guiin-deep-compat.js \
+          guiin-deep-voice-b3.js \
+          guiin-deep-voice.js \
+          guiin-fortune-v2.js \
+          guiin-home-polish.js \
+          guiin-interpretation-v4-b3.js \
+          guiin-mobile-hardening-v6.27.css \
+          guiin-production-guard-v6.27.js \
+          guiin-runtime-config.js \
+          guiin-scene-art.js \
+          guiin-star-art.js \
+          guiin-theme.css \
+          index.html \
+          inquiry.html \
+          manse-view.js \
+          manse.html \
+          member-data-v1.js \
+          naver42a6e1da66e3379907c3b3e230a603d8.html \
+          naverb3e67070d710fa601ecf02256b3e1646.html \
+          payment-info.html \
+          privacy.html \
+          refund.html \
+          robots.txt \
+          saju-compatibility-guide.html \
+          saju-engine.js \
+          saju-words.html \
+          sitemap.xml \
+          terms.html \
+          today.html \
+          toss-payment.js; do
+              git add -- "$f"
+            done
+            for f in *.webp *.jpg *.jpeg *.png *.svg *.ico *.gif; do
+              [ -f "$f" ] && git add -- "$f"
+            done
+            git add .nojekyll
+            git commit -m 'Import Guiin Saju public website only, without server files'
+            git push origin HEAD:main
+            cd "$GITHUB_WORKSPACE"
+          fi
+          test -f publish/index.html || { echo '::error::index.html absent'; exit 1; }
+          mkdir -p _site
+          for f in \
+          2026-fortune.html \
+          2027-fortune.html \
+          auth.html \
+          cheon-eul-gwiin.html \
+          company.html \
+          compatibility-interpreter.js \
+          compatibility.html \
+          deep-interpretation-v3.js \
+          demo.html \
+          expert-interpreter.js \
+          guiin-b3-fix.js \
+          guiin-b6-features.js \
+          guiin-deep-ai.js \
+          guiin-deep-compat-b3.js \
+          guiin-deep-compat.js \
+          guiin-deep-voice-b3.js \
+          guiin-deep-voice.js \
+          guiin-fortune-v2.js \
+          guiin-home-polish.js \
+          guiin-interpretation-v4-b3.js \
+          guiin-mobile-hardening-v6.27.css \
+          guiin-production-guard-v6.27.js \
+          guiin-runtime-config.js \
+          guiin-scene-art.js \
+          guiin-star-art.js \
+          guiin-theme.css \
+          index.html \
+          inquiry.html \
+          manse-view.js \
+          manse.html \
+          member-data-v1.js \
+          naver42a6e1da66e3379907c3b3e230a603d8.html \
+          naverb3e67070d710fa601ecf02256b3e1646.html \
+          payment-info.html \
+          privacy.html \
+          refund.html \
+          robots.txt \
+          saju-compatibility-guide.html \
+          saju-engine.js \
+          saju-words.html \
+          sitemap.xml \
+          terms.html \
+          today.html \
+          toss-payment.js; do
+            test -f "publish/$f" || { echo "::error::missing required site file: $f"; exit 1; }
+            cp "publish/$f" _site/
+          done
+          shopt -s nullglob
+          for f in publish/*.webp publish/*.jpg publish/*.jpeg publish/*.png publish/*.svg publish/*.ico publish/*.gif; do cp "$f" _site/; done
+          # Custom domain is added to this new repository *after* the preview succeeds.
+          if [ -f publish/CNAME ]; then cp publish/CNAME _site/; fi
+          touch _site/.nojekyll
+          # Never include legacy, SQL, server JS, administrative HTML, tests or docs.
+          if find _site -maxdepth 1 -type f | grep -Ei '\.(sql|md|json|py|mjs|toml|yml)$|\.test\.js$|/(server|worker)[-.]|/ops-|/launch-qa|/wrangler' ; then
+            echo '::error::forbidden file present in site deployment'; exit 1
+          fi
+          echo "Public website build contains $(find _site -maxdepth 1 -type f | wc -l) files"
+      - name: Verify direct HTML and CSS/JS/image links
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd _site
+          missing=0
+          while IFS= read -r ref; do
+            [ -z "$ref" ] && continue
+            # Resolve only same-directory HTML references. Path traversal is forbidden.
+            if [[ "$ref" == *'..'* ]] || [ ! -f "$ref" ]; then
+              echo "::error::referenced local site file missing or unsafe: $ref"; missing=1
+            fi
+          done < <(grep -ohE '(src|href)="[^":#?]+\.(js|css|webp|jpg|jpeg|png|svg|ico|html)' *.html \
+                   | sed -E 's/^(src|href)="//' | sed 's#^\./##' | grep -v '^/' | sort -u || true)
+          exit "$missing"
+      - name: Upload site-only Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
