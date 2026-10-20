@@ -94,6 +94,24 @@
     '편인':'깊이 파고들고 혼자 정리할 시간이 늘어나는 10년이야. 전문성이 생기지만 생각만 길어지지 않게 해.',
     '정인':'배우고 도움을 받는 10년이야. 자격·문서·후원이 힘이 되고 마음이 안정되기 쉬워.'
   };
+  var GOD10_TEEN={
+    '비견':'내 생각과 고집이 또렷해지는 10년이야. 친구와 비교하거나 경쟁하는 일이 늘고, 스스로 정한 방식으로 해 보고 싶어져.',
+    '겁재':'친구 관계가 넓어지고 함께 움직이는 일이 많은 10년이야. 돈이나 물건을 빌려주고 받을 때는 기준을 분명히 해.',
+    '식신':'좋아하는 걸 꾸준히 해서 실력으로 쌓기 좋은 10년이야. 취미와 재능이 내 강점이 되기 쉬워.',
+    '상관':'표현하고 바꾸고 싶은 마음이 커지는 10년이야. 말이 앞서 다툼이 생기지 않게 말투와 약속을 더 챙겨.',
+    '편재':'관심사와 활동 범위가 넓어지는 10년이야. 여러 가지를 해 보되 시간과 용돈의 한도를 정해 두면 좋아.',
+    '정재':'생활 습관과 관리하는 힘을 다지는 10년이야. 계획을 세우고 꾸준히 지키는 힘이 커져.',
+    '편관':'해야 할 일과 압박이 늘어나는 10년이야. 버티며 해낸 경험이 실력이 돼. 잠과 쉬는 시간을 꼭 지켜.',
+    '정관':'규칙과 평가 속에서 인정받기 쉬운 10년이야. 약속과 원칙을 지킬수록 믿음이 쌓여.',
+    '편인':'혼자 깊이 생각하고 파고드는 시간이 늘어나는 10년이야. 관심 분야가 생기지만 생각만 길어지지 않게 해.',
+    '정인':'배우고 도움을 받는 10년이야. 공부와 선생님·가족의 도움이 힘이 되고 마음이 안정되기 쉬워.'
+  };
+  var GOD10_SENIOR={
+    '비견':'내 기준과 독립심이 커지는 10년이야. 비슷한 처지의 사람과 어울림이 늘고, 스스로 정한 방식대로 지내고 싶어져.',
+    '상관':'바꾸고 표현하고 싶은 마음이 커지는 10년이야. 생활 방식이나 역할을 바꾸고 싶어질 수 있어서 말과 약속을 더 챙겨.',
+    '정관':'신뢰와 체면이 중요해지는 10년이야. 약속과 원칙을 지킬수록 주변에서 믿고 기대.'
+  };
+  function g10(x){if(!x)return '';var f=Number(x.fromAge);return (f<18&&GOD10_TEEN[x.god])||(f>=60&&GOD10_SENIOR[x.god])||GOD10[x.god]||''}
   function age(c){var I=c&&c.input||{};var bd=new Date(I.year,(I.month||1)-1,I.day||1,I.hour||0,I.minute||0);return (Date.now()-bd.getTime())/(365.2425*86400000)}
   function yr(c,a){var I=c&&c.input||{};return Math.floor(Number(I.year)+Number(a))}
   function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
@@ -108,12 +126,12 @@
     var html='<div class="mini">내 대운 한눈에</div>';
     if(cur){
       html+='<h3>지금은 '+esc(cur.ko)+'('+esc(cur.hanja||'')+') 대운 · '+esc(cur.god)+' · '+cur.fromAge+'~'+cur.toAge+'세</h3>';
-      html+='<p>'+esc(GOD10[cur.god]||'')+' 대운은 10년 단위의 큰 배경이라, 아래 해마다·달마다 흐름은 이 배경 위에서 읽어.</p>';
+      html+='<p>'+esc(g10(cur))+' 대운은 10년 단위의 큰 배경이라, 아래 해마다·달마다 흐름은 이 배경 위에서 읽어.</p>';
     }else if(i===-2){
       html+='<h3>첫 대운은 '+L[0].fromAge+'세부터 시작해</h3><p>그 전까지는 타고난 원국과 해마다 바뀌는 세운을 중심으로 읽어.</p>';
     }
-    if(nx)html+='<div class="next"><b>다음 대운</b> '+esc(nx.ko)+'('+esc(nx.hanja||'')+') · '+esc(nx.god)+' · '+nx.fromAge+'세부터 ('+yr(c,nx.fromAgeExact)+'년쯤)<br>'+esc(GOD10[nx.god]||'')+'</div>';
-    html+='<details><summary>전체 대운 흐름 펼쳐 보기</summary><ul class="guiinDaeunList">'+L.map(function(x,k){return '<li'+(k===i?' class="now"':'')+'><b>'+x.fromAge+'~'+x.toAge+'세 · '+esc(x.ko)+'</b>'+esc(x.god)+(k===i?' · 지금':'')+'<br><span>'+esc(GOD10[x.god]||'')+'</span></li>'}).join('')+'</ul></details>';
+    if(nx)html+='<div class="next"><b>다음 대운</b> '+esc(nx.ko)+'('+esc(nx.hanja||'')+') · '+esc(nx.god)+' · '+nx.fromAge+'세부터 ('+yr(c,nx.fromAgeExact)+'년쯤)<br>'+esc(g10(nx))+'</div>';
+    html+='<details><summary>전체 대운 흐름 펼쳐 보기</summary><ul class="guiinDaeunList">'+L.map(function(x,k){return '<li'+(k===i?' class="now"':'')+'><b>'+x.fromAge+'~'+x.toAge+'세 · '+esc(x.ko)+'</b>'+esc(x.god)+(k===i?' · 지금':'')+'<br><span>'+esc(g10(x))+'</span></li>'}).join('')+'</ul></details>';
     if(c.input&&c.input.hourUnknown){var uu=c.calculation&&c.calculation.uncertainty||{},cm=uu.candidates&&uu.candidates.month,rr=uu.startAgeExactRange,msg='';
       if(cm&&cm.length>1)msg='태어난 날이 절기가 바뀌는 날이라, 출생시각에 따라 대운의 순서와 시작 나이가 달라질 수 있어.';
       else if(rr&&rr.length===2&&Math.abs(rr[1]-rr[0])>=0.5)msg='출생시간을 몰라서 대운이 바뀌는 나이는 최대 '+Math.ceil(Math.abs(rr[1]-rr[0]))+'년 정도 차이 날 수 있어.';
@@ -352,7 +370,7 @@
   /* ---------- 나이대에 맞게 단어 바꾸기 (사주 결과·운의 흐름 화면) ---------- */
   var AGE_REP={senior:[['연애에서도','가까운 관계에서도'],['연애에서','가까운 관계에서'],['연애할 때','가까운 사람과 지낼 때'],['이직·독립·창작의 기회','새 역할·독립·창작의 기회'],['이직·이사','역할 변화·이사']],
                young:[['이직·독립·창작의 기회','진로 변경·독립·창작의 기회'],['이직·이사','진로 변화·이사']]};AGE_REP.senior.push(['연애 상황으로','가까운 관계 상황으로']);
-  var AGE_TEEN=[['연애에서도','가까운 관계에서도'],['연애에서','가까운 관계에서'],['연애할 때','친구와 가까워질 때'],['데이트 계획','함께할 계획'],
+  var AGE_TEEN=[['일·사회생활','학교·바깥 생활'],['투자·퇴사·결혼 같은 큰 결정','진로·전학 같은 큰 결정'],['퇴사·투자·결혼 같은 결정','진로·전학 같은 결정'],['연애에서도','가까운 관계에서도'],['연애에서','가까운 관계에서'],['연애할 때','친구와 가까워질 때'],['데이트 계획','함께할 계획'],
     ['투자·동업·큰 결제는 하루 뒤에 결정해.','큰돈이 드는 물건은 하루 뒤에 결정해.'],
     ['돈이 들어오는 날, 자동이체로 먼저 빼 둬. 남는 돈이 아니라 먼저 빠지는 돈이 네 몫이야.','용돈이 들어오는 날, 모을 돈부터 따로 빼 둬. 남는 돈이 아니라 먼저 빼 둔 돈이 네 몫이야.'],
     ['이직·전환 같은 변화가 잦을 수 있어서 말과 계약을 더 챙겨','진로·환경 변화가 잦을 수 있어서 말과 약속을 더 챙겨'],
@@ -366,6 +384,7 @@
 
   /* ---------- 오늘의 일진이 내 원국과 만나는 방식 (날마다 달라지는 한 줄) ---------- */
   var AREA={year:'바깥 관계·집안 어른',month:'일·사회생활',day:'가까운 사람과 내 컨디션',hour:'아랫사람·개인 계획'};
+  function areaOf(k){try{var c=chartNow();if(k==='month'&&c&&age(c)<20)return '학교·바깥 생활'}catch(_e){}return AREA[k]}
   var REL={충:['부딪히는 관계','{a} 쪽에서 계획이 흔들리거나 말이 엇갈리기 쉬워. 큰 결정은 하루 미뤄도 괜찮아.',5],
            형:['같은 문제가 되풀이되기 쉬운 관계','{a} 쪽 일은 한 번 더 확인해.',4],
            해:['서운함이 쌓이기 쉬운 관계','{a} 쪽에서는 짐작하지 말고 직접 물어봐.',3],
@@ -387,7 +406,7 @@
     var seen={},picked=rel.filter(function(r){return REL[r.type]&&AREA[r.aKey]}).sort(function(a,b){return REL[b.type][2]-REL[a.type][2]}).filter(function(r){var s=r.aKey+r.type;if(seen[s]||seen[r.aKey])return false;seen[s]=seen[r.aKey]=1;return true}).slice(0,2);
     var g=f.gods&&f.gods.day,gw=GODWORD[g]?g+'('+GODWORD[g]+')':g;
     var lines=['오늘 일진은 <b>'+esc(f.pillars.day.ko)+'('+esc(f.pillars.day.hanja||'')+')일</b>이야. 너에게는 '+esc(gw||'')+' 기운으로 들어와.'];
-    if(picked.length)picked.forEach(function(r){lines.push('네 '+esc(r.aLabel)+'의 '+esc(r.a)+(fin(r.a)?'과':'와')+' 오늘의 '+esc(r.b)+(fin(r.b)?'이':'가')+' '+esc(r.type)+(fin(r.type.slice(-1))?'이야. ':'야. ')+esc(REL[r.type][0])+'라서 '+esc(REL[r.type][1].replace('{a}',AREA[r.aKey])))});
+    if(picked.length)picked.forEach(function(r){lines.push('네 '+esc(r.aLabel)+'의 '+esc(r.a)+(fin(r.a)?'과':'와')+' 오늘의 '+esc(r.b)+(fin(r.b)?'이':'가')+' '+esc(r.type)+(fin(r.type.slice(-1))?'이야. ':'야. ')+esc(REL[r.type][0])+'라서 '+esc(REL[r.type][1].replace('{a}',areaOf(r.aKey))))});
     else lines.push('원국과 크게 부딪히거나 묶이는 글자가 없어서, 평소 리듬대로 가기 좋은 날이야.');
     var box=document.createElement('section');box.className='guiinDayLine card';box.setAttribute('data-k',key);
     box.innerHTML='<div class="mini">오늘 내 사주와 만나는 방식</div>'+lines.map(function(x){return '<p>'+x+'</p>'}).join('');
@@ -415,12 +434,12 @@
     var html='<div class="mini">'+(idx===1?'이번 주':'이번 달')+' 내 사주와 만나는 날</div>';
     if(idx===1){
       html+='<ul class="pdList">'+days.map(function(d){var x=dayRels(c,d);if(!x)return '';var r=x.r.slice().sort(function(a,b){return (TONE[a.type]==='w'?0:1)-(TONE[b.type]==='w'?0:1)})[0];
-        var tag=r?'<span class="pdTag '+TONE[r.type]+'">'+SHORT[r.type]+'</span> '+esc(AREA[r.aKey])+' 쪽':'<span class="pdTag n">평온</span> 평소 리듬대로';
+        var tag=r?'<span class="pdTag '+TONE[r.type]+'">'+SHORT[r.type]+'</span> '+esc(areaOf(r.aKey))+' 쪽':'<span class="pdTag n">평온</span> 평소 리듬대로';
         return '<li><b>'+lab(d)+' '+esc(x.p.ko)+'</b>'+tag+'</li>'}).join('')+'</ul>';
     }else{
       var warn=[],good=[];
       days.forEach(function(d){if(d.getUTCDate()<dd)return;var x=dayRels(c,d);if(!x)return;var w=x.r.filter(function(r){return r.type==='충'})[0],g=x.r.filter(function(r){return TONE[r.type]==='g'})[0];
-        if(w)warn.push(lab(d)+' '+AREA[w.aKey]);else if(g)good.push(lab(d)+' '+AREA[g.aKey])});
+        if(w)warn.push(lab(d)+' '+areaOf(w.aKey));else if(g)good.push(lab(d)+' '+areaOf(g.aKey))});
       html+='<p><b>부딪히기 쉬운 날</b> '+(warn.length?esc(warn.slice(0,6).join(' · ')):'남은 날 중에는 크게 부딪히는 날이 없어.')+'</p>';
       html+='<p><b>도움·연결이 붙기 쉬운 날</b> '+(good.length?esc(good.slice(0,6).join(' · ')):'남은 날 중에는 특별히 맞물리는 날이 적어.')+'</p>';
       html+='<p class="pdNote">오늘부터 이번 달 말까지 일진이 내 원국과 만나는 방식을 계산했어. 큰 약속은 부딪히기 쉬운 날을 피해서 잡아 봐.</p>';

@@ -23,6 +23,17 @@
     정관:'평가와 신뢰가 쌓이는 해야. 약속과 원칙을 지킬수록 자리와 인정이 따라와.',
     편인:'생각을 정리하고 깊이 파고드는 해야. 혼자 공부하고 준비하기 좋지만 생각만 길어지지 않게 해.',
     정인:'배우고 도움받는 해야. 자격·문서·도움을 주는 사람이 힘이 되고 마음이 안정되기 쉬워.'};
+  var YEAR10_TEEN={
+    비견:'내 생각대로 해 보고 싶은 해야. 스스로 정한 방식이 힘이 되지만, 친구와 비교하는 마음은 조금 내려놔.',
+    겁재:'친구와 함께하는 일이 늘어나는 해야. 같이 하는 건 즐겁게, 돈과 물건을 빌려주고 받는 건 분명하게 해.',
+    식신:'꾸준히 하면 실력이 쌓이는 해야. 좋아하는 걸 매일 조금씩 이어 가면 결과로 남기 좋아.',
+    상관:'표현하고 바꾸고 싶은 해야. 새로운 시도는 좋지만, 말이 앞서 다툼이 생기지 않게 말투를 챙겨.',
+    편재:'관심사와 활동이 넓어지는 해야. 여러 가지를 해 보되 시간과 용돈의 한도를 먼저 정해.',
+    정재:'차근차근 쌓는 해야. 계획한 만큼 해내기 좋고, 공부 습관과 생활 리듬을 다지기 좋아.',
+    편관:'해야 할 일과 압박이 늘어나는 해야. 버티며 해낸 경험이 실력이 되지만, 잠과 쉬는 시간을 꼭 지켜.',
+    정관:'규칙과 평가 속에서 인정받기 쉬운 해야. 약속과 원칙을 지킬수록 믿음이 쌓여.',
+    편인:'혼자 깊이 생각하고 파고드는 해야. 관심 분야를 공부하기 좋지만 생각만 길어지지 않게 해.',
+    정인:'배우고 도움받는 해야. 공부와 선생님·가족의 도움이 힘이 되고 마음이 안정되기 쉬워.'};
   var AREA={year:'바깥 관계·집안 어른',month:'일·사회생활',day:'가까운 사람과 내 컨디션'};
   var RELTX={충:'변화와 부딪힘이 크게 느껴질 수 있어. 큰 결정은 서두르지 말고 지킬 것과 바꿀 것을 나눠.',형:'같은 문제가 모양을 바꿔 되풀이되기 쉬워. 이미 정한 것과 다시 볼 것을 구분해.',해:'말하지 않은 서운함이 쌓이기 쉬워. 짐작하지 말고 직접 확인해.',파:'계획이 중간에 바뀌기 쉬워. 일정과 약속에 여유를 둬.',육합:'도움과 연결이 붙기 쉬워. 함께할 일을 시작하기 좋아.',천간합:'마음이 맞는 사람과 묶이기 쉬워. 대화로 풀기 좋은 해야.',삼합:'흐름이 한 방향으로 모이기 쉬워. 미뤄 둔 일을 밀고 가기 좋아.',방합:'흐름이 한 방향으로 모이기 쉬워.'};
   var PRI={충:5,형:4,해:3,파:3,육합:2,천간합:2,삼합:2,방합:1};
@@ -37,19 +48,20 @@
     var ys=F.yearSignal(c,TARGET),prev=F.yearSignal(c,TARGET-1);if(!ys||!ys.god)return '';
     var p=yearPillar(c,TARGET),pp=yearPillar(c,TARGET-1);
     var h=F.timingHighlights(c,TARGET),months=(h&&h.months)||[];
-    var g=ys.god,gw=GODWORD[g]||'';
+    var g=ys.god,gw=GODWORD[g]||'',teen=age(c)<19;
+    var AR=teen?{year:AREA.year,month:'학교·바깥 생활',day:AREA.day}:AREA;
     var out='<div class="mini">'+TARGET+' 신년운세</div><h3>'+TARGET+'년 '+esc(p?p.ko+'('+(p.hanja||'')+')':'')+'년은 너에게 '+esc(g)+'('+esc(gw)+')의 해야</h3>';
-    out+='<p>'+esc(YEAR10[g]||'')+'</p>';
+    out+='<p>'+esc((teen&&YEAR10_TEEN[g])||YEAR10[g]||'')+'</p>';
     if(prev&&prev.god&&pp)out+='<p>'+esc((TARGET-1)+'년('+pp.ko+')이 '+prev.god+'('+(GODWORD[prev.god]||'')+')의 해였다면, '+TARGET+'년은 '+g+'('+gw+')의 해로 주제가 '+(prev.god===g?'이어져.':'바뀌어.'))+'</p>';
     var r=p&&topRel(c,p);
-    if(r)out+='<p>'+esc(TARGET+'년의 글자가 네 '+r.aLabel+'와 '+jo(r.type,'으로','로')+' 걸려서, '+AREA[r.aKey]+' 쪽에서 '+(RELTX[r.type]||''))+'</p>';
+    if(r)out+='<p>'+esc(TARGET+'년의 글자가 네 '+r.aLabel+'와 '+jo(r.type,'으로','로')+' 걸려서, '+AR[r.aKey]+' 쪽에서 '+(RELTX[r.type]||''))+'</p>';
     else out+='<p>'+esc(TARGET+'년의 글자는 네 원국과 크게 부딪히거나 묶이지 않아서, 한 해의 주제를 차분하게 쓰기 좋아.')+'</p>';
     var L=curLuck(c);
     if(L&&L.next){var I=c.input||{};var startY=Math.floor(Number(I.year)+Number(L.next.fromAgeExact));if(startY===TARGET||startY===TARGET+1)out+='<p>'+esc(startY+'년쯤 대운이 '+L.cur.ko+'('+L.cur.god+')에서 '+L.next.ko+'('+L.next.god+')로 바뀌어. 10년 단위 배경이 바뀌는 때라, 큰 계획은 그 흐름까지 함께 봐.')+'</p>'}
     try{var sj=h.samjae;if(sj&&(sj.active||sj.isSamjae||sj.stage)){var st=sj.stageLabel||sj.label||sj.stage||'';out+='<p class="nyNote">'+esc(TARGET+'년은 전통적으로 말하는 삼재'+(st?'('+st+')':'')+'에 해당해. 겁낼 일이 아니라 큰 변화를 서두르지 말라는 참고로만 봐.')+'</p>'}}catch(_e){}
     if(months.length){
       var used={};var pick=function(k,uniq){var l=months.slice().sort(function(a,b){return (Number(b.scores&&b.scores[k]||0)-Number(a.scores&&a.scores[k]||0))||a.month-b.month});var m=uniq?(l.filter(function(x){return !used[x.month]})[0]||l[0]):l[0];if(m&&uniq)used[m.month]=1;return m};
-      var best=[['돈','money'],['일·성과','career'],['관계','relationship']].map(function(x){var m=pick(x[1],true);return m?'<li><b>'+x[0]+'</b> '+m.month+'월('+esc(m.pillar||'')+' · '+esc(m.god||'')+')</li>':''}).join('');
+      var best=[[teen?'용돈':'돈','money'],[teen?'공부·성과':'일·성과','career'],['관계','relationship']].map(function(x){var m=pick(x[1],true);return m?'<li><b>'+x[0]+'</b> '+m.month+'월('+esc(m.pillar||'')+' · '+esc(m.god||'')+')</li>':''}).join('');
       var cm=pick('caution');
       out+='<div class="nyGrid"><div><div class="nyLab">힘을 쓰기 좋은 달</div><ul>'+best+'</ul></div><div><div class="nyLab warn">한 번 더 확인할 달</div><ul>'+(cm?'<li><b>주의</b> '+cm.month+'월('+esc(cm.pillar||'')+' · '+esc(cm.god||'')+')</li>':'')+'</ul></div></div>';
       out+='<details class="nyMonths"><summary>'+TARGET+'년 1~12월 흐름 펼쳐 보기</summary><ul>'+months.slice().sort(function(a,b){return a.month-b.month}).map(function(m){var rel=(m.relations||[]).map(function(x){return typeof x==='string'?x:x&&x.type}).filter(Boolean);return '<li><b>'+m.month+'월 '+esc(m.pillar||'')+'</b>'+esc(m.god||'')+(GODWORD[m.god]?' · '+esc(GODWORD[m.god]):'')+(rel.length?' <span class="nyRel">'+esc(rel.join('·'))+'</span>':'')+'</li>'}).join('')+'</ul><p class="nyNote">월 기준은 절기(입춘·경칩…)로 바뀌어서 달력의 1일과 며칠 차이가 있어.</p></details>';
@@ -129,7 +141,7 @@
     keys.forEach(function(k,i){var p=P[k];var x=x0+i*cw;ctx.fillStyle=k==='day'?'#fff3cf':'#ffffff';ctx.fillRect(x+8,y0,cw-16,300);ctx.strokeStyle='#e5d6b0';ctx.lineWidth=2;ctx.strokeRect(x+8,y0,cw-16,300);
       ctx.fillStyle='#6b5a3a';ctx.font='600 28px "Apple SD Gothic Neo","Noto Sans KR",sans-serif';ctx.textAlign='center';ctx.fillText(lab[k],x+cw/2,y0+44);
       if(p){ctx.font='800 92px "Noto Serif KR","Apple SD Gothic Neo",serif';ctx.fillStyle=EL_COLOR[p.stemEl]||'#2d200c';ctx.fillText(p.stemH||p.stem||'',x+cw/2,y0+150);ctx.fillStyle=EL_COLOR[p.branchEl]||'#2d200c';ctx.fillText(p.branchH||p.branch||'',x+cw/2,y0+260)}
-      else{ctx.fillStyle='#b9ad95';ctx.font='600 40px sans-serif';ctx.fillText('-',x+cw/2,y0+200)}
+      else{ctx.fillStyle='#8a7d66';ctx.font='700 34px "Apple SD Gothic Neo","Noto Sans KR",sans-serif';ctx.fillText('시간',x+cw/2,y0+175);ctx.fillText('모름',x+cw/2,y0+220)}
       ctx.textAlign='left'});
     var y=620;ctx.fillStyle='#2d200c';ctx.font='700 34px "Apple SD Gothic Neo","Noto Sans KR",sans-serif';
     var dm=c.dayMaster||{};ctx.fillText('일간 '+(dm.hanja||'')+' '+(dm.stem||'')+(dm.el||''),64,y);y+=60;
@@ -177,11 +189,115 @@
   +'.guiinResultCompact .guiinNewYear > p:nth-of-type(n+2),.guiinResultCompact .guiinNewYear .nyMonths,.guiinResultCompact .guiinDaeunHead details,.guiinResultCompact .guiinDaeunHead > p:nth-of-type(n+2),.guiinResultCompact .guiinPairYears .pyRel,.guiinResultCompact .guiinPairYears .pyNote{display:none!important}';
   (document.head||document.documentElement).appendChild(css);
 
-  function apply(){try{newYearCard($('resultView'))}catch(_e){}try{newYearCard($('yearView'))}catch(_e){}try{pairYears()}catch(_e){}try{saveBar()}catch(_e){}}
+  /* B8: 읽기 쉬움(대비)·입력 라벨·빈 버튼·반복 질문칩 정리 — 홈/하단바는 건드리지 않음 */
+  var S='#result,#matchResult,#saju,#match,#today,#year';
+  function sc(sel){return S.split(',').map(function(r){return sel.split(',').map(function(x){return r+' '+x.trim()}).join(',')}).join(',')}
+  var a11y=document.createElement('style');a11y.id='GUIIN_B8_A11Y_CSS';
+  a11y.textContent=sc('.manseCell small,.manseLabel,.manseStarNote,.manseFact span,.dayMasterBadge small,.manseSectionHead small,.manseProfileTop p,.manseYinYangHead span,.manseYinYangNote,.manseElTop span,.pairBirth,.pairFacts span,.premiumItem span,.evidenceLine,.evidenceLine b,.guiinFreePaidCol span,.guiinRepeatNote span,.e24AxisTop span,.paidDisclaimer,.help,.mobileHint,.mobileHint b')+'{color:#66615a!important}'
+  +sc('.wongukCell em,.wongukCell span')+'{color:#5f645e!important}'
+  +sc('.eyebrow,.manseEyebrow,.manseSectionHead span,.pairManseHead span,.easyPoint.support b,.manseYinYangCell b')+'{color:#7f5c0c!important}'
+  +sc('.easyPoint.watch b')+'{color:#97481f!important}'
+  +'#result #resultView .guiinVisualHero .eyebrow{color:#7f5c0c!important}.nyNote,.pyNote{color:#66615a!important}'
+  +'#result #resultTabs button.on{background:#cf3d63!important;border-color:#cf3d63!important}'
+  +'#matchResult #matchTabs button.on{background:#8650c8!important;border-color:#8650c8!important}'
+  +'#today #fortuneTabs button.on{color:#3a2700!important}'
+  +'#today .todayHero h3{color:#c25e12!important}'
+  +'.guiinAskDup{display:none!important}';
+  (document.head||document.documentElement).appendChild(a11y);
+
+  var LABELS={name:'이름',year:'출생 연도',month:'출생 월',day:'출생 일',hour:'출생 시',minute:'출생 분'};
+  var PART={Name:'이름',Year:'출생 연도',Month:'출생 월',Day:'출생 일',Hour:'출생 시',Min:'출생 분'};
+  function labels(){
+    Object.keys(LABELS).forEach(function(id){var e=$(id);if(e&&!e.getAttribute('aria-label'))e.setAttribute('aria-label',LABELS[id])});
+    [['a','나'],['b','상대']].forEach(function(p){Object.keys(PART).forEach(function(k){var e=$(p[0]+k);if(e&&!e.getAttribute('aria-label'))e.setAttribute('aria-label',p[1]+' '+PART[k])})});
+    ['saju','match'].forEach(function(id){var sec=$(id);if(!sec)return;sec.querySelectorAll('label:not([for])').forEach(function(l){var n=l.nextElementSibling;if(n&&n.tagName==='INPUT'&&n.id)l.setAttribute('for',n.id)})});
+  }
+  function heart(){
+    var b=document.querySelector('#matchResult .topbar button.ghost:last-of-type');
+    if(!b||b.dataset.b8||b.getAttribute('onclick')||b.dataset.guiinNav)return;b.dataset.b8='1';
+    b.setAttribute('aria-label','궁합 결과 이미지 저장');b.title='궁합 결과 이미지 저장';
+    b.addEventListener('click',function(){try{window.guiinSaveResultImage&&window.guiinSaveResultImage('match')}catch(_e){}});
+  }
+  function askDedupe(){
+    ['resultView','matchView'].forEach(function(id){var v=$(id);if(!v)return;var scopes=[],seen=[];
+      v.querySelectorAll('.guiinContextAsk').forEach(function(d){var k=[].map.call(d.querySelectorAll('[data-v625-q]'),function(b){return b.getAttribute('data-v625-q')}).join('|');
+        var sc=d.closest('details')||v,i=scopes.indexOf(sc);if(i<0){i=scopes.push(sc)-1;seen[i]={}}
+        if(seen[i][k])d.classList.add('guiinAskDup');else{seen[i][k]=1;d.classList.remove('guiinAskDup')}})});
+  }
+
+  function apply(){try{newYearCard($('resultView'))}catch(_e){}try{newYearCard($('yearView'))}catch(_e){}try{pairYears()}catch(_e){}try{saveBar()}catch(_e){}try{labels()}catch(_e){}try{heart()}catch(_e){}try{askDedupe()}catch(_e){}}
   window.guiinB6Apply=apply;
-  var t1=null;function later(){clearTimeout(t1);t1=setTimeout(apply,340)}
+  var t1=null,t2=null;function later(){clearTimeout(t1);t1=setTimeout(apply,340);clearTimeout(t2);t2=setTimeout(function(){try{askDedupe()}catch(_e){}},1400)}
   document.addEventListener('click',later,{passive:true});
   function observe(id){var n=$(id);if(n)new MutationObserver(later).observe(n,{childList:true})}
   function boot(){observe('resultView');observe('matchView');observe('yearView');setTimeout(apply,600)}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
+})();
+
+/* GUIIN_B9_PAY_UI_V1 — 결제 화면 보기 편하게 (표시만 바꿈)
+   - 가격·상품·결제 함수(openPaySheet/openPremiumPay/openCompatPay)·토스 호출·동의 필수 조건은 그대로.
+   - 질문 패키지 카드 정리 + 1회당 가격 표시, 결제창 요약·동의 영역 확대·안내 문구·결제 버튼 하단 고정. */
+(function(){
+  if(window.__GUIIN_B9_PAY_UI_V1__)return;window.__GUIIN_B9_PAY_UI_V1__=true;
+  function $(id){return document.getElementById(id)}
+  function won(n){return Math.round(n).toLocaleString('ko-KR')}
+  var css=document.createElement('style');css.id='GUIIN_B9_PAY_UI_CSS';
+  css.textContent=
+  /* 질문 패키지 화면 */
+   '#wallet .cloverStore .pageIllustration{height:96px!important;min-height:96px!important;max-height:96px!important}#wallet .cloverStore .pageIllustration img{width:100%!important;height:96px!important;object-fit:cover!important;object-position:center 40%!important}'
+  +'#wallet .storeIntro{padding:14px 16px!important}#wallet .storeIntro h2{font-size:18px!important;margin:0 0 4px!important}#wallet .storeIntro p{font-size:13px!important;line-height:1.6!important}'
+  +'#wallet .storeWish{padding:10px 14px!important}#wallet .storeWish b{font-size:13px!important}#wallet .storeWish span{font-size:12px!important;color:#66615a!important}'
+  +'#wallet .luckyPack{display:grid!important;grid-template-columns:64px 1fr!important;grid-template-areas:"c b" "p p"!important;gap:6px 12px!important;padding:16px!important;align-items:start!important;content-visibility:visible!important}'
+  +'#wallet .luckyPack .packClover{grid-area:c;align-self:center;font-size:17px!important;font-weight:900;color:#0b6b4f;background:#eef7f0;border-radius:16px;padding:12px 4px;line-height:1.25;word-break:keep-all}'
+  +'#wallet .luckyPack .packBody{grid-area:b;min-width:0}#wallet .luckyPack .packBody h3{font-size:16px!important;line-height:1.4!important;margin:0 0 3px!important;word-break:keep-all}'
+  +'#wallet .luckyPack .packBody b{display:block;font-size:13px!important;color:#b06f0a!important}#wallet .luckyPack .packBody p{font-size:12.5px!important;line-height:1.6!important;color:#66615a!important;margin:4px 0 0!important}'
+  +'#wallet .luckyPack .packBuy{grid-area:p;display:flex!important;align-items:center;gap:10px;text-align:left!important;border-top:1px dashed #eadfca;padding-top:12px;margin-top:4px}'
+  +'#wallet .luckyPack .packBuy strong{font-size:20px!important;color:#b56f05!important;white-space:nowrap}#wallet .luckyPack .packBuy small{display:none!important}'
+  +'#wallet .luckyPack .packBuy .b9Per{font-size:12.5px;font-weight:800;color:#0b6b4f;background:#eef7f0;border-radius:999px;padding:4px 9px;white-space:nowrap}'
+  +'#wallet .luckyPack .packBuy button{margin-left:auto!important;width:auto!important;min-width:104px;min-height:44px;padding:0 16px!important;font-size:15px!important;border-radius:14px!important}'
+  +'#wallet .luckyPack.best:before{font-size:11px!important}'
+  /* 결제창 공통 */
+  +'#paySheet .payPanel,#premiumSheet .premiumPanel,#compatSheet .premiumPanel{max-height:90vh!important;padding-bottom:calc(18px + env(safe-area-inset-bottom))!important}'
+  +'#paySheet h3{font-size:19px!important}#paySheet .payPrice{font-size:30px!important}'
+  +'#paySheet .payList{font-size:13.5px!important;line-height:1.75!important;color:#4a4236!important}'
+  +'.b9Sum{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px}.b9Sum span{font-size:13px;font-weight:800;color:#0b6b4f;background:#eef7f0;border-radius:999px;padding:5px 10px}'
+  +'#paySheet .payConsent,#premiumSheet .payConsent,#compatSheet .payConsent{font-size:13px!important;line-height:1.6!important;color:#3a3226!important;padding:13px 14px!important;border:1.5px solid #e6d7b8!important;background:#fffaf0!important;cursor:pointer;min-height:48px;align-items:center!important}'
+  +'#paySheet .payConsent input,#premiumSheet .payConsent input,#compatSheet .payConsent input{width:24px!important;height:24px!important;min-height:24px!important;accent-color:#0b6b4f;margin:0!important}'
+  +'.payConsent.b9On{border-color:#0b6b4f!important;background:#f1f8f3!important}'
+  +'.b9Hint{font-size:12.5px;font-weight:700;color:#9a5a12;text-align:center;margin:8px 0 0}'
+  +'#walletPayBtn,#premiumPayBtn,#compatPayBtn{min-height:52px;font-size:16px!important}'
+  +'#paySheet .secondary,#premiumSheet .secondary,#compatSheet .secondary{min-height:46px;font-size:15px!important}'
+  +'#premiumSheet .price,#compatSheet .price{margin:6px 0 8px!important}';
+  (document.head||document.documentElement).appendChild(css);
+
+  function perChips(){
+    var w=$('wallet');if(!w)return;
+    [].forEach.call(w.querySelectorAll('.luckyPack .packBuy button[onclick^="openPaySheet("]'),function(b){
+      var m=/openPaySheet\((\d+),\s*(\d+)\)/.exec(b.getAttribute('onclick')||'');if(!m)return;
+      var buy=b.parentNode;if(buy.querySelector('.b9Per'))return;
+      var s=document.createElement('span');s.className='b9Per';s.textContent='1회당 약 '+won(+m[2]/+m[1])+'원';
+      buy.insertBefore(s,b);
+    });
+  }
+  /* 결제창 요약: 화면에 이미 표시된 상품 버튼 값(횟수·가격)으로만 계산 */
+  function sheetSum(){
+    var pr=$('payPrice'),pk=$('payPackText');if(!pr||!pk)return;
+    var n=+((/(\d+)\s*회/.exec(pk.textContent||'')||[])[1]||0),p=+((pr.textContent||'').replace(/[^\d]/g,'')||0);
+    var old=$('b9PaySum');var key=n+'/'+p;if(old&&old.getAttribute('data-k')===key)return;if(old)old.remove();if(!(n>0&&p>0))return;var last={n:n,p:p};
+    var d=document.createElement('div');d.id='b9PaySum';d.className='b9Sum';d.setAttribute('data-k',key);
+    d.innerHTML='<span>총 '+last.n+'회</span><span>1회당 약 '+won(last.p/last.n)+'원</span><span>30일 사용</span>';
+    pr.insertAdjacentElement('afterend',d);
+  }
+  function consentUI(){
+    [['walletPayConsent','walletPayBtn'],['premiumPayConsent','premiumPayBtn'],['compatPayConsent','compatPayBtn']].forEach(function(x){
+      var c=$(x[0]),b=$(x[1]);if(!c||!b)return;var lab=c.closest('label');if(lab)lab.classList.toggle('b9On',!!c.checked);
+      var h=b.parentNode.querySelector('.b9Hint[data-for="'+x[1]+'"]');
+      if(!c.checked){if(!h){h=document.createElement('p');h.className='b9Hint';h.setAttribute('data-for',x[1]);b.insertAdjacentElement('beforebegin',h)}h.textContent='위 내용에 동의 체크를 하면 결제 버튼이 켜져.'}
+      else if(h)h.remove();
+    });
+  }
+  document.addEventListener('change',function(e){if(e.target&&/PayConsent$/.test(e.target.id||''))consentUI()},true);
+  document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('[onclick*="Pay"],[onclick*="openPaySheet"]'))setTimeout(consentUI,80)},true);
+  function boot(){perChips();consentUI();var w=$('wallet');if(w)new MutationObserver(perChips).observe(w,{childList:true,subtree:true});var pr=$('payPrice');if(pr){new MutationObserver(sheetSum).observe(pr,{childList:true,characterData:true,subtree:true});sheetSum()}}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
