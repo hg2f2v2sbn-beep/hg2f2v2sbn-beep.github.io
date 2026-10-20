@@ -290,7 +290,8 @@
         try{
           const base=location.origin+location.pathname;
           const suffix="&tossMode="+encodeURIComponent(mode);
-          await widgets.requestPayment({orderId:String(order.id),orderName:productLabel(productCode),successUrl:base+"?tossPayment=success"+suffix,failUrl:base+"?tossPayment=fail"+suffix});
+          const returnBase = apiBase() + "/api/toss/return";
+          await widgets.requestPayment({orderId:String(order.id),orderName:productLabel(productCode),successUrl:returnBase+"?tossPayment=success"+suffix,failUrl:returnBase+"?tossPayment=fail"+suffix});
           // Some embedded browsers may return without navigating. Do not leave the purchase UI locked forever.
           setTimeout(()=>{if(document.visibilityState==="visible"&&activePaymentWindow===paymentWindow){try{paymentWindow.destroy();}catch(_e){}activePaymentWindow=null;setBusy(false);}},1500);
         }catch(err){
