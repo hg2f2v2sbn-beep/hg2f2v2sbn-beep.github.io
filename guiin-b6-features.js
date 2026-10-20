@@ -301,3 +301,28 @@
   function boot(){perChips();consentUI();var w=$('wallet');if(w)new MutationObserver(perChips).observe(w,{childList:true,subtree:true});var pr=$('payPrice');if(pr){new MutationObserver(sheetSum).observe(pr,{childList:true,characterData:true,subtree:true});sheetSum()}}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
+
+/* GUIIN_B9_NOCLIP_V1 — 폰 화면에서 글자가 '…'로 잘리거나 화면 밖으로 나가는 곳 정리 (표시만) */
+(function(){
+  if(window.__GUIIN_B9_NOCLIP_V1__)return;window.__GUIIN_B9_NOCLIP_V1__=true;
+  var css=document.createElement('style');css.id='GUIIN_B9_NOCLIP_CSS';
+  css.textContent=
+  /* AI 상담 상단: 상담 기준·주제·남은 횟수가 '…'로 잘리던 것 → 줄바꿈 허용 */
+   '#ask #askContextCard{flex-wrap:wrap!important;row-gap:4px!important;height:auto!important}'
+  +'html body #ask #askContextCard #askContextTitle,html body #ask #aiTopicBar b,#ask #askContextCard b{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;word-break:keep-all!important;line-height:1.35!important}'
+  +'#ask .aiTopicBar{flex-wrap:wrap!important;row-gap:4px!important}#ask .aiTopicBar>div b{white-space:normal!important;overflow:visible!important;text-overflow:clip!important}'
+  +'#ask .walletRemainLabel{white-space:normal!important;overflow:visible!important}'
+  +'#ask .guiinChatHeaderCopy{min-width:0}html body #ask .guiinChatHeaderCopy small{font-size:10px!important;letter-spacing:-.2px}'
+  /* 궁합 결과의 두 사람 만세력: 옆으로 밀어야 보이던 표 → 화면 폭에 맞춤 */
+  +'#matchView .manseTableWrap{overflow-x:hidden!important}#matchView .manseTable{min-width:0!important;width:100%!important}'
+  +'#matchView .manseRow{grid-template-columns:40px repeat(4,minmax(0,1fr))!important}'
+  +'#matchView .manseCell{min-width:0!important;overflow-wrap:anywhere;word-break:keep-all}#matchView .manseCell small,#matchView .pillarStarName{white-space:normal!important}'
+  /* 좁은 폰(360px 이하): 탭·버튼이 화면 밖으로 나가던 것 */
+  +'@media(max-width:360px){'
+   +'#today #fortuneTabs{gap:6px!important}#today #fortuneTabs button{flex:1 1 0!important;min-width:0!important;padding:11px 4px!important;font-size:14px!important}'
+   +'#matchTabs button,#resultTabs button{padding-left:8px!important;padding-right:8px!important}'
+   +'#wallet .luckyPack .packBuy{flex-wrap:wrap!important}#wallet .luckyPack .packBuy button{flex:1 1 100%!important;margin-left:0!important}'
+   +'#wallet .topbar .brandline{font-size:18px!important;white-space:nowrap}#wallet .topbar small{font-size:11px!important}'
+  +'}';
+  (document.head||document.documentElement).appendChild(css);
+})();
