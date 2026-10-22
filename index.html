@@ -2164,6 +2164,101 @@ body.guiinAskKeyboardOpen #ask.active{--guiin-chat-height:var(--guiinAskKeyboard
 @media (prefers-reduced-motion: reduce){#ask .msgs .guiinTyping span{animation:none}}
 /* 이용권 화면: 클로버 연결 안내 */
 #wallet .storeWish .guiinCloverLink{display:block;margin-top:6px;font-size:12px;color:#6a5214;}
+/* ===== 귀인이 + 메뉴: 아래에서 올라오는 간단한 메뉴(표시만). 기존 상담 설정 요소·ID·함수는 그대로 두고 배치만 바꿈 ===== */
+#ask .guiinChatOptions[open]::before{content:'';position:fixed;inset:0;background:rgba(28,40,32,.38);z-index:-1;animation:gsFade .18s ease-out;}
+#ask .guiinChatOptions[open] .guiinChatOptionsBody{
+  position:fixed!important;top:auto!important;right:auto!important;bottom:0!important;
+  left:var(--gsLeft,0px)!important;width:var(--gsWidth,100vw)!important;
+  max-height:var(--gsMaxH,80dvh)!important;box-sizing:border-box!important;overflow-y:auto!important;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+  padding:0 14px calc(16px + env(safe-area-inset-bottom))!important;border-radius:24px 24px 0 0!important;background:#fffdfa!important;border:0!important;
+  box-shadow:0 -8px 32px rgba(31,52,39,.20)!important;animation:gsUp .22s ease-out;}
+@keyframes gsUp{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+@keyframes gsFade{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion: reduce){#ask .guiinChatOptions[open] .guiinChatOptionsBody,#ask .guiinChatOptions[open]::before{animation:none}}
+#ask .guiinChatOptionsBody .gsHead{position:sticky;top:0;z-index:3;display:grid;grid-template-columns:38px 1fr 38px;align-items:center;margin:0 -14px 8px;padding:20px 12px 8px;background:#fffdfa;}
+#ask .guiinChatOptionsBody .gsHead::before{content:'';position:absolute;top:8px;left:50%;width:40px;height:4px;margin-left:-20px;border-radius:4px;background:#ddd8cc;}
+#ask .guiinChatOptionsBody .gsHead b{text-align:center;font-size:17px;font-weight:800;color:#1d2a22;letter-spacing:-.02em;}
+#ask .gsHead button{width:36px;height:36px;border:0;border-radius:50%;background:transparent;color:#2b3a30;font-size:26px;line-height:1;display:grid;place-items:center;cursor:pointer;padding:0;}
+#ask .guiinChatOptionsBody[data-gs-view="home"] .gsBack{visibility:hidden;}
+#ask .gsGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;padding:2px 0 4px;}
+#ask .gsGrid button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:112px;padding:12px 4px;border:1px solid #efe9dc;border-radius:18px;background:#fbf9f3;color:#1f2a23;cursor:pointer;touch-action:manipulation;}
+#ask .gsGrid button:active{background:#f1f6ef;}
+#ask .gsGrid .gsIco{width:40px;height:40px;display:grid;place-items:center;margin-bottom:2px;}
+#ask .gsGrid .gsIco svg{width:34px;height:34px;}
+#ask .gsGrid .gsName{font-size:14px;font-weight:800;letter-spacing:-.02em;}
+#ask .gsGrid .gsSub{font-size:11px;color:#7d867f;letter-spacing:-.02em;}
+#ask .gsTip{display:flex;gap:10px;align-items:flex-start;margin:12px 0 2px;padding:12px 14px;border-radius:16px;background:#f2f7ef;color:#3d4f43;font-size:12.5px;line-height:1.55;}
+#ask .gsTip i{font-style:normal;font-size:18px;line-height:1.2;}
+/* 보기 전환 */
+#ask .guiinChatOptionsBody[data-gs-view] > :not(.gsHead):not([data-gs-pane]){display:none!important;}
+#ask .guiinChatOptionsBody[data-gs-view] > [data-gs-pane]{display:none!important;}
+#ask .guiinChatOptionsBody[data-gs-view="home"] > [data-gs-pane~="home"],
+#ask .guiinChatOptionsBody[data-gs-view="examples"] > [data-gs-pane~="examples"],
+#ask .guiinChatOptionsBody[data-gs-view="history"] > [data-gs-pane~="history"]:not([hidden]),
+#ask .guiinChatOptionsBody[data-gs-view="style"] > [data-gs-pane~="style"],
+#ask .guiinChatOptionsBody[data-gs-view="new"] > [data-gs-pane~="new"],
+#ask .guiinChatOptionsBody[data-gs-view="wallet"] > [data-gs-pane~="wallet"],
+#ask .guiinChatOptionsBody[data-gs-view="guide"] > [data-gs-pane~="guide"]{display:block!important;}
+#ask .guiinChatOptionsBody[data-gs-view="home"] > .gsGrid{display:grid!important;}
+#ask .guiinChatOptionsBody[data-gs-view="home"] > .gsTip{display:flex!important;}
+/* 질문 추천 */
+#ask .gsTabs{display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none;}
+#ask .gsTabs::-webkit-scrollbar{display:none}
+#ask .gsTabs button{flex:0 0 auto;height:34px;padding:0 14px;border-radius:999px;border:0;background:#f2efe7;color:#4b544e;font-size:12.5px;font-weight:700;cursor:pointer;}
+#ask .gsTabs button.on{background:#245c45;color:#fff;}
+#ask .gsQList{display:flex;flex-direction:column;gap:7px;}
+#ask .gsQList button{display:flex;align-items:center;gap:10px;width:100%;min-height:48px;padding:10px 12px;border:1px solid #eee8dc;border-radius:14px;background:#fff;color:#1f2a23;text-align:left;font-size:13.5px;line-height:1.45;cursor:pointer;}
+#ask .gsQList button .n{flex:0 0 24px;height:24px;border-radius:50%;background:#f2efe7;color:#6b746d;font-size:11px;font-weight:800;display:grid;place-items:center;}
+#ask .gsQList button .t{flex:1;min-width:0;}
+#ask .gsQList button .t small{display:block;font-size:11px;color:#8a928b;font-weight:700;margin-bottom:1px;}
+#ask .gsQList button::after{content:'›';flex:0 0 auto;font-size:20px;color:#9aa19b;}
+#ask .gsHint{margin-top:10px;font-size:11.5px;color:#7d867f;line-height:1.5;}
+/* 상담 말투 */
+#ask .gsRadio{display:flex;flex-direction:column;gap:8px;}
+#ask .gsRadio label{display:flex;align-items:center;gap:12px;padding:13px 14px;border:1px solid #eee8dc;border-radius:16px;background:#fff;cursor:pointer;}
+#ask .gsRadio input{width:20px;height:20px;accent-color:#245c45;flex:0 0 20px;margin:0;}
+#ask .gsRadio b{display:block;font-size:14px;color:#1f2a23;}
+#ask .gsRadio span{display:block;font-size:12px;color:#7d867f;margin-top:2px;}
+#ask .gsRadio label:has(input:checked){border-color:#9cc3ad;background:#f4faf6;}
+#ask .gsBtn{display:block;width:100%;min-height:48px;margin-top:12px;border:0;border-radius:16px;background:#245c45;color:#fff;font-size:15px;font-weight:800;cursor:pointer;}
+#ask .gsBtn.ghost{background:#fff;color:#27654b;border:1px solid #d8e2d2;}
+/* 상담 기록(기존 요소 재사용) */
+#ask .guiinChatOptionsBody #accountConsultMemory{border:0!important;box-shadow:none!important;padding:0!important;background:transparent!important;}
+#ask .guiinChatOptionsBody #accountConsultMemory .accountConsultHead span{font-size:12px;}
+/* 안내 카드·접이식 */
+#ask .gsNote{padding:16px 14px;border-radius:18px;background:#f7f5ef;font-size:13px;line-height:1.65;color:#4e5a52;text-align:center;}
+#ask .gsNote b{display:block;font-size:15px;color:#1f5a43;margin-bottom:6px;}
+#ask .gsNote .gsBal{margin-top:8px;font-weight:800;color:#2b4a39;}
+#ask .gsAcc details{border:1px solid #eee8dc;border-radius:14px;background:#fff;margin-bottom:7px;}
+#ask .gsAcc summary{list-style:none;display:flex;justify-content:space-between;align-items:center;padding:13px 14px;font-size:14px;font-weight:700;color:#1f2a23;cursor:pointer;}
+#ask .gsAcc summary::-webkit-details-marker{display:none}
+#ask .gsAcc summary::after{content:'›';font-size:20px;color:#9aa19b;transition:transform .15s;}
+#ask .gsAcc details[open] summary::after{transform:rotate(90deg);}
+#ask .gsAcc details p{margin:0;padding:0 14px 14px;font-size:12.8px;line-height:1.7;color:#4e5a52;}
+#ask .gsAcc details .gsBtn{margin:0 14px 14px;width:calc(100% - 28px);}
+#ask .gsGrid button{min-height:96px;gap:8px;background:#faf7f0;}
+#ask .gsGrid .gsIco svg{width:32px;height:32px;}
+/* 상담 기록: 전체/즐겨찾기 탭 + 검색 아이콘. 기존 목록·즐겨찾기·삭제 기능 그대로 */
+#ask .gsHistTabs{display:flex;gap:8px;align-items:center;margin:2px 0 10px;}
+#ask .gsSeg{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+#ask .gsSeg button{height:40px;border-radius:999px;border:0;background:#f2efe7;color:#4b544e;font-size:13.5px;font-weight:700;cursor:pointer;}
+#ask .gsSeg button.on{background:#245c45;color:#fff;}
+#ask .gsSearchBtn{width:40px;height:40px;flex:0 0 40px;border-radius:50%;border:1px solid #e3e0d6;background:#fff;color:#2b3a30;display:grid;place-items:center;cursor:pointer;padding:0;}
+#ask .guiinChatOptionsBody #accountConsultMemory .accountConsultHead{display:none!important;}
+#ask .guiinChatOptionsBody #accountConsultMemory #accountConsultFavOnly{display:none!important;}
+#ask .guiinChatOptionsBody #accountConsultMemory .accountConsultToolbar{display:none;margin:0 0 10px;}
+#ask .guiinChatOptionsBody #accountConsultMemory.gsSearchOpen .accountConsultToolbar{display:flex;}
+#ask .guiinChatOptionsBody #accountConsultSearch{font-size:16px!important;padding:10px 12px!important;border-radius:14px!important;}
+#ask .guiinChatOptionsBody .accountConsultList{gap:8px!important;margin-top:0!important;}
+#ask .guiinChatOptionsBody .accountConsultItem{position:relative;min-height:62px;padding:11px 12px 11px 54px!important;border-radius:16px!important;}
+#ask .guiinChatOptionsBody .accountConsultItem::before{content:'';position:absolute;left:12px;top:50%;width:32px;height:32px;margin-top:-16px;border-radius:50%;background:#eef5ef url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232f6a50' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M20 11.5c0 4-3.6 7-8 7-1 0-1.9-.2-2.8-.5L5 19l1.2-3.3C5.4 14.5 4 13.1 4 11.5c0-4 3.6-7 8-7s8 3 8 7z'/%3E%3Cpath d='M9 11.5h.01M12 11.5h.01M15 11.5h.01'/%3E%3C/svg%3E") center/18px no-repeat;}
+#ask .guiinChatOptionsBody .accountConsultItem b{font-size:14px!important;color:#1f2a23!important;}
+#ask .guiinChatOptionsBody .accountConsultItem span{font-size:12px!important;}
+#ask .guiinChatOptionsBody .accountConsultActions button{min-height:40px;font-size:13px;}
+#ask .guiinChatOptionsBody .accountConsultActions button.fav{color:#e5a514;}
+#ask .guiinChatOptionsBody .accountConsultEmpty{padding:18px 6px!important;text-align:center;font-size:13px!important;color:#7d867f!important;}
+#ask .guiinChatOptionsBody .gsHead button:focus-visible,#ask .gsGrid button:focus-visible,#ask .gsQList button:focus-visible{outline:2px solid #3d9e73;outline-offset:2px;}
+
 </style>
 </head>
 <body>
@@ -13009,6 +13104,209 @@ try{Object.assign(window,{guiinPaymentCenterStart});}catch(_e){}
   document.addEventListener('keydown',function(e){
     if(e.key==='Escape')window.guiinToggleChatOptions(false);
   });
+})();
+</script>
+<script id="GUIIN_CHAT_PLUS_MENU_V1">
+/* 귀인이 + 메뉴(화면 전용). 기존 상담 설정 창(#guiinChatOptions)의 요소·함수를 그대로 사용:
+   질문 채우기(data-ai-question 기존 처리), 상담 기록(#accountConsultMemory), 말투(guiinSetConsultStyle),
+   새 상담(guiinStartNewConsultation), 대화 지우기(clearAIChat), 이용권(go('wallet')). AI 요청·차감·저장 로직은 건드리지 않음. */
+(function(){
+  var panel=document.getElementById('guiinChatOptions');
+  var body=panel&&panel.querySelector('.guiinChatOptionsBody');
+  var input=document.getElementById('askQ');
+  if(!panel||!body)return;
+  function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  var ICON={
+    examples:'<svg viewBox="0 0 40 40" fill="none" stroke="#2f6a50" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M33 19c0 6.6-5.8 12-13 12-1.6 0-3.1-.3-4.5-.8L8 33l2-6c-1.9-2.2-3-5-3-8 0-6.6 5.8-12 13-12s13 5.4 13 12z"/><path d="M14.5 19.5h.01M20 19.5h.01M25.5 19.5h.01" stroke-width="3.4"/></svg>',
+    history:'<svg viewBox="0 0 40 40" fill="none" stroke="#b07d1c" stroke-width="2.6" stroke-linecap="round"><circle cx="20" cy="20" r="13"/><path d="M20 12.5V20l5 3.2"/></svg>',
+    style:'<svg viewBox="0 0 40 40" fill="none" stroke="#2f6a50" stroke-width="2.6" stroke-linecap="round"><path d="M8 12h24M8 20h24M8 28h24"/><circle cx="15" cy="12" r="3" fill="#fffdfa"/><circle cx="25" cy="20" r="3" fill="#fffdfa"/><circle cx="18" cy="28" r="3" fill="#fffdfa"/></svg>',
+    'new':'<svg viewBox="0 0 40 40" fill="none" stroke="#2f6a50" stroke-width="2.6" stroke-linecap="round"><circle cx="20" cy="20" r="13"/><path d="M20 14v12M14 20h12"/></svg>',
+    wallet:'<svg viewBox="0 0 40 40"><g fill="#3d9a4f"><circle cx="15" cy="14" r="6.4"/><circle cx="25" cy="14" r="6.4"/><circle cx="15" cy="24" r="6.4"/><circle cx="25" cy="24" r="6.4"/></g><path d="M20 22c.6 5 2.4 9 5.5 12" stroke="#3d9a4f" stroke-width="2.6" fill="none" stroke-linecap="round"/></svg>',
+    guide:'<svg viewBox="0 0 40 40" fill="none" stroke="#3a5fa8" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="20" cy="20" r="13"/><path d="M16.2 16.4a4 4 0 0 1 7.6 1.4c0 2.6-3.8 3.4-3.8 5.6"/><path d="M20 27.5h.01" stroke-width="3.4"/></svg>'
+  };
+
+  var ITEMS=[['examples','질문 추천','추천 질문 보기'],['history','상담 기록','이전 대화 보기'],['style','상담 말투','답변 스타일 설정'],['new','새 상담','대화 새로 시작'],['wallet','이용권','구매·잔액 확인'],['guide','이용 안내','사용 방법 보기']];
+  var TITLE={home:'무엇을 도와줄까?',examples:'질문 추천',history:'상담 기록',style:'상담 말투','new':'새 상담',wallet:'이용권',guide:'이용 안내'};
+  var STYLE_DESC={balanced:'꼼꼼하면서도 이해하기 쉽게',fact:'사주 근거 위주로 명확하게',warm:'따뜻하고 친근한 말투로',brief:'중요한 내용만 간단하게',deep:'자세하고 깊이 있는 해석으로'};
+  function mk(tag,cls,pane,html){var d=document.createElement(tag);if(cls)d.className=cls;if(pane)d.setAttribute('data-gs-pane',pane);if(html!=null)d.innerHTML=html;return d;}
+
+  // ---- 화면 구성(새 요소만 추가, 기존 요소는 삭제하지 않음) ----
+  if(!body.querySelector('.gsHead')){
+    var head=mk('div','gsHead',null,'<button type="button" class="gsBack" aria-label="메뉴로 돌아가기">‹</button><b id="gsTitle">무엇을 도와줄까?</b><button type="button" class="gsClose guiinChatOptionsClose" aria-label="메뉴 닫기">×</button>');
+    var grid=mk('div','gsGrid','home',ITEMS.map(function(it){return '<button type="button" data-gs="'+it[0]+'"><span class="gsIco" aria-hidden="true">'+ICON[it[0]]+'</span><span class="gsName">'+it[1]+'</span></button>';}).join(''));
+    grid.setAttribute('role','menu');
+    var tip=mk('div','gsTip','home','<i aria-hidden="true">💡</i><span>추천 질문을 선택하면 입력창에 내용이 채워져요. (자동 전송되지 않아요)</span>');
+    var ex=mk('div','gsEx','examples','<div class="gsTabs" role="tablist"></div><div class="gsQList"></div><div class="gsHint">질문을 누르면 입력창에만 채워져요. 내용을 확인하고 보내기를 눌러야 질문이 시작돼요.</div>');
+    var st=mk('div','gsStyle','style','<div class="gsRadio" role="radiogroup" aria-label="상담 말투"></div><button type="button" class="gsBtn" id="gsStyleApply">적용하기</button><div class="gsHint">어떤 말투를 골라도 사주 풀이 내용은 같고, 선택한 상담 안에서는 말투를 이어서 기억해요.</div>');
+    var he=mk('div','gsNote','history','<b>로그인하면 상담 기록이 저장돼요</b>지금 대화는 이 기기에 저장되어 화면에 그대로 보여요. 로그인하면 이전 상담을 다른 기기에서도 다시 열고, 검색·즐겨찾기도 할 수 있어요.<button type="button" class="gsBtn" data-gs-go="login">로그인하기</button>');he.id='gsHistoryEmpty';
+    var nw=mk('div','gsNote','new','<b>새 상담을 시작할까요?</b>지금 화면의 대화를 비우고 새 주제로 시작해요. 로그인 상태라면 지금까지의 상담은 상담 기록에 남아요.<button type="button" class="gsBtn" id="gsNewStart">새 상담 시작</button><button type="button" class="gsBtn ghost" data-gs-open="home">취소</button>');
+    var wl=mk('div','gsNote','wallet','<b>🍀 구매한 질문 이용권은<br>상담 화면에서 클로버로 표시돼요.</b>(질문 1회 = 클로버 1개)<div class="gsBal" id="gsBalance"></div><button type="button" class="gsBtn" data-gs-go="wallet">이용권 상품 보기</button>');
+    var gd=mk('div','gsAcc','guide','');
+    body.prepend(head);
+    [grid,ex,st,he,nw,wl,gd].forEach(function(n){body.appendChild(n);});
+    body.setAttribute('role','dialog');body.setAttribute('aria-modal','true');body.setAttribute('aria-labelledby','gsTitle');
+  }
+  // 기존 상담 기록 영역은 '상담 기록' 화면에서 그대로 사용
+  var acc=document.getElementById('accountConsultMemory');if(acc&&!acc.hasAttribute('data-gs-pane'))acc.setAttribute('data-gs-pane','history');
+  if(acc&&!acc.querySelector('.gsHistTabs')){
+    var ht=document.createElement('div');ht.className='gsHistTabs';
+    ht.innerHTML='<div class="gsSeg" role="tablist"><button type="button" role="tab" data-gs-fav="0">전체</button><button type="button" role="tab" data-gs-fav="1">즐겨찾기</button></div><button type="button" class="gsSearchBtn" aria-label="상담 기록 검색" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg></button>';
+    var tb=acc.querySelector('.accountConsultToolbar');
+    if(tb)acc.insertBefore(ht,tb);else acc.prepend(ht);
+  }
+  function favOn(){try{return !!guiinConsultFavOnly;}catch(_e){var b=document.getElementById('accountConsultFavOnly');return !!(b&&b.classList.contains('on'));}}
+  function syncHistTabs(){var on=favOn();[].forEach.call(document.querySelectorAll('.gsHistTabs [data-gs-fav]'),function(b){var sel=(b.getAttribute('data-gs-fav')==='1')===on;b.classList.toggle('on',sel);b.setAttribute('aria-selected',String(sel));});}
+
+  // ---- 질문 추천: 기존 추천 질문 데이터(GUIIN_AI_POPULAR / GUIIN_AI_EXAMPLES)를 목록으로 ----
+  var CATS=[['popular','추천'],['personality','나·성격'],['career','일·돈'],['relationship','연애·관계'],['timing','운의 흐름']];
+  var cat='popular';
+  function items(c){
+    try{
+      if(c==='popular')return GUIIN_AI_POPULAR.slice();
+      if(c==='all')return ['personality','career','relationship','timing'].reduce(function(a,k){return a.concat(GUIIN_AI_EXAMPLES[k]||[]);},[]);
+      return (GUIIN_AI_EXAMPLES[c]||[]).slice();
+    }catch(_e){return [];}
+  }
+  function renderEx(){
+    var tabs=body.querySelector('.gsTabs'),list=body.querySelector('.gsQList');if(!tabs||!list)return;
+    tabs.innerHTML=CATS.map(function(c){return '<button type="button" role="tab" data-gs-cat="'+c[0]+'" class="'+(c[0]===cat?'on':'')+'" aria-selected="'+(c[0]===cat)+'">'+c[1]+'</button>';}).join('');
+    list.innerHTML=items(cat).map(function(it,i){return '<button type="button" data-ai-question="'+esc(it[1])+'"><span class="n">'+(i+1)+'</span><span class="t">'+esc(it[1])+'</span></button>';}).join('');
+  }
+  // ---- 상담 말투: 기존 말투 버튼(#consultStyleChips)에서 목록을 만들고 기존 함수로 적용 ----
+  function renderStyle(){
+    var box=body.querySelector('.gsRadio');if(!box)return;
+    var cur='balanced';try{cur=guiinCurrentConsultStyle();}catch(_e){}
+    var src=[].slice.call(document.querySelectorAll('#consultStyleChips [data-style]'));
+    box.innerHTML=src.map(function(b){var k=b.getAttribute('data-style');return '<label><input type="radio" name="gsStyle" value="'+esc(k)+'"'+(k===cur?' checked':'')+'><div><b>'+esc(b.textContent.trim())+'</b><span>'+esc(STYLE_DESC[k]||'')+'</span></div></label>';}).join('');
+  }
+  // ---- 이용 안내: 기존 안내 문구(.askTools .adminNote, .askChargeHint)를 나눠 접이식으로 ----
+  function renderGuide(){
+    var box=body.querySelector('.gsAcc');if(!box||box.childElementCount)return;
+    var note=(body.querySelector('.askTools .adminNote')||{}).textContent||'';
+    var hint=(body.querySelector('.askChargeHint')||{}).textContent||'';
+    var sents=note.replace(/([.요다])\s+/g,'$1\n').split('\n').map(function(x){return x.trim();}).filter(Boolean); /* lookbehind 없이(구형 iOS 호환) */
+    var fee=sents.filter(function(x){return /무료|차감|패키지|구매/.test(x);}).join(' ');
+    var save=sents.filter(function(x){return /로그인|로그아웃|기록|맥락/.test(x);}).join(' ');
+    var rows=[
+      ['귀인이란?','귀인이는 귀인사주의 AI 상담 친구예요. 계산된 사주 원국과 현재 흐름을 바탕으로 궁금한 점을 이어서 설명해 줘요.'],
+      ['AI 상담 이용 방법','사주를 먼저 계산한 뒤 입력창에 궁금한 점을 적고 보내기를 눌러요. + 메뉴의 질문 추천을 누르면 입력창에 질문이 채워지고, 답변 아래에는 이어서 물어볼 질문도 추천돼요.'],
+      ['무료 상담과 이용권',(fee||'')+(hint?' '+hint:'')],
+      ['상담 기록과 저장',save],
+      ['기타 자주 묻는 질문','화면에 보이는 대화만 지우고 싶다면 아래 버튼을 눌러요. 로그인 상태라면 계정의 상담 기록은 상담 기록 메뉴에서 다시 열 수 있어요.<button type="button" class="gsBtn ghost" id="gsClearChat">대화 지우기</button>']
+    ];
+    box.innerHTML=rows.filter(function(r){return String(r[1]).trim();}).map(function(r){var html=r[0]==='기타 자주 묻는 질문'?r[1]:esc(r[1]);return '<details><summary>'+esc(r[0])+'</summary><p>'+html+'</p></details>';}).join('');
+  }
+  function renderWallet(){
+    var b=document.getElementById('gsBalance');if(!b)return;
+    var f=(document.getElementById('freeRemainView')||{}).textContent||'',c=(document.getElementById('coinView')||{}).textContent||'';
+    b.textContent=(/\d/.test(f)||/\d/.test(c))?('지금 남은 횟수 · 무료 '+f+'회 · 클로버 '+c+'개'):'';
+  }
+
+  // ---- 보기 전환 ----
+  var view='home';
+  function setView(v){
+    view=TITLE[v]?v:'home';body.setAttribute('data-gs-view',view);
+    var t=document.getElementById('gsTitle');if(t)t.textContent=TITLE[view];
+    if(view==='examples')renderEx();
+    if(view==='style')renderStyle();
+    if(view==='guide')renderGuide();
+    if(view==='wallet')renderWallet();
+    if(view==='history'){var a=document.getElementById('accountConsultMemory'),em=document.getElementById('gsHistoryEmpty');if(em)em.hidden=!!(a&&!a.hidden);syncHistTabs();}
+    body.scrollTop=0;place();
+  }
+  setView('home');
+
+  // ---- 위치: 화면 아래에서 올라오는 메뉴. 상담 화면 폭에 맞추고, 최대 높이는 상단 상태줄 아래까지 ----
+  function place(){
+    var ask=document.getElementById('ask');if(!ask)return;
+    var ar=ask.getBoundingClientRect();
+    var tops=['#askContextCard','.creditBar','.topbar'].map(function(sel){var e=ask.querySelector(sel);if(!e||!e.offsetParent)return 0;return e.getBoundingClientRect().bottom;});
+    var statusBottom=Math.max.apply(null,tops.concat([0]));
+    var vh=(window.visualViewport&&window.visualViewport.height)||window.innerHeight;
+    var r=document.documentElement.style;
+    r.setProperty('--gsLeft',Math.round(Math.max(0,ar.left))+'px');
+    r.setProperty('--gsWidth',Math.round(ar.width||window.innerWidth)+'px');
+    r.setProperty('--gsMaxH',Math.max(260,Math.round(vh-Math.max(0,statusBottom)-6))+'px');
+  }
+
+  // ---- 열기·닫기: 키보드가 열려 있으면 먼저 닫고 메뉴 표시, 대화 스크롤 위치 보존 ----
+  var orig=window.guiinToggleChatOptions;
+  var saved=null,pending=null;
+  function msgs(){return document.getElementById('msgs');}
+  function keyboardOpen(){return document.activeElement===input||document.body.classList.contains('guiinAskKeyboardOpen');}
+  function doOpen(){
+    var m=msgs();saved=m?{top:m.scrollTop,bottom:m.scrollHeight-m.scrollTop-m.clientHeight<60}:null;
+    setView('home');
+    if(typeof orig==='function')orig(true);else panel.open=true;
+    place();requestAnimationFrame(place);
+    try{body.querySelector('.gsClose').focus({preventScroll:true});}catch(_e){}
+  }
+  var opener=null;
+  document.addEventListener('pointerdown',function(e){var b=e.target&&e.target.closest&&e.target.closest('#ask .guiinChatPlusBtn, #ask .guiinChatMoreBtn');if(b)opener=b;},true);
+  function doClose(){
+    clearTimeout(pending);pending=null;
+    var hadFocusInside=body.contains(document.activeElement);
+    if(typeof orig==='function')orig(false);else panel.open=false;
+    if(hadFocusInside&&opener){try{opener.focus({preventScroll:true});}catch(_e){}}
+    var m=msgs();
+    if(m&&saved){var sv=saved;requestAnimationFrame(function(){m.scrollTop=sv.bottom?m.scrollHeight:sv.top;});}
+    saved=null;
+  }
+  window.guiinToggleChatOptions=function(force){
+    var want=typeof force==='boolean'?force:!panel.open;
+    if(!want){if(panel.open||pending)doClose();return false;}
+    if(panel.open||pending)return false;
+    if(keyboardOpen()){
+      try{input.blur();}catch(_e){}
+      var t0=Date.now();
+      (function wait(){
+        if(!document.body.classList.contains('guiinAskKeyboardOpen')||Date.now()-t0>500){pending=null;doOpen();return;}
+        pending=setTimeout(wait,40);
+      })();
+      return false;
+    }
+    doOpen();return false;
+  };
+
+  // ---- 메뉴 안 동작 ----
+  body.addEventListener('click',function(e){
+    var t=e.target;if(!t||!t.closest)return;
+    var g=t.closest('.gsGrid [data-gs]');if(g){setView(g.getAttribute('data-gs'));return;}
+    var fv=t.closest('.gsHistTabs [data-gs-fav]');if(fv){var want=fv.getAttribute('data-gs-fav')==='1';if(want!==favOn()){try{guiinToggleFavoriteFilter();}catch(_e){}}syncHistTabs();return;}
+    var sb=t.closest('.gsSearchBtn');if(sb){var a2=document.getElementById('accountConsultMemory');var openS=!a2.classList.contains('gsSearchOpen');a2.classList.toggle('gsSearchOpen',openS);sb.setAttribute('aria-expanded',String(openS));if(openS){var si=document.getElementById('accountConsultSearch');si&&si.focus();}return;}
+    var c=t.closest('[data-gs-cat]');if(c){cat=c.getAttribute('data-gs-cat');renderEx();body.querySelector('.gsQList')&&(body.scrollTop=0);return;}
+    if(t.closest('.gsBack')){setView('home');return;}
+    if(t.closest('.gsClose')){window.guiinToggleChatOptions(false);return;}
+    var o=t.closest('[data-gs-open]');if(o){setView(o.getAttribute('data-gs-open'));return;}
+    var gl=t.closest('[data-gs-go]');if(gl){var dest=gl.getAttribute('data-gs-go');window.guiinToggleChatOptions(false);try{go(dest);}catch(_e){}return;}
+    if(t.closest('#gsStyleApply')){var sel=body.querySelector('.gsRadio input:checked');if(sel){try{guiinSetConsultStyle(sel.value);}catch(_e){}}window.guiinToggleChatOptions(false);return;}
+    if(t.closest('#gsNewStart')){try{(window.guiinStartNewConsultation||window.clearAIChat)();}catch(_e){}window.guiinToggleChatOptions(false);return;}
+    if(t.closest('#gsClearChat')){try{clearAIChat();}catch(_e){}window.guiinToggleChatOptions(false);return;}
+  });
+  // 어두운 바깥 부분(details 자신) 누르면 닫기
+  panel.addEventListener('click',function(e){if(e.target===panel){e.preventDefault();window.guiinToggleChatOptions(false);}});
+  // 추천 질문 선택: 기존 처리(입력창 채우기, 자동 전송 없음) 전에 메뉴부터 닫기
+  document.addEventListener('click',function(e){
+    if(panel.open&&e.target&&e.target.closest&&e.target.closest('#guiinChatOptions [data-ai-question]'))window.guiinToggleChatOptions(false);
+  },true);
+  // 상담 기록에서 이전 상담을 열면 메뉴 닫기(기존 열기 동작은 그대로)
+  document.addEventListener('click',function(e){
+    if(!panel.open||!e.target||!e.target.closest)return;
+    var row=e.target.closest('#accountConsultList [onclick*="guiinResumeConversation"], #accountConsultList .accountConsultOpen');
+    if(row)setTimeout(function(){window.guiinToggleChatOptions(false);},0);
+  });
+  if(input)input.addEventListener('focus',function(){if(panel.open)window.guiinToggleChatOptions(false);});
+  // 아래로 스와이프해서 닫기(머리줄에서, 또는 내용이 맨 위일 때)
+  (function(){
+    var y0=null,dy=0,fromHead=false;
+    body.addEventListener('touchstart',function(e){if(!panel.open||e.touches.length!==1)return;fromHead=!!(e.target.closest&&e.target.closest('.gsHead'));if(!fromHead&&body.scrollTop>0){y0=null;return;}y0=e.touches[0].clientY;dy=0;body.style.transition='none';},{passive:true});
+    body.addEventListener('touchmove',function(e){if(y0==null)return;dy=e.touches[0].clientY-y0;if(dy>0&&(fromHead||body.scrollTop<=0)){body.style.transform='translateY('+dy+'px)';}else{body.style.transform='';}},{passive:true});
+    function end(){if(y0==null)return;var d=dy;y0=null;body.style.transition='transform .18s ease-out';body.style.transform='';if(d>90)window.guiinToggleChatOptions(false);setTimeout(function(){body.style.transition='';},200);}
+    body.addEventListener('touchend',end);body.addEventListener('touchcancel',end);
+  })();
+  window.addEventListener('resize',place);
+  if(window.visualViewport)window.visualViewport.addEventListener('resize',place);
+  window.addEventListener('orientationchange',function(){setTimeout(place,300);});
 })();
 </script>
 <script id="GUIIN_STARTER_CHIPS_UI_ONLY">
