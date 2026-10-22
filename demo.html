@@ -52,7 +52,7 @@
 <script src="guiin-production-guard-v6.27.js?v=20261009-isolation"></script>
 <script src="member-data-v1.js?v=20261009-clover-context"></script>
 <script src="https://js.tosspayments.com/v2/standard"></script>
-<script defer src="toss-payment.js?v=20261009-recovery"></script>
+<script defer src="toss-payment.js?v=20261020-return"></script>
 <style>
 :root{
  --bg:#fffaf1;--paper:#fffefa;--ink:#203128;--sub:#7c837d;--line:#ece5d7;
@@ -1860,6 +1860,8 @@ body.guiinAskKeyboardOpen .bottom{display:none!important;}
 #ask #aiTopicBar b{font-size:11px!important;color:#3a6c51;white-space:nowrap;}
 #ask #aiTopicBar button{font-size:10px!important;min-height:23px!important;padding:3px 9px!important;border-radius:9px!important;}
 body:has(#ask.active)>.guiinDemoBadge{display:none!important;}
+#ask .gsGrid [data-gs="wallet"]{display:none!important;} /* DEMO: 결제 화면 없음 */
+#ask .guiinChatOptionsBody .guiinDemoFreeNotice{margin:10px 0 2px!important;}
 /* Position existing settings/details panel under the header, outside the chat scroll area. */
 #ask .guiinChatOptions{position:absolute!important;left:auto;right:8px;top:66px;width:0;height:0;
   z-index:80!important;border:0!important;margin:0!important;background:transparent!important;overflow:visible;}
@@ -1886,7 +1888,7 @@ body:has(#ask.active)>.guiinDemoBadge{display:none!important;}
   color:#253027!important;line-height:1.7!important;
 }
 #ask .msgs .bubble.bot::before{
-  content:'귀인사주 AI';left:-49px;top:-40px;width:180px;min-width:180px;height:38px;
+  content:'귀인이';left:-49px;top:-40px;width:180px;min-width:180px;height:38px;
   padding-left:42px;font-size:12px;font-weight:800;color:#203d2b;
   background:url('guiin-ai-profile.webp') left 0 center / 36px 36px no-repeat;
 }
@@ -2121,6 +2123,139 @@ body.guiinAskKeyboardOpen #ask.active{--guiin-chat-height:var(--guiinAskKeyboard
 #ask .composer textarea#askQ,body #ask .composer textarea#askQ{font-size:16px!important}
 @media (max-width:350px),(max-height:600px){body #ask .composer textarea#askQ{max-height:96px!important;overflow-y:auto!important}}
 </style>
+<style id="GUIIN_CHAT_GUIINI_V1">
+/* 귀인이 상담 화면(표시만): 상단 배지 줄 + 상담 기준 줄, 답변 말풍선 묶음, 입력 중 표시. 결제·차감·저장 로직과 무관 */
+#ask .topbar{margin-bottom:62px!important;}
+#ask .guiinChatHeaderCopy .brandline{letter-spacing:-.02em;}
+#ask .creditBar.guiinCreditBadges{position:absolute!important;top:54px!important;left:0!important;width:64%!important;height:34px!important;min-height:34px!important;margin:0!important;padding:0 4px 0 12px!important;box-sizing:border-box!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;background:#fffdfa!important;color:inherit!important;border:0!important;border-bottom:1px solid #ebe7df!important;border-radius:0!important;z-index:5!important;overflow:hidden;}
+#ask .guiinBadges{display:flex!important;align-items:center!important;gap:6px!important;flex-wrap:nowrap!important;min-width:0;}
+#ask .guiinBadge{display:inline-flex!important;align-items:center;gap:3px;height:25px;padding:0 10px;border-radius:999px;font-size:11.5px!important;font-weight:700;white-space:nowrap;line-height:1;}
+#ask .guiinBadge b{font-size:13px!important;font-weight:900;color:inherit!important;}
+#ask .guiinBadgeFree{background:#eef6ea;border:1px solid #d3e5cc;color:#25603f!important;}
+#ask .guiinBadgeClover{background:#fff6d6;border:1px solid #efdb9f;color:#6a5214!important;}
+#ask #aiTopicBar{top:54px!important;left:auto!important;right:0!important;width:36%!important;height:34px!important;min-height:34px!important;}
+#ask #askContextCard{position:absolute!important;top:88px!important;left:0!important;width:100%!important;height:28px!important;min-height:28px!important;margin:0!important;padding:2px 12px!important;z-index:5!important;}
+#ask #askContextCard>div span{display:none!important;}
+@media(max-width:390px){#ask .creditBar.guiinCreditBadges{padding-left:10px!important;width:66%!important}#ask #aiTopicBar{width:34%!important}#ask .guiinBadge{padding:0 8px;font-size:11px!important}}
+#ask .guiinIntroShort{display:none}
+@media(max-width:385px){#ask .guiinIntroFull{display:none}#ask .guiinIntroShort{display:inline}}
+@media(max-width:350px){#ask .guiinBadge{padding:0 6px;font-size:10.5px!important}#ask .guiinBadgeClover>span[aria-hidden]{display:none}}
+@media(max-height:480px) and (orientation:landscape){#ask .topbar{margin-bottom:24px!important}#ask #askContextCard{display:none!important}}
+/* 답변 묶음: 첫 말풍선만 이름·프로필, 이어지는 말풍선은 바로 아래 붙여서 */
+#ask .msgs .bubble.bot.guiinCont{margin-top:6px!important;}
+#ask .msgs .bubble.bot.guiinCont .guiinPara:first-child{font-weight:inherit!important;color:inherit!important;}
+#ask .msgs .bubble.bot.guiinCont::after{content:none!important;display:none!important;}
+#ask .msgs .guiinPendingBubble{display:none!important;}
+#ask .msgs.guiinRevealing .followupBox{display:none!important;}
+#ask .msgs .guiinTyping{display:flex;align-items:center;gap:4px;width:max-content;margin:6px 0 4px 45px;padding:10px 14px;border-radius:18px;background:#fff;border:1px solid #f0ebe2;color:#6f7d73;font-size:12px;}
+#ask .msgs .guiinTyping span{width:6px;height:6px;border-radius:50%;background:#9fb6a6;animation:guiinTypingDot 1.1s infinite ease-in-out;}
+#ask .msgs .guiinTyping span:nth-child(2){animation-delay:.15s}#ask .msgs .guiinTyping span:nth-child(3){animation-delay:.3s}
+#ask .msgs .guiinTyping em{font-style:normal;margin-left:4px;}
+@keyframes guiinTypingDot{0%,80%,100%{opacity:.35;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+#ask .msgs .guiinRevealSkip{display:block;margin:2px 0 8px 45px;padding:5px 11px;border:1px solid #d8e5d9;border-radius:999px;background:#f6fbf7;color:#2b6a50;font-size:11.5px;font-weight:700;cursor:pointer;}
+@media (prefers-reduced-motion: reduce){#ask .msgs .guiinTyping span{animation:none}}
+/* 이용권 화면: 클로버 연결 안내 */
+#wallet .storeWish .guiinCloverLink{display:block;margin-top:6px;font-size:12px;color:#6a5214;}
+/* ===== 귀인이 + 메뉴: 아래에서 올라오는 간단한 메뉴(표시만). 기존 상담 설정 요소·ID·함수는 그대로 두고 배치만 바꿈 ===== */
+#ask .guiinChatOptions[open]::before{content:'';position:fixed;inset:0;background:rgba(28,40,32,.38);z-index:-1;animation:gsFade .18s ease-out;}
+#ask .guiinChatOptions[open] .guiinChatOptionsBody{
+  position:fixed!important;top:auto!important;right:auto!important;bottom:0!important;
+  left:var(--gsLeft,0px)!important;width:var(--gsWidth,100vw)!important;
+  max-height:var(--gsMaxH,80dvh)!important;box-sizing:border-box!important;overflow-y:auto!important;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+  padding:0 14px calc(16px + env(safe-area-inset-bottom))!important;border-radius:24px 24px 0 0!important;background:#fffdfa!important;border:0!important;
+  box-shadow:0 -8px 32px rgba(31,52,39,.20)!important;animation:gsUp .22s ease-out;}
+@keyframes gsUp{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+@keyframes gsFade{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion: reduce){#ask .guiinChatOptions[open] .guiinChatOptionsBody,#ask .guiinChatOptions[open]::before{animation:none}}
+#ask .guiinChatOptionsBody .gsHead{position:sticky;top:0;z-index:3;display:grid;grid-template-columns:38px 1fr 38px;align-items:center;margin:0 -14px 8px;padding:20px 12px 8px;background:#fffdfa;}
+#ask .guiinChatOptionsBody .gsHead::before{content:'';position:absolute;top:8px;left:50%;width:40px;height:4px;margin-left:-20px;border-radius:4px;background:#ddd8cc;}
+#ask .guiinChatOptionsBody .gsHead b{text-align:center;font-size:17px;font-weight:800;color:#1d2a22;letter-spacing:-.02em;}
+#ask .gsHead button{width:36px;height:36px;border:0;border-radius:50%;background:transparent;color:#2b3a30;font-size:26px;line-height:1;display:grid;place-items:center;cursor:pointer;padding:0;}
+#ask .guiinChatOptionsBody[data-gs-view="home"] .gsBack{visibility:hidden;}
+#ask .gsGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;padding:2px 0 4px;}
+#ask .gsGrid button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:112px;padding:12px 4px;border:1px solid #efe9dc;border-radius:18px;background:#fbf9f3;color:#1f2a23;cursor:pointer;touch-action:manipulation;}
+#ask .gsGrid button:active{background:#f1f6ef;}
+#ask .gsGrid .gsIco{width:40px;height:40px;display:grid;place-items:center;margin-bottom:2px;}
+#ask .gsGrid .gsIco svg{width:34px;height:34px;}
+#ask .gsGrid .gsName{font-size:14px;font-weight:800;letter-spacing:-.02em;}
+#ask .gsGrid .gsSub{font-size:11px;color:#7d867f;letter-spacing:-.02em;}
+#ask .gsTip{display:flex;gap:10px;align-items:flex-start;margin:12px 0 2px;padding:12px 14px;border-radius:16px;background:#f2f7ef;color:#3d4f43;font-size:12.5px;line-height:1.55;}
+#ask .gsTip i{font-style:normal;font-size:18px;line-height:1.2;}
+/* 보기 전환 */
+#ask .guiinChatOptionsBody[data-gs-view] > :not(.gsHead):not([data-gs-pane]){display:none!important;}
+#ask .guiinChatOptionsBody[data-gs-view] > [data-gs-pane]{display:none!important;}
+#ask .guiinChatOptionsBody[data-gs-view="home"] > [data-gs-pane~="home"],
+#ask .guiinChatOptionsBody[data-gs-view="examples"] > [data-gs-pane~="examples"],
+#ask .guiinChatOptionsBody[data-gs-view="history"] > [data-gs-pane~="history"]:not([hidden]),
+#ask .guiinChatOptionsBody[data-gs-view="style"] > [data-gs-pane~="style"],
+#ask .guiinChatOptionsBody[data-gs-view="new"] > [data-gs-pane~="new"],
+#ask .guiinChatOptionsBody[data-gs-view="wallet"] > [data-gs-pane~="wallet"],
+#ask .guiinChatOptionsBody[data-gs-view="guide"] > [data-gs-pane~="guide"]{display:block!important;}
+#ask .guiinChatOptionsBody[data-gs-view="home"] > .gsGrid{display:grid!important;}
+#ask .guiinChatOptionsBody[data-gs-view="home"] > .gsTip{display:flex!important;}
+/* 질문 추천 */
+#ask .gsTabs{display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none;}
+#ask .gsTabs::-webkit-scrollbar{display:none}
+#ask .gsTabs button{flex:0 0 auto;height:34px;padding:0 14px;border-radius:999px;border:0;background:#f2efe7;color:#4b544e;font-size:12.5px;font-weight:700;cursor:pointer;}
+#ask .gsTabs button.on{background:#245c45;color:#fff;}
+#ask .gsQList{display:flex;flex-direction:column;gap:7px;}
+#ask .gsQList button{display:flex;align-items:center;gap:10px;width:100%;min-height:48px;padding:10px 12px;border:1px solid #eee8dc;border-radius:14px;background:#fff;color:#1f2a23;text-align:left;font-size:13.5px;line-height:1.45;cursor:pointer;}
+#ask .gsQList button .n{flex:0 0 24px;height:24px;border-radius:50%;background:#f2efe7;color:#6b746d;font-size:11px;font-weight:800;display:grid;place-items:center;}
+#ask .gsQList button .t{flex:1;min-width:0;}
+#ask .gsQList button .t small{display:block;font-size:11px;color:#8a928b;font-weight:700;margin-bottom:1px;}
+#ask .gsQList button::after{content:'›';flex:0 0 auto;font-size:20px;color:#9aa19b;}
+#ask .gsHint{margin-top:10px;font-size:11.5px;color:#7d867f;line-height:1.5;}
+/* 상담 말투 */
+#ask .gsRadio{display:flex;flex-direction:column;gap:8px;}
+#ask .gsRadio label{display:flex;align-items:center;gap:12px;padding:13px 14px;border:1px solid #eee8dc;border-radius:16px;background:#fff;cursor:pointer;}
+#ask .gsRadio input{width:20px;height:20px;accent-color:#245c45;flex:0 0 20px;margin:0;}
+#ask .gsRadio b{display:block;font-size:14px;color:#1f2a23;}
+#ask .gsRadio span{display:block;font-size:12px;color:#7d867f;margin-top:2px;}
+#ask .gsRadio label:has(input:checked){border-color:#9cc3ad;background:#f4faf6;}
+#ask .gsBtn{display:block;width:100%;min-height:48px;margin-top:12px;border:0;border-radius:16px;background:#245c45;color:#fff;font-size:15px;font-weight:800;cursor:pointer;}
+#ask .gsBtn.ghost{background:#fff;color:#27654b;border:1px solid #d8e2d2;}
+/* 상담 기록(기존 요소 재사용) */
+#ask .guiinChatOptionsBody #accountConsultMemory{border:0!important;box-shadow:none!important;padding:0!important;background:transparent!important;}
+#ask .guiinChatOptionsBody #accountConsultMemory .accountConsultHead span{font-size:12px;}
+/* 안내 카드·접이식 */
+#ask .gsNote{padding:16px 14px;border-radius:18px;background:#f7f5ef;font-size:13px;line-height:1.65;color:#4e5a52;text-align:center;}
+#ask .gsNote b{display:block;font-size:15px;color:#1f5a43;margin-bottom:6px;}
+#ask .gsNote .gsBal{margin-top:8px;font-weight:800;color:#2b4a39;}
+#ask .gsAcc details{border:1px solid #eee8dc;border-radius:14px;background:#fff;margin-bottom:7px;}
+#ask .gsAcc summary{list-style:none;display:flex;justify-content:space-between;align-items:center;padding:13px 14px;font-size:14px;font-weight:700;color:#1f2a23;cursor:pointer;}
+#ask .gsAcc summary::-webkit-details-marker{display:none}
+#ask .gsAcc summary::after{content:'›';font-size:20px;color:#9aa19b;transition:transform .15s;}
+#ask .gsAcc details[open] summary::after{transform:rotate(90deg);}
+#ask .gsAcc details p{margin:0;padding:0 14px 14px;font-size:12.8px;line-height:1.7;color:#4e5a52;}
+#ask .gsAcc details .gsBtn{margin:0 14px 14px;width:calc(100% - 28px);}
+#ask .gsGrid button{min-height:96px;gap:8px;background:#faf7f0;}
+#ask .gsGrid .gsIco svg{width:32px;height:32px;}
+/* 상담 기록: 전체/즐겨찾기 탭 + 검색 아이콘. 기존 목록·즐겨찾기·삭제 기능 그대로 */
+#ask .gsHistTabs{display:flex;gap:8px;align-items:center;margin:2px 0 10px;}
+#ask .gsSeg{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+#ask .gsSeg button{height:40px;border-radius:999px;border:0;background:#f2efe7;color:#4b544e;font-size:13.5px;font-weight:700;cursor:pointer;}
+#ask .gsSeg button.on{background:#245c45;color:#fff;}
+#ask .gsSearchBtn{width:40px;height:40px;flex:0 0 40px;border-radius:50%;border:1px solid #e3e0d6;background:#fff;color:#2b3a30;display:grid;place-items:center;cursor:pointer;padding:0;}
+#ask .guiinChatOptionsBody #accountConsultMemory .accountConsultHead{display:none!important;}
+#ask .guiinChatOptionsBody #accountConsultMemory #accountConsultFavOnly{display:none!important;}
+#ask .guiinChatOptionsBody #accountConsultMemory .accountConsultToolbar{display:none;margin:0 0 10px;}
+#ask .guiinChatOptionsBody #accountConsultMemory.gsSearchOpen .accountConsultToolbar{display:flex;}
+#ask .guiinChatOptionsBody #accountConsultSearch{font-size:16px!important;padding:10px 12px!important;border-radius:14px!important;}
+#ask .guiinChatOptionsBody .accountConsultList{gap:8px!important;margin-top:0!important;}
+#ask .guiinChatOptionsBody .accountConsultItem{position:relative;min-height:62px;padding:11px 12px 11px 54px!important;border-radius:16px!important;}
+#ask .guiinChatOptionsBody .accountConsultItem::before{content:'';position:absolute;left:12px;top:50%;width:32px;height:32px;margin-top:-16px;border-radius:50%;background:#eef5ef url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232f6a50' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M20 11.5c0 4-3.6 7-8 7-1 0-1.9-.2-2.8-.5L5 19l1.2-3.3C5.4 14.5 4 13.1 4 11.5c0-4 3.6-7 8-7s8 3 8 7z'/%3E%3Cpath d='M9 11.5h.01M12 11.5h.01M15 11.5h.01'/%3E%3C/svg%3E") center/18px no-repeat;}
+#ask .guiinChatOptionsBody .accountConsultItem b{font-size:14px!important;color:#1f2a23!important;}
+#ask .guiinChatOptionsBody .accountConsultItem span{font-size:12px!important;}
+#ask .guiinChatOptionsBody .accountConsultActions button{min-height:40px;font-size:13px;}
+#ask .guiinChatOptionsBody .accountConsultActions button.fav{color:#e5a514;}
+#ask .guiinChatOptionsBody .accountConsultEmpty{padding:18px 6px!important;text-align:center;font-size:13px!important;color:#7d867f!important;}
+/* 메뉴가 열린 동안: iOS Safari에서 상담 화면(#ask) 테두리에 메뉴가 잘리거나 하단 탭 아래로 깔리지 않게, 페이지 스크롤도 잠금 */
+body.gsMenuOpen #ask.active{overflow:visible!important;z-index:60!important;}
+html.gsMenuOpen,body.gsMenuOpen{overflow:hidden!important;overscroll-behavior:none!important;}
+#ask .guiinChatOptions[open]::before{touch-action:none;}
+#ask .guiinChatOptionsBody .gsHead button:focus-visible,#ask .gsGrid button:focus-visible,#ask .gsQList button:focus-visible{outline:2px solid #3d9e73;outline-offset:2px;}
+
+</style>
 </head>
 <body><div class="guiinDemoBadge">DEMO · 전체풀이 무료</div>
 <div class="app">
@@ -2168,16 +2303,26 @@ body.guiinAskKeyboardOpen #ask.active{--guiin-chat-height:var(--guiinAskKeyboard
   </div>
 
 
-  <section class="homeProductReview" aria-labelledby="homeProductReviewTitle">
+  <section class="homeProductReview duo" aria-labelledby="homeProductReviewTitle">
     <div class="mini">홈페이지 판매 상품</div>
-    <div class="productReviewTop">
-      <div class="productReviewArt"><img loading="lazy" decoding="async" src="guiin-saju-cat.webp" alt="프리미엄 평생사주 상품 이미지"></div>
-      <div><h3 id="homeProductReviewTitle">프리미엄 평생사주</h3><p style="margin:4px 0 0;color:#7b817b;font-size:9px">내 명식 기준 심층 사주 리포트</p></div>
-      <strong class="productPrice">5,900원</strong>
+    <div class="homeDuoGrid">
+      <article class="homeDuoCard" aria-labelledby="homeProductReviewTitle">
+        <div class="homeDuoArt"><img loading="lazy" decoding="async" src="guiin-saju-cat.webp" alt="프리미엄 평생사주 상품 이미지"></div>
+        <h3 id="homeProductReviewTitle">프리미엄 평생사주</h3>
+        <p>나의 성격·직업·재물·연애·대운까지</p>
+        <strong class="productPrice">5,900원</strong>
+        <button type="button" class="homeDuoBtn" onclick="guiinPaymentCenterStart('LIFETIME_SAJU')">평생사주 보기 ›</button>
+      </article>
+      <article class="homeDuoCard" aria-labelledby="homeProductCompatTitle">
+        <div class="homeDuoArt"><img loading="lazy" decoding="async" src="guiin-compat-friends.webp" alt="프리미엄 궁합 상품 이미지"></div>
+        <h3 id="homeProductCompatTitle">프리미엄 궁합</h3>
+        <p>두 사람의 성향·인연·관계까지</p>
+        <strong class="productPrice">7,900원</strong>
+        <button type="button" class="homeDuoBtn" onclick="guiinPaymentCenterStart('PREMIUM_COMPAT')">궁합 보기 ›</button>
+      </article>
     </div>
-    <p class="productReviewDesc">성격·직업·재물·연애·신살·귀인·대운과 세운을 내 실제 입력값으로 계산해 결제 승인 후 바로 열람하는 디지털 서비스예요.</p>
     <div class="productReviewMeta"><b>제공 시점</b> 결제 승인 및 서버 검증 후 즉시 제공 · <b>이용기간</b> 결제 후 열람 · <b>환불</b> 제공 시작 전 7일 이내 가능, 제공 시작 후에는 환불정책 기준 적용</div>
-    <div class="productReviewAction"><button type="button" onclick="go('paymentInfo')" data-guiin-nav="paymentInfo">상품·결제 안내 보기 ›</button></div>
+    <div class="productReviewAction"><button type="button" onclick="go('paymentInfo')" data-guiin-nav="paymentInfo">상품·이용권 안내 전체 보기 ›</button></div>
   </section>
 
   <div style="margin:14px 0 2px;padding:14px 12px;border-top:1px solid #ece5d7;text-align:center;font-size:8.7px;line-height:1.75;color:#8b8f8c;">
@@ -2216,12 +2361,13 @@ body.guiinAskKeyboardOpen #ask.active{--guiin-chat-height:var(--guiinAskKeyboard
     <label>성별</label><div class="seg" id="genderSeg"><button class="on" data-v="여">여성</button><button data-v="남">남성</button></div>
     <label>생년월일</label><div class="seg" id="calendarSeg"><button class="on" data-v="양력">양력</button><button data-v="음력">음력</button></div>
     <div id="leapRow" class="hidden"><label class="check"><input id="leapMonth" type="checkbox">윤달</label></div>
-    <div class="row3" style="margin-top:7px"><input id="year" type="number" min="1900" max="2100" inputmode="numeric" placeholder="1991"><input id="month" type="number" min="1" max="12" inputmode="numeric" placeholder="11"><input id="day" type="number" min="1" max="31" inputmode="numeric" placeholder="23"></div>
-    <label>출생 시간</label><div class="row2"><input id="hour" type="number" min="0" max="23" inputmode="numeric" placeholder="07"><input id="minute" type="number" min="0" max="59" inputmode="numeric" placeholder="40"></div>
+    <div class="row3" style="margin-top:7px"><input id="year" type="number" min="1900" max="2100" inputmode="numeric" placeholder="년"><input id="month" type="number" min="1" max="12" inputmode="numeric" placeholder="월"><input id="day" type="number" min="1" max="31" inputmode="numeric" placeholder="일"></div>
+    <label>출생 시간</label><div class="row2"><input id="hour" type="number" min="0" max="23" inputmode="numeric" placeholder="시"><input id="minute" type="number" min="0" max="59" inputmode="numeric" placeholder="분"></div>
     <label class="check"><input id="hourUnknown" type="checkbox">출생시간을 모릅니다.</label>
     <div class="help">출생시간을 정확히 모르더라도 기본 분석은 가능합니다.</div><div class="mobileHint">시간을 모르면 ‘출생시간을 모릅니다’를 체크하세요. 임의의 시간을 넣는 것보다 정확합니다.</div>
     <label>계산 기준</label><div class="locationRow guiinLocationFixed" role="note"><span>한국 표준시(KST) 기준으로 계산해요 · 출생지 보정은 적용하지 않아요</span></div>
     <div class="hidden"><select id="dayBoundaryMode"><option value="23" selected>23</option></select><input id="applyTrueSolar" type="checkbox"><input id="birthLongitudeApply" value="126.98"></div>
+    <div id="sajuFormMsg" class="formMsg error" role="alert" aria-live="polite"></div>
     <button class="ctaGold" onclick="submitSaju()">사주 조회하기 ›</button>
   </div>
   <div class="slogan card"><b>좋은 선택이, 더 나은 내일을 만듭니다.</b><br>귀인사주가 함께할게요.</div>
@@ -2388,7 +2534,7 @@ body.guiinAskKeyboardOpen #ask.active{--guiin-chat-height:var(--guiinAskKeyboard
 <section id="ask" class="screen">
   <div class="topbar">
     <button class="ghost" onclick="go('home')" aria-label="뒤로" data-guiin-nav="home">‹</button>
-    <div class="brand guiinChatIdentity"><img class="guiinChatHeaderAvatar" src="guiin-ai-profile.webp" alt="" aria-hidden="true"><div class="guiinChatHeaderCopy"><div class="brandline">귀인사주 AI <span class="guiinChatOnline" aria-label="상담 가능"></span></div><small>지금, 당신의 사주를 함께 봐요</small></div></div>
+    <div class="brand guiinChatIdentity"><img class="guiinChatHeaderAvatar" src="guiin-ai-profile.webp" alt="" aria-hidden="true"><div class="guiinChatHeaderCopy"><div class="brandline">귀인이 <span class="guiinChatOnline" aria-label="상담 가능"></span></div><small><span class="guiinIntroFull">네 사주를 함께 읽어주는 AI 친구</span><span class="guiinIntroShort">사주를 함께 읽는 AI 친구</span></small></div></div>
     <button class="ghost guiinChatMoreBtn" type="button" aria-label="상담 기록과 설정 열기" aria-expanded="false" aria-controls="guiinChatOptions" onclick="guiinToggleChatOptions()">···</button>
   </div>
   <div id="askContextCard" class="askContext card">
@@ -2399,7 +2545,7 @@ body.guiinAskKeyboardOpen #ask.active{--guiin-chat-height:var(--guiinAskKeyboard
     </div>
     <button type="button" onclick="go('saju')" data-guiin-nav="saju">변경</button>
   </div>
-<div class="creditBar"><div><div style="font-size:12px;opacity:.85">무료 상담</div><b id="freeRemainView">3</b><span style="font-size:13px">회 남음</span><div style="font-size:11px;opacity:.82;margin-top:3px"><span class="walletRemainLabel">유료 이용권 <span id="coinView">0</span>회</span></div></div><button class="ctaGold" style="width:auto;margin:0;padding:10px 14px" onclick="go('wallet')" data-guiin-nav="wallet">이용권 구매</button></div>
+<div class="creditBar guiinCreditBadges"><div class="guiinBadges" aria-label="남은 상담 횟수"><span class="guiinBadge guiinBadgeFree">무료 <b id="freeRemainView">–</b>회</span><span class="guiinBadge guiinBadgeClover"><span aria-hidden="true">🍀</span>클로버 <b id="coinView">–</b>개</span></div><button class="ctaGold" style="width:auto;margin:0;padding:10px 14px" onclick="go('wallet')" data-guiin-nav="wallet">이용권 구매</button></div>
 
   <details class="guiinChatOptions" id="guiinChatOptions">
     <summary>상담 기록 · 설정 · 질문 예시 <span aria-hidden="true">⌄</span></summary>
@@ -2422,7 +2568,7 @@ body.guiinAskKeyboardOpen #ask.active{--guiin-chat-height:var(--guiinAskKeyboard
     <div id="accountConsultList" class="accountConsultList"><div class="accountConsultEmpty">상담 기록을 불러오는 중이에요…</div></div>
   </div>
   <div id="consultStyleBox" class="consultStyleBox card"><b>상담 말투</b><div id="consultStyleChips" class="consultStyleChips"><button type="button" data-style="balanced" onclick="guiinSetConsultStyle('balanced')">균형 있게</button><button type="button" data-style="fact" onclick="guiinSetConsultStyle('fact')">팩트 중심</button><button type="button" data-style="warm" onclick="guiinSetConsultStyle('warm')">부드럽게</button><button type="button" data-style="brief" onclick="guiinSetConsultStyle('brief')">핵심만</button><button type="button" data-style="deep" onclick="guiinSetConsultStyle('deep')">깊게</button></div><div class="consultStyleHint">어떤 모드를 골라도 사주 풀이는 자연스러운 반말로 해. 선택한 상담 안에서는 말투를 이어서 기억해.</div></div>
-  <div class="guiinDemoFreeNotice">데모에서는 평생사주·궁합·대운 심층 풀이를 결제 없이 전체 확인할 수 있어요. AI 사주상담은 무료 3회까지 제공됩니다.</div>  <div class="askTools">
+  <div class="guiinDemoFreeNotice" data-gs-pane="home guide">데모에서는 평생사주·궁합·대운 심층 풀이를 결제 없이 전체 확인할 수 있어요. AI 사주상담은 무료 3회까지 제공됩니다.</div>  <div class="askTools">
     <p class="adminNote">처음 3회는 무료예요. 답변 실패 시 무료 횟수나 이용권은 차감되지 않습니다. AI 사주상담 질문 패키지는 3회, 6회, 9회, 18회 단위로 구매할 수 있고 구매일로부터 30일간 사용할 수 있어요. 로그인하면 상담 기록이 계정에 저장되어 다른 기기에서도 이어볼 수 있어요. 로그아웃 상태에서는 기기 내 기록과 게스트 세션을 사용하며, 답변 생성에 필요한 대화 맥락이 서버로 전송될 수 있어요.</p>
     <button type="button" onclick="clearAIChat()">대화 지우기</button>
   </div>
@@ -2464,7 +2610,7 @@ body.guiinAskKeyboardOpen #ask.active{--guiin-chat-height:var(--guiinAskKeyboard
   <div class="cloverStore">
     <div class="pageIllustration"><img loading="lazy" decoding="async" src="guiin-home-friends.webp" alt="AI 사주 분석 질문 이용권 일러스트"></div>
     <div class="storeIntro card"><h2>AI 사주상담 질문 패키지</h2><p>구매한 상품에 표시된 총 질문 횟수만큼 이용하는 디지털 서비스예요. 구매일로부터 30일간 사용할 수 있습니다.</p><p id="aiPassExpiryView" style="display:none;margin-top:7px;font-weight:800"></p></div>
-    <div class="storeWish card"><b>좋은 인연, 좋은 하루가 당신 곁에 늘 함께하길 ♡</b><span>질문 1회는 AI 사주상담 질문 1회 이용을 뜻해요.</span></div>
+    <div class="storeWish card"><b>좋은 인연, 좋은 하루가 당신 곁에 늘 함께하길 ♡</b><span>질문 1회는 AI 사주상담 질문 1회 이용을 뜻해요.</span><span class="guiinCloverLink">구매한 질문 이용권은 상담 화면에서 클로버로 표시돼요. (질문 1회 = 클로버 1개)</span></div>
     <div class="luckyPack card"><div class="packClover">3회</div><div class="packBody"><h3>AI 사주상담 질문 3회 패키지</h3><b>총 3회 이용</b><p>처음 이용해보기 좋은 구매 후 30일간 사용하는 고정 질문 패키지예요.</p></div><div class="packBuy"><strong>1,100원</strong><small>총 3회</small><button onclick="openPaySheet(3,1100)">구매하기 ›</button></div></div>
     <div class="luckyPack card"><div class="packClover">총 6회</div><div class="packBody"><h3>AI 사주상담 질문 6회 패키지</h3><b>기본 5회 + 추가 1회 제공</b><p>결제 승인 후 총 6회의 질문이 한 번에 제공되며 구매 후 30일간 사용할 수 있어요.</p></div><div class="packBuy"><strong>1,990원</strong><small>총 6회</small><button onclick="openPaySheet(6,1990)">구매하기 ›</button></div></div>
     <div class="luckyPack card"><div class="packClover">총 9회</div><div class="packBody"><h3>AI 사주상담 질문 9회 패키지</h3><b>기본 8회 + 추가 1회 제공</b><p>결제 승인 후 총 9회의 질문이 한 번에 제공되며 구매 후 30일간 사용할 수 있어요.</p></div><div class="packBuy"><strong>2,790원</strong><small>총 9회</small><button onclick="openPaySheet(9,2790)">구매하기 ›</button></div></div>
@@ -2569,16 +2715,7 @@ body.guiinAskKeyboardOpen #ask.active{--guiin-chat-height:var(--guiinAskKeyboard
 <section id="coupons" class="screen"><div class="topbar"><button class="ghost" onclick="go('mypage')" data-guiin-nav="mypage">‹</button><div class="brand"><div class="brandline">쿠폰함</div></div><span></span></div><div class="pagePad"><div class="card utilityCard"><h3>쿠폰 · 혜택</h3><p>현재 발급된 쿠폰은 없습니다.</p><div class="trustBox">쿠폰이 발급되면 사용 가능 여부와 최종 결제금액을 결제 단계에서 확인할 수 있습니다.</div></div></div></section>
 <section id="customer" class="screen"><div class="topbar"><button class="ghost" onclick="go('mypage')" data-guiin-nav="mypage">‹</button><div class="brand"><div class="brandline">고객센터 · FAQ</div></div><span></span></div><div class="pagePad"><div class="card utilityCard"><h3>무엇을 도와드릴까요?</h3><p><b>전화 상담은 제공하지 않습니다.</b><br>결제·이용·환불·사주 결과 관련 문의는 문의게시판을 이용해 주세요.<br>고객센터 대표번호 0507-1464-3343은 사업자 연락처로 안내됩니다.</p><button class="kakaoSupport" onclick="openCustomerCenter()">문의게시판 이용하기 ›</button><button class="softBtn" onclick="window.open('http://pf.kakao.com/_TLTrX','_blank','noopener')">카카오톡 채널 문의 ›</button><div class="faq"><details><summary>결제했는데 내용이 열리지 않아요</summary><p>결제 승인 후에도 구매한 내용이 열리지 않으면 결제 내역을 다시 확인한 뒤 고객센터로 문의해 주세요.</p></details><details><summary>출생시간을 모르면 어떻게 하나요?</summary><p>시주 관련 해석의 강도를 낮추고, 출생시간 없이 확인 가능한 부분과 구분해서 설명합니다.</p></details><details><summary>신살이 많으면 안 좋은 사주인가요?</summary><p>아니요. 신살은 보조 정보입니다. 귀인사주는 신살 하나로 사건을 단정하지 않고 원국·오행·십신·대운과 함께 읽습니다.</p></details><details><summary>AI는 무엇을 기준으로 답하나요?</summary><p>귀인사주 엔진이 계산한 명식을 그대로 Worker에 전달하고, AI가 명식을 임의로 다시 계산하지 않도록 구성되어 있습니다.</p></details></div></div></div></section>
 <section id="appinfo" class="screen"><div class="topbar"><button class="ghost" onclick="go('mypage')" data-guiin-nav="mypage">‹</button><div class="brand"><div class="brandline">서비스 정보</div></div><span></span></div><div class="pagePad"><div class="card utilityCard"><h3>☘ 귀인사주</h3><p>좋은 인연이, 좋은 운을 만듭니다.</p><div class="paidDisclaimer"><b>사업자 정보</b><br>상호: 귀인사주 · 대표자: 강진아<br>사업자등록번호: 584-69-00863<br>통신판매업 신고번호: 제 2026-서울중랑-1239 호<br>사업장 주소: 서울특별시 중랑구 용마산로139나길 23<br>고객센터 0507-1464-3343<br>이메일 blue_wls@naver.com<br>호스팅 서비스 제공자 Cloudflare, Inc.<br><a href="company.html" target="_blank" rel="noopener">회사소개·사업자정보</a><br><a href="inquiry.html" target="_blank" rel="noopener">문의게시판</a><br><a href="http://pf.kakao.com/_TLTrX" target="_blank" rel="noopener">카카오톡 채널 문의</a></div><div class="infoRows"><div><span>평생사주</span><b>5,900원</b></div><div><span>프리미엄 궁합</span><b>7,900원</b></div><div><span>AI 상담</span><b>처음 3회 무료</b></div><div><span>AI 사주 분석 질문 이용권</span><b>3회 1,100원부터</b></div></div><button class="softBtn" onclick="go('paymentInfo')" data-guiin-nav="paymentInfo">결제·상품 안내 ›</button><button class="softBtn" onclick="go('terms')" data-guiin-nav="terms">이용약관 ›</button><button class="softBtn" onclick="go('privacy')" data-guiin-nav="privacy">개인정보처리방침 ›</button><button class="softBtn" onclick="go('refund')" data-guiin-nav="refund">환불정책 ›</button></div></div></section>
-<section id="paymentInfo" class="screen"><div class="topbar"><button class="ghost" onclick="go('appinfo')" data-guiin-nav="appinfo">‹</button><div class="brand"><div class="brandline">결제·상품 안내</div></div><span></span></div><div class="pagePad"><div class="card utilityCard"><h3>유료 상품</h3><p>상품을 먼저 조회한 뒤 결제할 수 있어요. 결제 전 가격·제공 내용을 다시 확인합니다.</p><div class="paymentInfoGrid"><div class="paymentInfoRow"><span>프리미엄 평생사주<br>심층 평생사주 전체 열람</span><b>5,900원</b></div><div class="paymentInfoRow"><span>프리미엄 궁합<br>두 사람의 심층 궁합 전체 열람</span><b>7,900원</b></div><div class="paymentInfoRow"><span>AI 사주상담 질문 3회 패키지<br>총 3회 이용</span><b>1,100원</b></div><div class="paymentInfoRow"><span>AI 사주상담 질문 6회 패키지<br>기본 5회 + 추가 1회, 총 6회</span><b>1,990원</b></div><div class="paymentInfoRow"><span>AI 사주상담 질문 9회 패키지<br>기본 8회 + 추가 1회, 총 9회</span><b>2,790원</b></div><div class="paymentInfoRow"><span>AI 사주상담 질문 18회 패키지<br>기본 13회 + 추가 5회, 총 18회</span><b>4,990원</b></div></div>
-<div class="trustBox" style="margin-top:12px"><b>프리미엄 평생사주 · 5,900원</b><br>결제 승인 후 즉시 개인 명식을 기준으로 심층 리포트를 생성·열람합니다. 결제 전 실제 명식 미리보기를 확인할 수 있으며, 콘텐츠 제공이 시작되면 청약철회가 제한될 수 있습니다.</div>
-<button class="softBtn" onclick="openResultTab('summary')">사주 조회하기 ›</button>
-<button class="ctaGold" onclick="guiinPaymentCenterStart('LIFETIME_SAJU')">프리미엄 평생사주 5,900원 결제하기 ›</button>
-<div class="trustBox" style="margin-top:12px"><b>프리미엄 궁합 · 7,900원</b><br>결제 승인 후 즉시 두 사람의 입력값을 기준으로 심층 궁합 리포트를 생성·열람합니다. 결제 전 실제 두 사람의 일부 미리보기를 확인할 수 있으며, 콘텐츠 제공이 시작되면 청약철회가 제한될 수 있습니다.</div>
-<button class="softBtn" onclick="go('match')" data-guiin-nav="match">궁합 조회하기 ›</button>
-<button class="ctaGold" onclick="guiinPaymentCenterStart('PREMIUM_COMPAT')">프리미엄 궁합 7,900원 결제하기 ›</button>
-<div class="trustBox" style="margin-top:12px"><b>AI 사주상담 질문 패키지</b><br>각 상품에 표시된 총 질문 횟수를 구매 후 30일간 사용하는 디지털 서비스입니다. 충전금·사이버머니가 아니며 현금 전환·양도·선물·다른 상품 결제에 사용할 수 없습니다. 미사용·일부 사용 환불 기준은 환불정책에서 확인할 수 있습니다.</div>
-<button class="softBtn" onclick="go('wallet')" data-guiin-nav="wallet">AI 사주상담 질문 패키지 보기 ›</button>
-<div id="paymentInfoStatus" class="paymentInfoStatus">토스페이먼츠 일반결제로 전환 준비 중입니다. 상품 조회와 결제 버튼은 정상 노출됩니다.</div><div class="paidDisclaimer"><b>제공 시점</b><br>결제 승인과 서버 검증이 완료된 시점에 구매한 콘텐츠 권한 또는 AI 사주 분석 질문 이용횟수가 계정에 반영됩니다.<br><br><b>결제대행</b><br>토스페이먼츠 일반결제로 전환 중이며, 토스페이먼츠 API 키 및 서버 승인 API 연결 후 실제 결제를 활성화합니다.</div><button class="softBtn" onclick="go('refund')" data-guiin-nav="refund">환불정책 확인 ›</button><button class="softBtn" onclick="go('terms')" data-guiin-nav="terms">이용약관 확인 ›</button></div></div></section>
+<section id="paymentInfo" class="screen payCenterV2"><div class="topbar"><button class="ghost" onclick="go('appinfo')" data-guiin-nav="appinfo">‹</button><div class="brand"><div class="brandline">상품·이용권 안내</div></div><span></span></div><div class="pagePad"><p class="payLead">필요한 풀이와 상담 이용권을 선택해 봐.</p><div class="card utilityCard payGroup"><h3>프리미엄 사주 상품</h3><p class="payGroupHint">상품을 먼저 조회한 뒤 결제할 수 있어. 결제 전에 가격과 제공 내용을 다시 확인해 줘.</p><div class="payPremGrid"><button type="button" class="payPick prem" data-pay-pick="LIFETIME_SAJU" aria-pressed="false" onclick="guiinPayInfoPick(this.getAttribute('data-pay-pick'),true)" ><span class="payPickName">프리미엄 평생사주</span><span class="payPickDesc">내 명식 기준 심층 평생사주 전체 열람</span><b class="payPickPrice">5,900원</b><i class="payPickCheck" aria-hidden="true"></i></button><button type="button" class="payPick prem" data-pay-pick="PREMIUM_COMPAT" aria-pressed="false" onclick="guiinPayInfoPick(this.getAttribute('data-pay-pick'),true)" ><span class="payPickName">프리미엄 궁합</span><span class="payPickDesc">두 사람의 심층 궁합 전체 열람</span><b class="payPickPrice">7,900원</b><i class="payPickCheck" aria-hidden="true"></i></button></div></div><div class="card utilityCard payGroup"><h3>AI 상담 이용권</h3><p class="payGroupHint">구매 후 30일 동안 쓸 수 있는 질문 횟수야.</p><div class="payAiGrid"><button type="button" class="payPick ai" data-pay-pick="AI_CHAT_3" aria-pressed="false" onclick="guiinPayInfoPick(this.getAttribute('data-pay-pick'),true)"><span class="payPickName">AI 상담 3회</span><span class="payPickDesc">총 3회</span><b class="payPickPrice">1,100원</b><em class="payPickTag">처음 써 보기 좋아</em><i class="payPickCheck" aria-hidden="true"></i></button><button type="button" class="payPick ai" data-pay-pick="AI_CHAT_6" aria-pressed="false" onclick="guiinPayInfoPick(this.getAttribute('data-pay-pick'),true)"><span class="payPickName">AI 상담 6회</span><span class="payPickDesc">총 6회 (추가 1회)</span><b class="payPickPrice">1,990원</b><i class="payPickCheck" aria-hidden="true"></i></button><button type="button" class="payPick ai" data-pay-pick="AI_CHAT_9" aria-pressed="false" onclick="guiinPayInfoPick(this.getAttribute('data-pay-pick'),true)"><span class="payPickName">AI 상담 9회</span><span class="payPickDesc">총 9회 (추가 1회)</span><b class="payPickPrice">2,790원</b><i class="payPickCheck" aria-hidden="true"></i></button><button type="button" class="payPick ai" data-pay-pick="AI_CHAT_18" aria-pressed="false" onclick="guiinPayInfoPick(this.getAttribute('data-pay-pick'),true)"><span class="payPickName">AI 상담 18회</span><span class="payPickDesc">총 18회 (추가 5회)</span><b class="payPickPrice">4,990원</b><em class="payPickTag">가장 넉넉해</em><i class="payPickCheck" aria-hidden="true"></i></button></div></div><div class="card utilityCard payGroup paySelWrap" aria-live="polite"><h3>선택한 상품</h3><div class="paySel" data-pay-panel="LIFETIME_SAJU"><div class="paySelHead"><span>프리미엄 평생사주</span><b>5,900원</b></div><dl><dt>제공 서비스</dt><dd>개인 명식 기준 심층 평생사주 리포트 전체 열람 (성격·직업·재물·연애·신살·귀인·대운·세운)</dd><dt>결제 전 확인</dt><dd>결제 승인 후 즉시 개인 명식을 기준으로 심층 리포트를 생성·열람합니다. 결제 전 실제 명식 미리보기를 확인할 수 있으며, 콘텐츠 제공이 시작되면 청약철회가 제한될 수 있습니다.</dd></dl><div class="paySelBtns"><button class="softBtn" onclick="openResultTab('summary')">사주 조회하기 ›</button><button class="ctaGold" onclick="guiinPaymentCenterStart('LIFETIME_SAJU')">프리미엄 평생사주 5,900원 결제하기 ›</button></div></div><div class="paySel" data-pay-panel="PREMIUM_COMPAT" hidden><div class="paySelHead"><span>프리미엄 궁합</span><b>7,900원</b></div><dl><dt>제공 서비스</dt><dd>두 사람의 입력값 기준 심층 궁합 리포트 전체 열람 (성향·관계·강점·갈등 요소)</dd><dt>결제 전 확인</dt><dd>결제 승인 후 즉시 두 사람의 입력값을 기준으로 심층 궁합 리포트를 생성·열람합니다. 결제 전 실제 두 사람의 일부 미리보기를 확인할 수 있으며, 콘텐츠 제공이 시작되면 청약철회가 제한될 수 있습니다.</dd></dl><div class="paySelBtns"><button class="softBtn" onclick="go('match')" data-guiin-nav="match">궁합 조회하기 ›</button><button class="ctaGold" onclick="guiinPaymentCenterStart('PREMIUM_COMPAT')">프리미엄 궁합 7,900원 결제하기 ›</button></div></div><div class="paySel" data-pay-panel="AI_CHAT_3" hidden><div class="paySelHead"><span>AI 사주상담 질문 3회 패키지</span><b>1,100원</b></div><dl><dt>제공 서비스</dt><dd>AI 사주상담 질문 총 3회 · 구매 후 30일간 사용</dd><dt>결제 전 확인</dt><dd>각 상품에 표시된 총 질문 횟수를 구매 후 30일간 사용하는 디지털 서비스입니다. 충전금·사이버머니가 아니며 현금 전환·양도·선물·다른 상품 결제에 사용할 수 없습니다. 미사용·일부 사용 환불 기준은 환불정책에서 확인할 수 있습니다.</dd></dl><div class="paySelBtns"><button class="softBtn" onclick="go('wallet')" data-guiin-nav="wallet">AI 사주상담 질문 패키지 보기 ›</button><button class="ctaGold" onclick="openPaySheet(3,1100)">AI 상담 3회 1,100원 결제하기 ›</button></div></div><div class="paySel" data-pay-panel="AI_CHAT_6" hidden><div class="paySelHead"><span>AI 사주상담 질문 6회 패키지</span><b>1,990원</b></div><dl><dt>제공 서비스</dt><dd>AI 사주상담 질문 기본 5회 + 추가 1회, 총 6회 · 구매 후 30일간 사용</dd><dt>결제 전 확인</dt><dd>각 상품에 표시된 총 질문 횟수를 구매 후 30일간 사용하는 디지털 서비스입니다. 충전금·사이버머니가 아니며 현금 전환·양도·선물·다른 상품 결제에 사용할 수 없습니다. 미사용·일부 사용 환불 기준은 환불정책에서 확인할 수 있습니다.</dd></dl><div class="paySelBtns"><button class="softBtn" onclick="go('wallet')" data-guiin-nav="wallet">AI 사주상담 질문 패키지 보기 ›</button><button class="ctaGold" onclick="openPaySheet(6,1990)">AI 상담 6회 1,990원 결제하기 ›</button></div></div><div class="paySel" data-pay-panel="AI_CHAT_9" hidden><div class="paySelHead"><span>AI 사주상담 질문 9회 패키지</span><b>2,790원</b></div><dl><dt>제공 서비스</dt><dd>AI 사주상담 질문 기본 8회 + 추가 1회, 총 9회 · 구매 후 30일간 사용</dd><dt>결제 전 확인</dt><dd>각 상품에 표시된 총 질문 횟수를 구매 후 30일간 사용하는 디지털 서비스입니다. 충전금·사이버머니가 아니며 현금 전환·양도·선물·다른 상품 결제에 사용할 수 없습니다. 미사용·일부 사용 환불 기준은 환불정책에서 확인할 수 있습니다.</dd></dl><div class="paySelBtns"><button class="softBtn" onclick="go('wallet')" data-guiin-nav="wallet">AI 사주상담 질문 패키지 보기 ›</button><button class="ctaGold" onclick="openPaySheet(9,2790)">AI 상담 9회 2,790원 결제하기 ›</button></div></div><div class="paySel" data-pay-panel="AI_CHAT_18" hidden><div class="paySelHead"><span>AI 사주상담 질문 18회 패키지</span><b>4,990원</b></div><dl><dt>제공 서비스</dt><dd>AI 사주상담 질문 기본 13회 + 추가 5회, 총 18회 · 구매 후 30일간 사용</dd><dt>결제 전 확인</dt><dd>각 상품에 표시된 총 질문 횟수를 구매 후 30일간 사용하는 디지털 서비스입니다. 충전금·사이버머니가 아니며 현금 전환·양도·선물·다른 상품 결제에 사용할 수 없습니다. 미사용·일부 사용 환불 기준은 환불정책에서 확인할 수 있습니다.</dd></dl><div class="paySelBtns"><button class="softBtn" onclick="go('wallet')" data-guiin-nav="wallet">AI 사주상담 질문 패키지 보기 ›</button><button class="ctaGold" onclick="openPaySheet(18,4990)">AI 상담 18회 4,990원 결제하기 ›</button></div></div></div><div class="card utilityCard payGroup"><div id="paymentInfoStatus" class="paymentInfoStatus">토스페이먼츠 일반결제로 전환 준비 중입니다. 상품 조회와 결제 버튼은 정상 노출됩니다.</div><div class="paidDisclaimer"><b>제공 시점</b><br>결제 승인과 서버 검증이 완료된 시점에 구매한 콘텐츠 권한 또는 AI 사주 분석 질문 이용횟수가 계정에 반영됩니다.<br><br><b>결제대행</b><br>결제창과 승인 처리는 토스페이먼츠를 이용합니다. 귀인사주 서버는 결제 승인 후 주문번호·상품·금액·통화를 다시 검증하고, 검증이 완료된 경우에만 유료 권한 또는 AI 질문 횟수를 지급합니다. 결제 결과 확인이 지연되는 경우 중복 결제하지 말고 이용내역 또는 고객센터에서 주문번호를 확인해 주세요.</div><button class="softBtn" onclick="go('refund')" data-guiin-nav="refund">환불정책 확인 ›</button><button class="softBtn" onclick="go('terms')" data-guiin-nav="terms">이용약관 확인 ›</button></div></div></section><script>function guiinPayInfoSaved(){var c="";try{c=sessionStorage.getItem("guiin_payinfo_pick")||"";}catch(_e){}return /^(LIFETIME_SAJU|PREMIUM_COMPAT|AI_CHAT_(3|6|9|18))$/.test(c)?c:"LIFETIME_SAJU";}function guiinPayInfoPick(code,fromTap){try{var root=document.getElementById("paymentInfo");if(!root)return;var found=false;root.querySelectorAll("[data-pay-panel]").forEach(function(p){var on=p.getAttribute("data-pay-panel")===code;p.hidden=!on;if(on)found=true;});if(!found)return;root.querySelectorAll("[data-pay-pick]").forEach(function(b){var on=b.getAttribute("data-pay-pick")===code;b.classList.toggle("on",on);b.setAttribute("aria-pressed",on?"true":"false");});try{sessionStorage.setItem("guiin_payinfo_pick",code);}catch(_e){}if(fromTap){var sel=root.querySelector('[data-pay-panel="'+code+'"]');if(sel){var r=sel.getBoundingClientRect();if(r.top>window.innerHeight-120)sel.scrollIntoView({behavior:"smooth",block:"center"});}}}catch(_e){}}if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){guiinPayInfoPick(guiinPayInfoSaved())},{once:true});else guiinPayInfoPick(guiinPayInfoSaved());</script>
 <section id="terms" class="screen"><div class="topbar"><button class="ghost" onclick="go('appinfo')" data-guiin-nav="appinfo">‹</button><div class="brand"><div class="brandline">이용약관</div></div><span></span></div><div class="pagePad"><div class="card utilityCard"><h3>이용약관 안내</h3><p>귀인사주는 무료 명식·운세·궁합·AI 상담과 프리미엄 평생사주·프리미엄 궁합·AI 사주상담 질문 패키지를 제공합니다. 상품별 가격, 제공 시점, 이용기간, 환불 기준을 결제 전에 표시하며 전체 약관 전문은 별도 페이지에서 바로 확인할 수 있습니다.</p><div class="paidDisclaimer">사주·운세·궁합·AI 상담은 참고 정보이며 의료·법률·세무·투자 등 전문 판단을 대신하지 않습니다.</div><p class="utilityHint">전체 약관은 <a href="terms.html" target="_blank" rel="noopener">이용약관 전문</a>에서 확인할 수 있습니다.</p></div></div></section>
 <section id="privacy" class="screen"><div class="topbar"><button class="ghost" onclick="go('appinfo')" data-guiin-nav="appinfo">‹</button><div class="brand"><div class="brandline">개인정보처리방침</div></div><span></span></div><div class="pagePad"><div class="card utilityCard"><h3>개인정보 안내</h3><p>사주 입력정보, 카카오 로그인 식별정보, AI 상담 내용, 주문·결제 상태 등은 서비스 제공에 필요한 범위에서 처리될 수 있습니다. 주민등록번호 등 고유식별정보는 서비스 운영을 위해 수집하지 않습니다.</p><p class="utilityHint">수집 항목·이용 목적·보유기간·외부서비스 이용 내용은 <a href="privacy.html" target="_blank" rel="noopener">개인정보처리방침 전문</a>에서 확인할 수 있습니다.</p></div></div></section>
 <section id="refund" class="screen"><div class="topbar"><button class="ghost" onclick="go('appinfo')" data-guiin-nav="appinfo">‹</button><div class="brand"><div class="brandline">환불정책</div></div><span></span></div><div class="pagePad"><div class="card utilityCard"><h3>환불 안내</h3><p>프리미엄 리포트는 콘텐츠 제공 시작 전 7일 이내 청약철회가 가능하며, 제공이 시작된 뒤에는 사전 고지·동의를 전제로 청약철회가 제한될 수 있습니다. AI 질문 패키지는 미사용 시 구매 후 7일 이내 전액 환불, 일부 사용 시 미사용 질문 비율을 기준으로 환불합니다. 표시·광고 또는 계약과 다르게 제공된 경우에는 관계 법령상 별도 청약철회 기준을 적용합니다.</p><p class="utilityHint">세부 기준은 <a href="refund.html" target="_blank" rel="noopener">환불정책 전문</a>에서 확인할 수 있습니다.</p></div></div></section>
@@ -2807,6 +2944,7 @@ function restoreProfile(){
  try{
   const v=JSON.parse(localStorage.getItem('guiin_last')); if(!v)return;
   if($('name'))$('name').value=v.name||''; if($('year'))$('year').value=v.year||''; if($('month'))$('month').value=v.month||''; if($('day'))$('day').value=v.day||''; if($('hour'))$('hour').value=v.hour??''; if($('minute'))$('minute').value=v.minute??'';
+  if($('hourUnknown')){$('hourUnknown').checked=!!v.hourUnknown;if(v.hourUnknown){if($('hour'))$('hour').value='';if($('minute'))$('minute').value='';}try{syncHourUnknownUI()}catch(_e){}}
   if($('homeName'))$('homeName').textContent=(v.name||'사용자')+'님 ›'; if($('homeBirth'))$('homeBirth').textContent=`${v.year}년 ${v.month}월 ${v.day}일 (${v.calendar||'양력'})`;
   if($('myName'))$('myName').textContent=(v.name||'사용자')+'님'; if($('myBirth'))$('myBirth').textContent=`${v.year}년 ${v.month}월 ${v.day}일 (${v.calendar||'양력'})`;
   if($('manageName')){$('manageName').textContent=(v.name||'사용자');$('manageBirth').textContent=`${v.year}년 ${v.month}월 ${v.day}일 (${v.calendar||'양력'})`;}
@@ -2821,7 +2959,13 @@ function submitSaju(){
   if(typeof GuiinSaju==='undefined') throw new Error('MODULE_LOAD');
   const inp=profileInput();
   inp.hourUnknown=!!$('hourUnknown')?.checked || $('hour')?.value==='';
-  const msg=validateBirthInput(inp,{label:'생년월일',calendar:inp.calendar});
+  let msg=validateBirthInput(inp,{label:'생년월일',calendar:inp.calendar});
+  // UX: 시간 칸이 비었는데 '모릅니다'도 체크하지 않았으면 조용히 시간 미상으로 넘기지 않고 먼저 확인한다.
+  if(!msg&&!$('hourUnknown')?.checked){
+   const hBlank=String($('hour')?.value||'').trim()==='',miBlank=String($('minute')?.value||'').trim()==='';
+   if(hBlank)msg='출생시간이 비어 있어요. 시간을 입력하거나 ‘출생시간을 모릅니다’를 체크해 주세요.';
+   else if(miBlank)msg='출생시간의 분이 비어 있어요. 분을 입력해 주세요. 정각이면 0을 입력하면 돼요.';
+  }
   if(msg){setFormMessage('sajuFormMsg',msg);showGuiinPopup(msg,'입력 정보를 다시 확인해 주세요');try{guiinMarkBirthError('',msg)}catch(_e){}return;}
   const resultView=$('resultView');if(resultView)resultView.innerHTML=resultLoadingHTML(inp.name);
   go('result');
@@ -6939,8 +7083,112 @@ function guiinSplitBotBubble(d,text){
     return d;
   }catch(_e){return d;}
 }
+/* 귀인이 채팅 표시(화면 전용): 한 답변을 의미 단위 2~4개 말풍선으로 나눠 보여준다.
+   답변 원문·문장 순서·저장 기록(guiinAIHistory)은 바꾸지 않고, 나눈 조각을 이어 붙이면 원문과 같다(공백 제외). */
+function guiinGroupMaxLen(){return 1150;} /* 기존 긴 답변 접기 기준과 같음. 함수로 둬서 초기 복원 시점에도 사용 가능 */
+function guiinChunkAnswer(text){
+  const t=String(text||'').replace(/\r\n?/g,'\n').trim();
+  if(!t)return [t];
+  const evenStars=(str)=>((str.match(/\*\*/g)||[]).length%2===0);
+  const paras=t.split(/\n{2,}/).map(x=>x.trim()).filter(Boolean);
+  let groups=[];
+  if(paras.length>=2){
+    // 문단 단위. 아주 짧은 문단(40자 미만)은 다음 문단과 붙이고, 최대 4개로 묶는다.
+    const merged=[];
+    paras.forEach(p=>{const last=merged[merged.length-1];if(last&&last.join('\n\n').length<40)last.push(p);else merged.push([p]);});
+    let blocks=merged.map(b=>b.join('\n\n'));
+    while(blocks.length>4){
+      let best=0,bestLen=Infinity;
+      for(let i=0;i<blocks.length-1;i++){const l=blocks[i].length+blocks[i+1].length;if(l<bestLen){bestLen=l;best=i;}}
+      blocks.splice(best,2,blocks[best]+'\n\n'+blocks[best+1]);
+    }
+    groups=blocks;
+  }else if(t.length>=220){
+    // 한 문단짜리 긴 답: 문장 끝에서만 나눠 2~3개로.
+    const cuts=[];const re=/[.!?…。](?=\s)|[다요죠네까]\.(?=\s)|\n/g;let m;
+    while((m=re.exec(t))){const end=m.index+m[0].length;if(end<t.length-1&&evenStars(t.slice(0,end)))cuts.push(end);}
+    const n=t.length>=520?3:2;
+    if(n>=2&&cuts.length){
+      let start=0;const out=[];
+      for(let k=1;k<n;k++){
+        const target=t.length*k/n;let pick=-1,dist=Infinity;
+        cuts.forEach(c=>{if(c>start+60&&c<t.length-60&&Math.abs(c-target)<dist){dist=Math.abs(c-target);pick=c;}});
+        if(pick<0)continue;out.push(t.slice(start,pick).trim());start=pick;
+      }
+      out.push(t.slice(start).trim());groups=out.filter(Boolean);
+    }
+  }
+  if(groups.length<2)return [t];
+  // 안전장치: 조각을 이어 붙인 내용이 원문과 다르면 나누지 않는다.
+  const norm=x=>String(x).replace(/\s+/g,'');
+  if(norm(groups.join(''))!==norm(t))return [t];
+  return groups;
+}
+function guiinFillBotChunk(el,chunk){
+  const paras=String(chunk).split(/\n{2,}/).map(x=>x.trim()).filter(Boolean);
+  el.textContent='';
+  paras.forEach((part,i)=>{
+    if(i)el.appendChild(document.createTextNode('\n'));
+    const n=document.createElement('span');n.className='guiinPara';n.textContent=part;
+    el.appendChild(n);guiinFormatAIHighlights(n,part);
+  });
+}
+function guiinRenderBotGroup(box,text,opts){
+  const o=opts||{};const chunks=guiinChunkAnswer(text);
+  const multiPara=String(text||'').trim().split(/\n{2,}/).filter(x=>x.trim()).length>=2;
+  const nodes=chunks.map((chunk,i)=>{
+    const d=document.createElement('div');
+    d.className='bubble '+(o.saved?'saved ':'')+'bot guiinGroup'+(i?' guiinCont':'')+((i||multiPara)?' guiinParas':'');
+    d.dataset.guiinGroupIndex=String(i);
+    guiinFillBotChunk(d,chunk);
+    box.appendChild(d);return d;
+  });
+  return nodes;
+}
+var guiinRevealState=null; /* var: 페이지 초기 복원(선언 전 호출)에서도 안전 */
+function guiinFinishReveal(){
+  const st=guiinRevealState;if(!st)return;guiinRevealState=null;
+  clearTimeout(st.timer);
+  st.nodes.forEach(n=>n.classList.remove('guiinPendingBubble'));
+  st.typing?.remove();st.skip?.remove();
+  const box=$('msgs');box?.classList.remove('guiinRevealing');
+  if(st.nodes[0]?.isConnected){guiinStampChatBubble(st.nodes[st.nodes.length-1]);if(box&&st.follow)box.scrollTop=box.scrollHeight;}
+}
+function guiinRevealGroup(box,nodes){
+  const reduce=(()=>{try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(_e){return false}})();
+  if(nodes.length<2||reduce){guiinStampChatBubble(nodes[nodes.length-1]);return;}
+  guiinFinishReveal();
+  nodes.slice(1).forEach(n=>n.classList.add('guiinPendingBubble'));
+  box.classList.add('guiinRevealing');
+  const typing=document.createElement('div');typing.className='guiinTyping';typing.setAttribute('aria-label','귀인이가 입력 중');
+  typing.innerHTML='<span></span><span></span><span></span><em>입력 중…</em>';
+  const skip=document.createElement('button');skip.type='button';skip.className='guiinRevealSkip';skip.textContent='전체 답변 바로 보기';
+  skip.onclick=()=>{if(guiinRevealState)guiinRevealState.follow=true;guiinFinishReveal();};
+  nodes[0].after(typing);typing.after(skip);
+  const st={nodes,typing,skip,timer:null,idx:1,follow:true};guiinRevealState=st;
+  const near=()=>box.scrollHeight-box.scrollTop-box.clientHeight<140;
+  const step=()=>{
+    if(guiinRevealState!==st)return;
+    if(!nodes[0].isConnected){guiinRevealState=null;typing.remove();skip.remove();box.classList.remove('guiinRevealing');return;}
+    const follow=near();
+    const n=nodes[st.idx];n.classList.remove('guiinPendingBubble');n.after(typing);typing.after(skip);
+    st.idx++;
+    if(st.idx>=nodes.length){st.follow=follow;guiinFinishReveal();return;}
+    if(follow)box.scrollTop=box.scrollHeight;
+    st.timer=setTimeout(step,Math.min(1100,450+String(nodes[st.idx].textContent||'').length*2));
+  };
+  if(near())box.scrollTop=box.scrollHeight;
+  st.timer=setTimeout(step,Math.min(1100,450+String(nodes[1].textContent||'').length*2));
+}
 function guiinAppend(cls,text){
   const box=$('msgs'); if(!box)return;
+  if(cls==='bubble me')guiinFinishReveal();
+  if(cls==='bubble bot'&&String(text||'').length<guiinGroupMaxLen()){
+    const nodes=guiinRenderBotGroup(box,text,{saved:false});
+    box.scrollTop=box.scrollHeight;
+    guiinRevealGroup(box,nodes);
+    return nodes[0];
+  }
   const d=document.createElement('div');
   d.className=cls;
   d.textContent=text;
@@ -6967,7 +7215,13 @@ function persistAIHistory(){
 function restoreAIChatBubbles(){
   const box=$('msgs'); if(!box)return;
   box.querySelectorAll('.bubble.saved,.guiinChatTime').forEach(x=>x.remove());
+  guiinFinishReveal();
   for(const item of guiinAIHistory){
+    if(item.role!=='user'&&String(item.content||'').length<guiinGroupMaxLen()){
+      const nodes=guiinRenderBotGroup(box,item.content,{saved:true});
+      guiinStampChatBubble(nodes[nodes.length-1]);
+      continue;
+    }
     const d=document.createElement('div');
     d.className='bubble saved '+(item.role==='user'?'me':'bot');
     d.textContent=item.content;
@@ -6978,6 +7232,7 @@ function restoreAIChatBubbles(){
   box.scrollTop=box.scrollHeight;
 }
 function clearAIChat(){
+  try{guiinFinishReveal()}catch(_e){}
   guiinAIHistory=[];
   guiinResumedConversationContext=null;
   try{localStorage.removeItem(GUIIN_AI_HISTORY_KEY);}catch(_e){}
@@ -10032,7 +10287,6 @@ try{Object.assign(window,{guiinPaymentCenterStart});}catch(_e){}
   }
  }catch(_e){}
 
-
  globalThis.gwEasy=gwEasy;
  function gwEasy(){
   const EL={'목':'나무(시작·성장의 기운)','화':'불(열정·표현·온기의 기운)','토':'흙(안정·믿음·중심 잡는 기운)','금':'쇠(결단·정리·원칙의 기운)','수':'물(생각·지혜·쉼의 기운)'};
@@ -12833,6 +13087,232 @@ try{Object.assign(window,{guiinPaymentCenterStart});}catch(_e){}
   });
 })();
 </script>
+<script id="GUIIN_CHAT_PLUS_MENU_V1">
+/* 귀인이 + 메뉴(화면 전용). 기존 상담 설정 창(#guiinChatOptions)의 요소·함수를 그대로 사용:
+   질문 채우기(data-ai-question 기존 처리), 상담 기록(#accountConsultMemory), 말투(guiinSetConsultStyle),
+   새 상담(guiinStartNewConsultation), 대화 지우기(clearAIChat), 이용권(go('wallet')). AI 요청·차감·저장 로직은 건드리지 않음. */
+(function(){
+  var panel=document.getElementById('guiinChatOptions');
+  var body=panel&&panel.querySelector('.guiinChatOptionsBody');
+  var input=document.getElementById('askQ');
+  if(!panel||!body)return;
+  function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  var ICON={
+    examples:'<svg viewBox="0 0 40 40" fill="none" stroke="#2f6a50" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M33 19c0 6.6-5.8 12-13 12-1.6 0-3.1-.3-4.5-.8L8 33l2-6c-1.9-2.2-3-5-3-8 0-6.6 5.8-12 13-12s13 5.4 13 12z"/><path d="M14.5 19.5h.01M20 19.5h.01M25.5 19.5h.01" stroke-width="3.4"/></svg>',
+    history:'<svg viewBox="0 0 40 40" fill="none" stroke="#b07d1c" stroke-width="2.6" stroke-linecap="round"><circle cx="20" cy="20" r="13"/><path d="M20 12.5V20l5 3.2"/></svg>',
+    style:'<svg viewBox="0 0 40 40" fill="none" stroke="#2f6a50" stroke-width="2.6" stroke-linecap="round"><path d="M8 12h24M8 20h24M8 28h24"/><circle cx="15" cy="12" r="3" fill="#fffdfa"/><circle cx="25" cy="20" r="3" fill="#fffdfa"/><circle cx="18" cy="28" r="3" fill="#fffdfa"/></svg>',
+    'new':'<svg viewBox="0 0 40 40" fill="none" stroke="#2f6a50" stroke-width="2.6" stroke-linecap="round"><circle cx="20" cy="20" r="13"/><path d="M20 14v12M14 20h12"/></svg>',
+    wallet:'<svg viewBox="0 0 40 40"><g fill="#3d9a4f"><circle cx="15" cy="14" r="6.4"/><circle cx="25" cy="14" r="6.4"/><circle cx="15" cy="24" r="6.4"/><circle cx="25" cy="24" r="6.4"/></g><path d="M20 22c.6 5 2.4 9 5.5 12" stroke="#3d9a4f" stroke-width="2.6" fill="none" stroke-linecap="round"/></svg>',
+    guide:'<svg viewBox="0 0 40 40" fill="none" stroke="#3a5fa8" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="20" cy="20" r="13"/><path d="M16.2 16.4a4 4 0 0 1 7.6 1.4c0 2.6-3.8 3.4-3.8 5.6"/><path d="M20 27.5h.01" stroke-width="3.4"/></svg>'
+  };
+
+  var ITEMS=[['examples','질문 추천','추천 질문 보기'],['history','상담 기록','이전 대화 보기'],['style','상담 말투','답변 스타일 설정'],['new','새 상담','대화 새로 시작'],['wallet','이용권','구매·잔액 확인'],['guide','이용 안내','사용 방법 보기']];
+  var TITLE={home:'무엇을 도와줄까?',examples:'질문 추천',history:'상담 기록',style:'상담 말투','new':'새 상담',wallet:'이용권',guide:'이용 안내'};
+  var STYLE_DESC={balanced:'꼼꼼하면서도 이해하기 쉽게',fact:'사주 근거 위주로 명확하게',warm:'따뜻하고 친근한 말투로',brief:'중요한 내용만 간단하게',deep:'자세하고 깊이 있는 해석으로'};
+  function mk(tag,cls,pane,html){var d=document.createElement(tag);if(cls)d.className=cls;if(pane)d.setAttribute('data-gs-pane',pane);if(html!=null)d.innerHTML=html;return d;}
+
+  // ---- 화면 구성(새 요소만 추가, 기존 요소는 삭제하지 않음) ----
+  if(!body.querySelector('.gsHead')){
+    var head=mk('div','gsHead',null,'<button type="button" class="gsBack" aria-label="메뉴로 돌아가기">‹</button><b id="gsTitle">무엇을 도와줄까?</b><button type="button" class="gsClose guiinChatOptionsClose" aria-label="메뉴 닫기">×</button>');
+    var grid=mk('div','gsGrid','home',ITEMS.map(function(it){return '<button type="button" data-gs="'+it[0]+'"><span class="gsIco" aria-hidden="true">'+ICON[it[0]]+'</span><span class="gsName">'+it[1]+'</span></button>';}).join(''));
+    grid.setAttribute('role','menu');
+    var tip=mk('div','gsTip','home','<i aria-hidden="true">💡</i><span>추천 질문을 선택하면 입력창에 내용이 채워져요. (자동 전송되지 않아요)</span>');
+    var ex=mk('div','gsEx','examples','<div class="gsTabs" role="tablist"></div><div class="gsQList"></div><div class="gsHint">질문을 누르면 입력창에만 채워져요. 내용을 확인하고 보내기를 눌러야 질문이 시작돼요.</div>');
+    var st=mk('div','gsStyle','style','<div class="gsRadio" role="radiogroup" aria-label="상담 말투"></div><button type="button" class="gsBtn" id="gsStyleApply">적용하기</button><div class="gsHint">어떤 말투를 골라도 사주 풀이 내용은 같고, 선택한 상담 안에서는 말투를 이어서 기억해요.</div>');
+    var he=mk('div','gsNote','history','<b>로그인하면 상담 기록이 저장돼요</b>지금 대화는 이 기기에 저장되어 화면에 그대로 보여요. 로그인하면 이전 상담을 다른 기기에서도 다시 열고, 검색·즐겨찾기도 할 수 있어요.<button type="button" class="gsBtn" data-gs-go="login">로그인하기</button>');he.id='gsHistoryEmpty';
+    var nw=mk('div','gsNote','new','<b>새 상담을 시작할까요?</b>지금 화면의 대화를 비우고 새 주제로 시작해요. 로그인 상태라면 지금까지의 상담은 상담 기록에 남아요.<button type="button" class="gsBtn" id="gsNewStart">새 상담 시작</button><button type="button" class="gsBtn ghost" data-gs-open="home">취소</button>');
+    var wl=mk('div','gsNote','wallet','<b>🍀 구매한 질문 이용권은<br>상담 화면에서 클로버로 표시돼요.</b>(질문 1회 = 클로버 1개)<div class="gsBal" id="gsBalance"></div><button type="button" class="gsBtn" data-gs-go="wallet">이용권 상품 보기</button>');
+    var gd=mk('div','gsAcc','guide','');
+    body.prepend(head);
+    [grid,ex,st,he,nw,wl,gd].forEach(function(n){body.appendChild(n);});
+    body.setAttribute('role','dialog');body.setAttribute('aria-modal','true');body.setAttribute('aria-labelledby','gsTitle');
+  }
+  // 기존 상담 기록 영역은 '상담 기록' 화면에서 그대로 사용
+  var acc=document.getElementById('accountConsultMemory');if(acc&&!acc.hasAttribute('data-gs-pane'))acc.setAttribute('data-gs-pane','history');
+  if(acc&&!acc.querySelector('.gsHistTabs')){
+    var ht=document.createElement('div');ht.className='gsHistTabs';
+    ht.innerHTML='<div class="gsSeg" role="tablist"><button type="button" role="tab" data-gs-fav="0">전체</button><button type="button" role="tab" data-gs-fav="1">즐겨찾기</button></div><button type="button" class="gsSearchBtn" aria-label="상담 기록 검색" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg></button>';
+    var tb=acc.querySelector('.accountConsultToolbar');
+    if(tb)acc.insertBefore(ht,tb);else acc.prepend(ht);
+  }
+  function favOn(){try{return !!guiinConsultFavOnly;}catch(_e){var b=document.getElementById('accountConsultFavOnly');return !!(b&&b.classList.contains('on'));}}
+  function syncHistTabs(){var on=favOn();[].forEach.call(document.querySelectorAll('.gsHistTabs [data-gs-fav]'),function(b){var sel=(b.getAttribute('data-gs-fav')==='1')===on;b.classList.toggle('on',sel);b.setAttribute('aria-selected',String(sel));});}
+
+  // ---- 질문 추천: 기존 추천 질문 데이터(GUIIN_AI_POPULAR / GUIIN_AI_EXAMPLES)를 목록으로 ----
+  var CATS=[['popular','추천'],['personality','나·성격'],['career','일·돈'],['relationship','연애·관계'],['timing','운의 흐름']];
+  var cat='popular';
+  function items(c){
+    try{
+      if(c==='popular')return GUIIN_AI_POPULAR.slice();
+      if(c==='all')return ['personality','career','relationship','timing'].reduce(function(a,k){return a.concat(GUIIN_AI_EXAMPLES[k]||[]);},[]);
+      return (GUIIN_AI_EXAMPLES[c]||[]).slice();
+    }catch(_e){return [];}
+  }
+  function renderEx(){
+    var tabs=body.querySelector('.gsTabs'),list=body.querySelector('.gsQList');if(!tabs||!list)return;
+    tabs.innerHTML=CATS.map(function(c){return '<button type="button" role="tab" data-gs-cat="'+c[0]+'" class="'+(c[0]===cat?'on':'')+'" aria-selected="'+(c[0]===cat)+'">'+c[1]+'</button>';}).join('');
+    list.innerHTML=items(cat).map(function(it,i){return '<button type="button" data-ai-question="'+esc(it[1])+'"><span class="n">'+(i+1)+'</span><span class="t">'+esc(it[1])+'</span></button>';}).join('');
+  }
+  // ---- 상담 말투: 기존 말투 버튼(#consultStyleChips)에서 목록을 만들고 기존 함수로 적용 ----
+  function renderStyle(){
+    var box=body.querySelector('.gsRadio');if(!box)return;
+    var cur='balanced';try{cur=guiinCurrentConsultStyle();}catch(_e){}
+    var src=[].slice.call(document.querySelectorAll('#consultStyleChips [data-style]'));
+    box.innerHTML=src.map(function(b){var k=b.getAttribute('data-style');return '<label><input type="radio" name="gsStyle" value="'+esc(k)+'"'+(k===cur?' checked':'')+'><div><b>'+esc(b.textContent.trim())+'</b><span>'+esc(STYLE_DESC[k]||'')+'</span></div></label>';}).join('');
+  }
+  // ---- 이용 안내: 기존 안내 문구(.askTools .adminNote, .askChargeHint)를 나눠 접이식으로 ----
+  function renderGuide(){
+    var box=body.querySelector('.gsAcc');if(!box||box.childElementCount)return;
+    var note=(body.querySelector('.askTools .adminNote')||{}).textContent||'';
+    var hint=(body.querySelector('.askChargeHint')||{}).textContent||'';
+    var sents=note.replace(/([.요다])\s+/g,'$1\n').split('\n').map(function(x){return x.trim();}).filter(Boolean); /* lookbehind 없이(구형 iOS 호환) */
+    var fee=sents.filter(function(x){return /무료|차감|패키지|구매/.test(x);}).join(' ');
+    var save=sents.filter(function(x){return /로그인|로그아웃|기록|맥락/.test(x);}).join(' ');
+    var rows=[
+      ['귀인이란?','귀인이는 귀인사주의 AI 상담 친구예요. 계산된 사주 원국과 현재 흐름을 바탕으로 궁금한 점을 이어서 설명해 줘요.'],
+      ['AI 상담 이용 방법','사주를 먼저 계산한 뒤 입력창에 궁금한 점을 적고 보내기를 눌러요. + 메뉴의 질문 추천을 누르면 입력창에 질문이 채워지고, 답변 아래에는 이어서 물어볼 질문도 추천돼요.'],
+      ['무료 상담과 이용권',(fee||'')+(hint?' '+hint:'')],
+      ['상담 기록과 저장',save],
+      ['기타 자주 묻는 질문','화면에 보이는 대화만 지우고 싶다면 아래 버튼을 눌러요. 로그인 상태라면 계정의 상담 기록은 상담 기록 메뉴에서 다시 열 수 있어요.<button type="button" class="gsBtn ghost" id="gsClearChat">대화 지우기</button>']
+    ];
+    box.innerHTML=rows.filter(function(r){return String(r[1]).trim();}).map(function(r){var html=r[0]==='기타 자주 묻는 질문'?r[1]:esc(r[1]);return '<details><summary>'+esc(r[0])+'</summary><p>'+html+'</p></details>';}).join('');
+  }
+  function renderWallet(){
+    var b=document.getElementById('gsBalance');if(!b)return;
+    var f=(document.getElementById('freeRemainView')||{}).textContent||'',c=(document.getElementById('coinView')||{}).textContent||'';
+    b.textContent=(/\d/.test(f)||/\d/.test(c))?('지금 남은 횟수 · 무료 '+f+'회 · 클로버 '+c+'개'):'';
+  }
+
+  // ---- 보기 전환 ----
+  var view='home';
+  function setView(v){
+    view=TITLE[v]?v:'home';body.setAttribute('data-gs-view',view);
+    var t=document.getElementById('gsTitle');if(t)t.textContent=TITLE[view];
+    if(view==='examples')renderEx();
+    if(view==='style')renderStyle();
+    if(view==='guide')renderGuide();
+    if(view==='wallet')renderWallet();
+    if(view==='history'){var a=document.getElementById('accountConsultMemory'),em=document.getElementById('gsHistoryEmpty');if(em)em.hidden=!!(a&&!a.hidden);syncHistTabs();}
+    body.scrollTop=0;place();
+  }
+  setView('home');
+
+  // ---- 위치: 화면 아래에서 올라오는 메뉴. 상담 화면 폭에 맞추고, 최대 높이는 상단 상태줄 아래까지 ----
+  function place(){
+    var ask=document.getElementById('ask');if(!ask)return;
+    var ar=ask.getBoundingClientRect();
+    var tops=['#askContextCard','.creditBar','.topbar'].map(function(sel){var e=ask.querySelector(sel);if(!e||!e.offsetParent)return 0;return e.getBoundingClientRect().bottom;});
+    var statusBottom=Math.max.apply(null,tops.concat([0]));
+    var vh=(window.visualViewport&&window.visualViewport.height)||window.innerHeight;
+    var r=document.documentElement.style;
+    r.setProperty('--gsLeft',Math.round(Math.max(0,ar.left))+'px');
+    r.setProperty('--gsWidth',Math.round(ar.width||window.innerWidth)+'px');
+    r.setProperty('--gsMaxH',Math.max(260,Math.round(vh-Math.max(0,statusBottom)-6))+'px');
+  }
+
+  // ---- 열기·닫기: 키보드가 열려 있으면 먼저 닫고 메뉴 표시, 대화 스크롤 위치 보존 ----
+  var orig=window.guiinToggleChatOptions;
+  var saved=null,pending=null;
+  function msgs(){return document.getElementById('msgs');}
+  function keyboardOpen(){return document.activeElement===input||document.body.classList.contains('guiinAskKeyboardOpen');}
+  function doOpen(){
+    var m=msgs();saved=m?{top:m.scrollTop,bottom:m.scrollHeight-m.scrollTop-m.clientHeight<60}:null;
+    setView('home');
+    document.documentElement.classList.add('gsMenuOpen');document.body.classList.add('gsMenuOpen');
+    if(typeof orig==='function')orig(true);else panel.open=true;
+    place();requestAnimationFrame(place);
+    try{body.querySelector('.gsClose').focus({preventScroll:true});}catch(_e){}
+  }
+  var opener=null;
+  document.addEventListener('pointerdown',function(e){var b=e.target&&e.target.closest&&e.target.closest('#ask .guiinChatPlusBtn, #ask .guiinChatMoreBtn');if(b)opener=b;},true);
+  function doClose(){
+    clearTimeout(pending);pending=null;
+    var hadFocusInside=body.contains(document.activeElement);
+    if(typeof orig==='function')orig(false);else panel.open=false;
+    document.documentElement.classList.remove('gsMenuOpen');document.body.classList.remove('gsMenuOpen');
+    if(hadFocusInside&&opener){try{opener.focus({preventScroll:true});}catch(_e){}}
+    var m=msgs();
+    if(m&&saved){var sv=saved;requestAnimationFrame(function(){m.scrollTop=sv.bottom?m.scrollHeight:sv.top;});}
+    saved=null;
+  }
+  window.guiinToggleChatOptions=function(force){
+    var want=typeof force==='boolean'?force:!panel.open;
+    if(!want){if(panel.open||pending)doClose();return false;}
+    if(panel.open||pending)return false;
+    if(keyboardOpen()){
+      try{input.blur();}catch(_e){}
+      var t0=Date.now();
+      (function wait(){
+        if(!document.body.classList.contains('guiinAskKeyboardOpen')||Date.now()-t0>500){pending=null;doOpen();return;}
+        pending=setTimeout(wait,40);
+      })();
+      return false;
+    }
+    doOpen();return false;
+  };
+
+  // ---- 메뉴 안 동작 ----
+  body.addEventListener('click',function(e){
+    var t=e.target;if(!t||!t.closest)return;
+    var g=t.closest('.gsGrid [data-gs]');if(g){setView(g.getAttribute('data-gs'));return;}
+    var fv=t.closest('.gsHistTabs [data-gs-fav]');if(fv){var want=fv.getAttribute('data-gs-fav')==='1';if(want!==favOn()){try{guiinToggleFavoriteFilter();}catch(_e){}}syncHistTabs();return;}
+    var sb=t.closest('.gsSearchBtn');if(sb){var a2=document.getElementById('accountConsultMemory');var openS=!a2.classList.contains('gsSearchOpen');a2.classList.toggle('gsSearchOpen',openS);sb.setAttribute('aria-expanded',String(openS));if(openS){var si=document.getElementById('accountConsultSearch');si&&si.focus();}return;}
+    var c=t.closest('[data-gs-cat]');if(c){cat=c.getAttribute('data-gs-cat');renderEx();body.querySelector('.gsQList')&&(body.scrollTop=0);return;}
+    if(t.closest('.gsBack')){setView('home');return;}
+    if(t.closest('.gsClose')){window.guiinToggleChatOptions(false);return;}
+    var o=t.closest('[data-gs-open]');if(o){setView(o.getAttribute('data-gs-open'));return;}
+    var gl=t.closest('[data-gs-go]');if(gl){var dest=gl.getAttribute('data-gs-go');window.guiinToggleChatOptions(false);try{go(dest);}catch(_e){}return;}
+    if(t.closest('#gsStyleApply')){var sel=body.querySelector('.gsRadio input:checked');if(sel){try{guiinSetConsultStyle(sel.value);}catch(_e){}}window.guiinToggleChatOptions(false);return;}
+    if(t.closest('#gsNewStart')){try{(window.guiinStartNewConsultation||window.clearAIChat)();}catch(_e){}window.guiinToggleChatOptions(false);return;}
+    if(t.closest('#gsClearChat')){try{clearAIChat();}catch(_e){}window.guiinToggleChatOptions(false);return;}
+  });
+  // 어두운 바깥 부분(details 자신) 누르면 닫기
+  panel.addEventListener('click',function(e){if(e.target===panel){e.preventDefault();window.guiinToggleChatOptions(false);}});
+  // 추천 질문 선택: 기존 처리(입력창 채우기, 자동 전송 없음) 전에 메뉴부터 닫기
+  document.addEventListener('click',function(e){
+    if(panel.open&&e.target&&e.target.closest&&e.target.closest('#guiinChatOptions [data-ai-question]'))window.guiinToggleChatOptions(false);
+  },true);
+  // 상담 기록에서 이전 상담을 열면 메뉴 닫기(기존 열기 동작은 그대로)
+  document.addEventListener('click',function(e){
+    if(!panel.open||!e.target||!e.target.closest)return;
+    var row=e.target.closest('#accountConsultList [onclick*="guiinResumeConversation"], #accountConsultList .accountConsultOpen');
+    if(row)setTimeout(function(){window.guiinToggleChatOptions(false);},0);
+  });
+  if(input)input.addEventListener('focus',function(){if(panel.open)window.guiinToggleChatOptions(false);});
+  // 터치: 메뉴 안에서만 스크롤되게 하고(페이지가 같이 밀리지 않게), 맨 위에서 아래로 끌면 메뉴를 내려 닫기
+  (function(){
+    var x0=0,y0=null,dy=0,dragging=false,fromHead=false;
+    panel.addEventListener('touchstart',function(e){
+      if(!panel.open||e.touches.length!==1){y0=null;return;}
+      x0=e.touches[0].clientX;y0=e.touches[0].clientY;dy=0;dragging=false;
+      fromHead=!!(e.target.closest&&e.target.closest('.gsHead'));
+    },{passive:true});
+    panel.addEventListener('touchmove',function(e){
+      if(!panel.open||y0==null)return;
+      var t=e.touches[0],ddx=t.clientX-x0;dy=t.clientY-y0;
+      if(!body.contains(e.target)){e.preventDefault();return;}            /* 어두운 바깥: 페이지 스크롤 막기 */
+      if(!dragging&&Math.abs(ddx)>Math.abs(dy))return;                       /* 가로 스크롤(카테고리 탭)은 그대로 */
+      var atTop=body.scrollTop<=0,atBottom=body.scrollTop+body.clientHeight>=body.scrollHeight-1;
+      if(dragging||(dy>0&&(fromHead||atTop))){
+        dragging=true;e.preventDefault();
+        body.style.transition='none';body.style.transform='translateY('+Math.max(0,dy)+'px)';return;
+      }
+      if((dy<0&&atBottom)||body.scrollHeight<=body.clientHeight)e.preventDefault(); /* 끝에 닿으면 페이지로 넘기지 않음 */
+    },{passive:false});
+    function end(){
+      if(y0==null)return;var d=dy,was=dragging;y0=null;dragging=false;
+      if(!was)return;
+      body.style.transition='transform .18s ease-out';body.style.transform='';
+      if(d>90)window.guiinToggleChatOptions(false);
+      setTimeout(function(){body.style.transition='';},200);
+    }
+    panel.addEventListener('touchend',end);panel.addEventListener('touchcancel',end);
+  })();
+  window.addEventListener('resize',place);
+  if(window.visualViewport)window.visualViewport.addEventListener('resize',place);
+  window.addEventListener('orientationchange',function(){setTimeout(place,300);});
+})();
+</script>
 <script id="GUIIN_STARTER_CHIPS_UI_ONLY">
 (function(){
   function render(){
@@ -13000,8 +13480,8 @@ try{Object.assign(window,{guiinPaymentCenterStart});}catch(_e){}
     if(/출생연도|음력 생년월일/.test(msg))return Y;
     if(/출생월/.test(msg))return M;
     if(/출생일|달력에 없는 날짜/.test(msg))return D;
-    if(/시\(時\)/.test(msg))return H;
-    if(/분\(分\)/.test(msg))return MI;
+    if(/시\(時\)|출생시간이 비어/.test(msg))return H;
+    if(/분\(分\)|분이 비어/.test(msg))return MI;
     return null;
   }
   window.guiinMarkBirthError=function(prefix,msg){
@@ -13221,5 +13701,55 @@ try{Object.assign(window,{guiinPaymentCenterStart});}catch(_e){}
 </style>
 <script id="GUIIN_B3_FIX_V1" src="guiin-b3-fix.js?v=20261020-b9"></script>
 <script id="GUIIN_B6_FEATURES_V1" src="guiin-b6-features.js?v=20261020-b9"></script>
+<style id="guiin-ui-products-v1">
+/* 홈 판매 상품 2카드 + 상품·이용권 안내 화면 (UI 전용, 기능 변경 없음) */
+.homeProductReview.duo{padding:15px 12px 12px}
+.homeProductReview.duo .homeDuoGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media(max-width:339px){.homeProductReview.duo .homeDuoGrid{grid-template-columns:1fr}}
+.homeProductReview.duo .homeDuoCard{display:flex;flex-direction:column;min-width:0;padding:10px 10px 12px;border:1px solid #eadfc8;border-radius:20px;background:#fffdf8;box-shadow:0 4px 14px rgba(70,52,20,.06)}
+.homeProductReview.duo .homeDuoArt{width:100%;aspect-ratio:5/4;border-radius:15px;background:#edf5e7;overflow:hidden}
+.homeProductReview.duo .homeDuoArt img{display:block;width:100%;height:100%;object-fit:cover}
+.homeProductReview.duo .homeDuoCard h3{margin:10px 2px 0;color:#234c37;font-size:15px;line-height:1.3;letter-spacing:-.02em;word-break:keep-all}
+.homeProductReview.duo .homeDuoCard p{margin:4px 2px 0;color:#6a716a;font-size:11px;line-height:1.45;word-break:keep-all;overflow-wrap:anywhere;min-height:2.9em}
+.homeProductReview.duo .homeDuoCard .productPrice{display:block;margin:6px 2px 10px;color:#a16f16;font-size:20px;font-weight:950;line-height:1.2;white-space:nowrap}
+.homeProductReview.duo .homeDuoBtn{margin-top:auto;width:100%;min-height:42px;border:0;border-radius:999px;padding:0 8px;background:linear-gradient(135deg,#f6dc8a,#e9c15c);color:#3c3420;font-size:13px;font-weight:900;white-space:nowrap;cursor:pointer}
+.homeProductReview.duo .homeDuoBtn:focus-visible{outline:3px solid #8fbf7a;outline-offset:2px}
+.homeProductReview.duo .productReviewMeta{margin-top:10px}
+.homeProductReview.duo .productReviewAction{justify-content:center;margin-top:6px}
+.homeProductReview.duo .productReviewAction button{background:transparent;color:#4f6b57;text-decoration:underline;text-underline-offset:3px;padding:6px 8px;font-size:11px}
+
+#paymentInfo.payCenterV2 .topbar{height:62px!important}
+#paymentInfo.payCenterV2 .pagePad{padding-top:2px!important}
+#paymentInfo.payCenterV2 .payLead{margin:0 4px 10px;color:#5d665f;font-size:12px;line-height:1.5}
+#paymentInfo.payCenterV2 .payGroup{margin-bottom:12px}
+#paymentInfo.payCenterV2 .payGroup h3{margin:0 0 4px;color:#234c37;font-size:16px}
+#paymentInfo.payCenterV2 .payGroupHint{margin:0 0 10px;color:#7a807a;font-size:11px;line-height:1.55}
+#paymentInfo.payCenterV2 .payPremGrid{display:grid;grid-template-columns:1fr;gap:8px}
+#paymentInfo.payCenterV2 .payAiGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#paymentInfo.payCenterV2 .payPick{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:3px;width:100%;min-width:0;margin:0;padding:12px 34px 12px 13px;border:1.5px solid #ece2d2;border-radius:16px;background:#fffdf8;text-align:left;cursor:pointer;font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
+#paymentInfo.payCenterV2 .payPick.prem{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"name price" "desc price";column-gap:10px;padding-right:38px}
+#paymentInfo.payCenterV2 .payPick.prem .payPickName{grid-area:name}
+#paymentInfo.payCenterV2 .payPick.prem .payPickDesc{grid-area:desc}
+#paymentInfo.payCenterV2 .payPick.prem .payPickPrice{grid-area:price;align-self:center;font-size:18px}
+#paymentInfo.payCenterV2 .payPickName{color:#2b4a39;font-size:13px;font-weight:900;line-height:1.35}
+#paymentInfo.payCenterV2 .payPickDesc{color:#7a807a;font-size:10.5px;line-height:1.45;word-break:keep-all;overflow-wrap:anywhere}
+#paymentInfo.payCenterV2 .payPickPrice{color:#a16f16;font-size:17px;font-weight:950;white-space:nowrap;margin-top:2px}
+#paymentInfo.payCenterV2 .payPickTag{font-style:normal;font-size:9.5px;font-weight:900;color:#8a6417;background:#fff1c7;border-radius:999px;padding:2px 7px;margin-top:4px}
+#paymentInfo.payCenterV2 .payPickCheck{position:absolute;top:12px;right:12px;width:18px;height:18px;border-radius:50%;border:1.5px solid #d9cfbe;background:#fff}
+#paymentInfo.payCenterV2 .payPick.on{border-color:#2f6b4c;background:#f4faf3;box-shadow:0 0 0 3px rgba(47,107,76,.10)}
+#paymentInfo.payCenterV2 .payPick.on .payPickCheck{border-color:#2f6b4c;background:#2f6b4c}
+#paymentInfo.payCenterV2 .payPick.on .payPickCheck::after{content:"";position:absolute;left:5px;top:2px;width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+#paymentInfo.payCenterV2 .payPick:focus-visible{outline:2px solid #2f6b4c;outline-offset:2px}
+#paymentInfo.payCenterV2 .paySelHead{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:2px 0 10px;border-bottom:1px dashed #e7dcc9}
+#paymentInfo.payCenterV2 .paySelHead span{color:#2b4a39;font-size:14px;font-weight:900;min-width:0}
+#paymentInfo.payCenterV2 .paySelHead b{color:#a16f16;font-size:20px;font-weight:950;white-space:nowrap}
+#paymentInfo.payCenterV2 .paySel dl{margin:10px 0 4px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:7px 10px}
+#paymentInfo.payCenterV2 .paySel dt{color:#3b5e45;font-size:11px;font-weight:900;white-space:nowrap}
+#paymentInfo.payCenterV2 .paySel dd{margin:0;color:#646b65;font-size:11px;line-height:1.6;word-break:keep-all;overflow-wrap:anywhere}
+#paymentInfo.payCenterV2 .paySelBtns{display:grid;gap:8px;margin-top:10px}
+#paymentInfo.payCenterV2 .paySelBtns .softBtn,#paymentInfo.payCenterV2 .paySelBtns .ctaGold{margin:0;width:100%}
+#paymentInfo.payCenterV2 .payGroup .paymentInfoStatus{margin-top:0}
+#paymentInfo.payCenterV2 .softBtn,#paymentInfo.payCenterV2 .ctaGold{white-space:normal;word-break:keep-all}
+</style>
 </body>
 </html>
