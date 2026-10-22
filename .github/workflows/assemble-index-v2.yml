@@ -1,0 +1,31 @@
+name: assemble-index-v2
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'deploy-chunks/**'
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assemble index.html
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import base64
+          parts = sorted(Path('deploy-chunks').glob('part-*.b64'))
+          assert parts, 'no parts'
+          b64 = ''.join(p.read_text().strip() for p in parts)
+          data = base64.b64decode(b64)
+          Path('index.html').write_bytes(data)
+          print('wrote', len(data))
+          PY
+      - name: Commit index.html
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git diff --cached --quiet || (git commit -m "fix(ux): 사주 입력 UX v2 assembled from chunks" && git push)
