@@ -123,6 +123,10 @@ jobs:
           missing=0
           while IFS= read -r ref; do
             [ -z "$ref" ] && continue
+            # Skip JS template / dynamic string fragments embedded in HTML (e.g. '+esc(...)+'.webp)
+            if [[ "$ref" == *"'"* || "$ref" == *"+"* || "$ref" == *"`"* ]]; then
+              continue
+            fi
             if [[ "$ref" == *'..'* ]] || [ ! -f "$ref" ]; then
               echo "::error::Missing or unsafe local reference: $ref"; missing=1
             fi
