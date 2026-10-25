@@ -25,6 +25,11 @@ jobs:
           2026-fortune.html
           2027-fortune.html
           auth.html
+          banner-breakup.webp
+          banner-compat.webp
+          banner-crush.webp
+          banner-reunion.webp
+          banner-shinsal.webp
           cheon-eul-gwiin.html
           company.html
           compatibility-interpreter.js
@@ -32,6 +37,7 @@ jobs:
           deep-interpretation-v3.js
           demo.html
           expert-interpreter.js
+          fox-clover.webp
           guiin-b3-fix.js
           guiin-b6-features.js
           guiin-deep-ai.js
@@ -47,7 +53,14 @@ jobs:
           guiin-runtime-config.js
           guiin-scene-art.js
           guiin-star-art.js
+          guiin-theme-v1.js
           guiin-theme.css
+          hero-breakup.webp
+          hero-compat.webp
+          hero-crush.webp
+          hero-reunion.webp
+          hero-shinsal.webp
+          home-today-penguin.webp
           index.html
           inquiry.html
           manse-view.js
