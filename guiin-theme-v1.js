@@ -185,12 +185,12 @@ function buildBreakup(f,x){
   {t:'서로의 관계 욕구',b:f.gA===f.gB?[J(f.nA,'과/와')+' '+f.nB+'의 명식은 모두 '+J(sa.need,'을/를')+' 중요하게 여기는 경향을 보여. 바라는 것이 같아서, 그게 채워지지 않을 때 둘 다 같은 이유로 서운해지기 쉬워.','명식은 경향일 뿐이야. '+f.nB+'의 실제 마음은 직접 확인해야 해.']:[J(f.nA,'은/는')+' 이 관계에서 '+J(sa.need,'을/를')+' 중요하게 여기는 경향이 있어.',f.nB+'의 명식은 '+J(sb.need,'을/를')+' 중요하게 여기는 경향을 보여. 실제 마음은 직접 확인해야 해.']},
   {t:'개선 가능한 부분',b:[d.fix,complementPos(f),f.sig.combine?'두 사람 사이에는 합 신호('+f.sig.combine+')도 있어서, 갈등만 있는 관계는 아니야.':'']},
   {t:'실제로 확인해야 할 행동',list:[
-    '최근 한 달 동안 같은 이유로 다툰 횟수를 세어 봐. 같은 이유가 3번 이상이면 구조의 문제일 가능성이 커.',
+    ({clash:'최근 다툰 날짜를 적고, 같은 주제로 부딪힌 날이 두 번 이상인지 세어 봐.',knot:'약속·연락·역할 중 어떤 규칙이 자주 깨지는지 적어 봐. 같은 규칙이 반복되면 구조의 문제야.',hurt:'서운했던 장면을 하나씩 적고, 그중 실제로 말로 꺼낸 것이 몇 개인지 세어 봐.',break:'약속이 깨진 횟수와 이유를 기록해 봐. 같은 이유가 반복되는지가 핵심이야.'}[k]||'최근 같은 이유로 다툰 일을 떠올려 봐. 같은 이유가 반복되는지 확인하는 게 먼저야.'),
     '다툰 뒤에 누가 먼저, 어떻게 회복을 시도하는지 봐. 회복 시도가 한쪽에만 있다면 그 점을 먼저 이야기해야 해.',
-    J(sa.need.replace(/것$/,'것'),'을/를')+' 상대에게 한 문장으로 요청해 보고, 2주 동안 실제 행동이 바뀌는지 확인해.',
+    J(sa.need.replace(/것$/,'것'),'을/를')+' 상대에게 한 문장으로 요청해 보고, '+({short:'3~4주',mid:'2주',long:'한 달'}[x.len]||'2주')+' 동안 실제 행동이 바뀌는지 확인해.',
     state]}
  ];
- return {head:head,sum:[d.short,'가장 먼저 볼 것은 같은 갈등이 같은 방식으로 반복되는지야.','결정은 사주가 아니라 실제 행동의 변화로 하는 게 좋아.'],cards:cards};
+ return {head:head,sum:[d.short,pick(['가장 먼저 볼 것은 같은 갈등이 같은 방식으로 반복되는지야.','먼저 확인할 것은 다툼의 주제가 바뀌는지, 같은 주제가 돌아오는지야.','이 관계에서는 싸움의 내용보다 회복 방식이 더 큰 힌트야.'],f.seed),pick(['결정은 사주가 아니라 실제 행동의 변화로 하는 게 좋아.','판단 근거는 명식이 아니라 최근 두 달의 행동이어야 해.','명식은 방향을 보여 줄 뿐, 결론은 두 사람이 실제로 바꾼 행동이 내려.'],f.seed+1)],cards:cards};
 }
 
 function buildCrush(f,x){
@@ -202,9 +202,9 @@ function buildCrush(f,x){
   {t:'두 사람의 관계 특징',b:[d.why,(f.gA===f.gB?J(f.nA,'과/와')+' '+J(f.nB,'은/는')+' 명식상 서로를 '+sa.feel+'으로 받아들이기 쉬운 같은 구조야. 편하게 가까워질 수 있지만 그 이상의 신호를 만드는 계기가 필요해.':f.nA+'에게 '+J(f.nB,'은/는')+' '+sa.feel+'으로 다가오고, 명식상 '+f.nB+' 쪽에서는 '+J(f.nA,'을/를')+' '+sb.feel+'으로 받아들이기 쉬운 구조야.')]},
   {t:'접근 방식',b:[lb.approach,dist]},
   {t:'부담을 줄일 방법',b:[k==='clash'||k==='knot'?'두 사람 사이에 부딪히는 신호가 있어서, 마음을 서둘러 확인하려 할수록 상대가 물러서기 쉬워. 답을 재촉하지 않는 게 가장 중요해.':'한 번에 마음을 고백하기보다 상대가 편하게 응할 수 있는 작은 제안부터 시작하는 게 좋아.',f.sB.band==='weak'?J(f.nB,'은/는')+' 주변 상황에 영향을 많이 받는 편이라, 바쁘거나 지친 시기에는 연락 빈도를 줄여 주는 배려가 오히려 호감이 돼.':'거절해도 관계가 어색해지지 않을 정도의 가벼운 제안이 서로의 부담을 줄여.']},
-  {t:'현실에서 확인해야 할 호감 신호',list:[lb.sign,'약속을 미룰 때 대신할 날짜를 먼저 제안하는지','대화가 끝날 때 다음에 이어질 이야기를 남기는지','신호는 한 번이 아니라 2~3주 동안 반복되는지로 판단해']}
+  {t:'현실에서 확인해야 할 호감 신호',list:[lb.sign,'약속을 미룰 때 대신할 날짜를 먼저 제안하는지','대화가 끝날 때 다음에 이어질 이야기를 남기는지',pick(['신호는 한 번이 아니라 2~3주 동안 반복되는지로 판단해','한 번의 호의보다 여러 번 이어지는 행동을 보면 돼','상대가 바쁠 때도 같은 태도를 유지하는지 봐'],f.seed+2)]}
  ];
- return {head:head,sum:[f.nB+'의 명식은 '+lb.key+'에 가까워.',d.short,'상대의 실제 마음은 사주로 단정할 수 없어. 현실의 신호로 확인해.'],cards:cards};
+ return {head:head,sum:[f.nB+'의 명식은 '+lb.key+'에 가까워.',d.short,pick(['상대의 실제 마음은 사주로 단정할 수 없어. 현실의 신호로 확인해.','상대의 마음은 명식으로 단정할 수 없어. 행동이 반복되는지로 확인해.','상대의 속마음은 사주로 단정할 수 없어. 상대가 보여 주는 반응이 답이야.'],f.seed)],cards:cards};
 }
 
 function buildReunion(f,x){
@@ -220,7 +220,7 @@ function buildReunion(f,x){
   {t:'재접촉을 고민할 때의 기준',list:[since,contact,'헤어진 이유가 지금은 달라졌는지 한 문장으로 말할 수 있는지 확인해.','상대의 반응과 상관없이 내가 감당할 수 있는 선에서만 연락해.']},
   {t:'재회 후 조율할 부분',b:[d.fix,f.gA===f.gB?'두 사람의 명식은 모두 '+J(sa.need,'을/를')+' 중요하게 여기는 경향이 있어. 다시 만난다면 이걸 어떤 행동으로 확인할지 처음부터 말로 맞춰 둬.':J(f.nA,'은/는')+' '+sa.need+', '+f.nB+'의 명식은 '+J(sb.need,'을/를')+' 중요하게 여기는 경향이 있어. 다시 만난다면 이 두 가지를 처음부터 말로 맞춰 둬.']}
  ];
- return {head:head,sum:[d.short,sa.pull+'이 남아 있기 쉬운 구조야.','시기는 분위기일 뿐, 결과는 두 사람의 실제 행동이 정해.'],cards:cards};
+ return {head:head,sum:[d.short,sa.pull+'이 남아 있기 쉬운 구조야.',pick(['시기는 분위기일 뿐, 결과는 두 사람의 실제 행동이 정해.','때가 맞는지보다 다시 만났을 때 같은 문제를 어떻게 다루는지가 더 중요해.','명식은 흐름을 보여 줄 뿐, 재회 여부는 두 사람이 정해.'],f.seed+3)],cards:cards};
 }
 
 /* 신살·귀인 (한 사람) */
@@ -232,7 +232,7 @@ function buildShinsal(c){
  var n=nm(c,'나'),hits=(c.stars&&c.stars.hits)||[],M=(window.GuiinSaju&&GuiinSaju.SINSAL_META)||{};
  var by={};hits.forEach(function(h){if(!h||!h.name)return;var o=by[h.name]||(by[h.name]={name:h.name,pillars:[],meta:h.meta||M[h.name]||{}});if(o.pillars.indexOf(h.pillar)<0)o.pillars.push(h.pillar)});
  var list=Object.keys(by).map(function(k){var o=by[k],pi=STAR_PRI.indexOf(k);o.score=(pi<0?0:40-pi)+o.pillars.reduce(function(s,p){return s+(PILW[p]||0)},0)*3;return o});
- if(!list.length)return {head:J(n,'은/는')+' 눈에 띄는 신살·귀인이 적은 명식이야.',sum:['신살은 보조 정보야. 원국과 오행이 해석의 중심이야.'],cards:[{t:'성립한 신살·귀인',b:['이 명식에서는 대표적인 신살·귀인이 잡히지 않았어. 신살이 적다고 부족한 사주라는 뜻은 아니야.']}],stars:[]};
+ if(!list.length)return {head:J(n,'은/는')+' 눈에 띄는 신살·귀인이 적은 명식이야.',sum:[pick(['신살은 보조 정보야. 원국과 오행이 해석의 중심이야.','신살은 참고용 표식이야. 성격의 중심은 원국에서 봐.','신살이 적다고 부족한 사주가 아니야. 원국이 기본 틀이야.'],hash(n))],cards:[{t:'성립한 신살·귀인',b:['이 명식에서는 대표적인 신살·귀인이 잡히지 않았어. 신살이 적다고 부족한 사주라는 뜻은 아니야.']}],stars:[]};
  list.sort(function(x,y){return y.score-x.score});
  var seenS={},top=list.filter(function(o){if(!o.meta||!o.meta.short||seenS[o.meta.short])return false;seenS[o.meta.short]=1;return true}).slice(0,3);
  var guiin=list.filter(function(o){return G_GUIIN.test(o.meta.group||'')||/귀인$/.test(o.name)}),talent=list.filter(function(o){return G_TALENT.test(o.meta.group||'')}),watch=list.filter(function(o){return G_WATCH.test(o.meta.group||'')||o.meta.tone==='power'});
