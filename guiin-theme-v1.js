@@ -367,9 +367,23 @@ function personForm(p,who,d){
  '<label>성별</label><div class="gtSeg" data-seg="gt'+p+'Gender"><button type="button" data-v="여" class="'+(g==='여'?'on':'')+'">여자</button><button type="button" data-v="남" class="'+(g==='남'?'on':'')+'">남자</button></div>'+
  '</div><p class="gtHint">양력 생년월일 기준이야. 태어난 시간을 모르면 비워 둬.</p></div>';
 }
+/* 고민 키워드(최대 3개): 사용자가 고른 주제를 풀이 끝에 한 카드로 이어 줘. 원문은 저장·전송하지 않아. */
+var KW=[['money','돈·생활'],['talk','대화 방식'],['time','연락·시간 차이'],['trust','신뢰·불안'],['family','가족·주변 시선'],['future','앞으로의 방향']];
+var KW_NOTE={
+ money:'돈과 생활 리듬을 어떻게 나눌지가 함께 정해야 할 주제로 읽혀요.',
+ talk:'결론부터 말할지 감정부터 말할지 맞추면 오해가 크게 줄어들 가능성이 커요.',
+ time:'연락 빈도와 만남 간격에 대한 기대치를 서로 한 번 확인해 보면 좋아요.',
+ trust:'불안이 올라올 때 확인하는 방법을 미리 정해 두면 흔들림이 덜해요.',
+ family:'주변 시선이나 가족 의견이 관계에 끼어드는 순간을 따로 정리해 두세요.',
+ future:'지금 관계를 어디까지 이어 갈지 기준을 짧게 적어 보는 게 도움이 돼요.'
+};
+function kwForm(T){
+ if(!T.pair)return '';
+ return '<div class="gtF" style="margin-top:8px"><label>고민 키워드<br><small>최대 3개</small></label><div class="gtKw gtSeg" data-kw>'+KW.map(function(o){return '<button type="button" data-v="'+o[0]+'">'+esc(o[1])+'</button>'}).join('')+'</div></div><p class="gtHint" data-kwmsg></p>';
+}
 function extraForm(T){
- if(!T.extra)return '';
- return '<div class="gtForm x"><h3>관계 정보</h3>'+T.extra.map(function(x){return '<div class="gtF" style="margin-bottom:8px"><label>'+esc(x.label)+'</label><div class="gtSeg" data-seg="gtx_'+x.k+'">'+x.opts.map(function(o,i){return '<button type="button" data-v="'+o[0]+'" class="'+(i===0?'on':'')+'">'+esc(o[1])+'</button>'}).join('')+'</div></div>'}).join('')+'<p class="gtHint">관계 정보는 행동 조언에만 쓰고, 명리 계산에는 넣지 않아.</p></div>';
+ if(!T.extra)return kwForm(T)?'<div class="gtForm x"><h3>고민 키워드</h3>'+kwForm(T)+'</div>':'';
+ return '<div class="gtForm x"><h3>관계 정보</h3>'+kwForm(T)+T.extra.map(function(x){return '<div class="gtF" style="margin-bottom:8px"><label>'+esc(x.label)+'</label><div class="gtSeg" data-seg="gtx_'+x.k+'">'+x.opts.map(function(o,i){return '<button type="button" data-v="'+o[0]+'" class="'+(i===0?'on':'')+'">'+esc(o[1])+'</button>'}).join('')+'</div></div>'}).join('')+'<p class="gtHint">관계 정보는 행동 조언에만 쓰고, 명리 계산에는 넣지 않아.</p></div>';
 }
 function detailHTML(k){
  var T=THEMES[k],d=profileDefault();
@@ -418,6 +432,7 @@ function run(){
  var A=readPerson(el,'a',T.pair?'내':'');if(A.err){msg.textContent=A.err.replace(/^ /,'');return}
  var B=null;if(T.pair){B=readPerson(el,'b',k==='crush'?'좋아하는 사람':k==='reunion'?'헤어진 사람':'상대');if(B.err){msg.textContent=B.err;return}}
  var x={};(T.extra||[]).forEach(function(e){x[e.k]=segV(el,'gtx_'+e.k)});
+ x.kw=Array.prototype.map.call(el.querySelectorAll('[data-kw] button.on'),function(b){return b.getAttribute('data-v')}).slice(0,3);
  try{
   if(!window.GuiinSaju||typeof GuiinSaju.calculate!=='function')throw new Error('engine');
   var a=GuiinSaju.calculate(A.inp),out,ev,metrics=null,b=null;
@@ -433,6 +448,7 @@ function run(){
    else out=buildReunion(f,x);
    ev=evidenceRows(f);
   }
+  if(T.pair&&x.kw&&x.kw.length&&out&&out.cards){out.cards=out.cards.concat([{t:'고민 키워드로 본 포인트',b:x.kw.map(function(v){return KW_NOTE[v]}).filter(Boolean)}])}
   out=clean(out,k);
   state.data={a:a,b:b,A:A.inp,B:B&&B.inp};
   var html='<div class="gtSum"><small>핵심 요약</small><h3>'+esc(out.head)+'</h3>'+out.sum.map(function(s){return '<p>'+esc(s)+'</p>'}).join('')+'</div>';
@@ -466,6 +482,7 @@ function next(){
 }
 function onClick(e){
  var t=e.target;
+ var kb=t.closest('[data-kw] button');if(kb){var grp=kb.parentNode,on=kb.classList.contains('on'),n=grp.querySelectorAll('button.on').length,hint=grp.parentNode.parentNode.querySelector('[data-kwmsg]');if(!on&&n>=3){if(hint)hint.textContent='키워드는 최대 3개까지 고를 수 있어요.';return}if(hint)hint.textContent='';kb.classList.toggle('on');return}
  var seg=t.closest('.gtSeg button');if(seg){seg.parentNode.querySelectorAll('button').forEach(function(b){b.classList.toggle('on',b===seg)});return}
  if(t.closest('[data-gtback]')){if(state.theme)render(null);else go('home');window.scrollTo(0,0);return}
  var g=t.closest('[data-gt]');if(g){render(g.getAttribute('data-gt'));window.scrollTo(0,0);return}
