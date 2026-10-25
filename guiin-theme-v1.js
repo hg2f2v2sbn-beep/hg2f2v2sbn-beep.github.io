@@ -514,6 +514,20 @@ function buildShinsal(c){
 
 /* ───────── 값 검사 (빈 값·undefined·NaN 제거) ───────── */
 var BAD=/undefined|NaN|\[object|null(?![가-힣])/;
+/* 풀이 문장 규칙 V3: 추정·과장 표현이 든 문장은 빼고, 단정 어조는 가능성 표현으로 바꾼다. */
+var SPEC_DROP=/식었|자존심 때문|자존심이 원인|끊기 어렵|완벽|대칭|확실히|반드시|무조건|운명|절대/;
+var SPEC_SOFT=[];
+function specV3(s){
+ if(typeof s!=='string')return s;
+ var out=s;
+ SPEC_SOFT.forEach(function(r){out=out.replace(r[0],r[1])});
+ return out;
+}
+function specDropV3(s,theme){
+ if(typeof s!=='string')return false;
+ if(SPEC_DROP.test(s)){LOG.push({theme:theme,reason:'spec-v3 drop'});return false}
+ return true;
+}
 function clean(out,theme){
  function ok(s){return typeof s==='string'&&s.trim()&&!BAD.test(s)}
  out.sum=(out.sum||[]).filter(ok);
@@ -524,6 +538,14 @@ function clean(out,theme){
   if(c.stars)c.stars=c.stars.filter(function(s){return ok(s.name)&&ok(s.short)});
   return c}).filter(function(c){var n=(c.b||[]).length+(c.list||[]).length+(c.chips||[]).length+(c.stars||[]).length;if(!n)LOG.push({theme:theme,card:c.t,reason:'empty card dropped'});return n>0});
  if(!ok(out.head))out.head='두 사람의 명식을 함께 읽었어.';
+ if(['compat','breakup','crush','reunion'].indexOf(theme)>=0){
+  out.head=specV3(out.head);
+  out.sum=(out.sum||[]).filter(function(x){return specDropV3(x,theme)}).map(specV3);
+  out.cards=(out.cards||[]).map(function(c){
+   if(c.b)c.b=c.b.filter(function(x){return specDropV3(x,theme)}).map(specV3);
+   if(c.list)c.list=c.list.filter(function(x){return specDropV3(x,theme)}).map(specV3);
+   return c}).filter(function(c){return ((c.b||[]).length+(c.list||[]).length)>0});
+ }
  return out;
 }
 
