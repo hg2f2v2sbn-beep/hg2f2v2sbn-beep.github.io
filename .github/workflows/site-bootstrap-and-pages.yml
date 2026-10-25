@@ -20,8 +20,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          # This workflow deliberately does NOT check out the old private repository.
-          # It cannot write to main and cannot access source, Worker or D1 secrets.
           mkdir -p _site
           cat > /tmp/guiin_site_allowlist.txt <<'SITE_ALLOWLIST'
           2026-fortune.html
@@ -69,12 +67,13 @@ jobs:
           today.html
           toss-payment.js
           SITE_ALLOWLIST
+          # strip accidental leading spaces from indented heredoc lines
+          sed -i 's/^[[:space:]]*//' /tmp/guiin_site_allowlist.txt
           while IFS= read -r f; do
             [ -n "$f" ] || continue
             test -f "$f" || { echo "::error::Required public asset missing: $f"; exit 1; }
             cp -- "$f" _site/
           done < /tmp/guiin_site_allowlist.txt
-          # Images stay in the public root, and must really be images.
           shopt -s nullglob
           for f in *.webp *.jpg *.jpeg *.png *.svg *.ico *.gif; do
             [ -f "$f" ] || continue
@@ -85,9 +84,6 @@ jobs:
             cp -- "$f" _site/
           done
           touch _site/.nojekyll
-          # CNAME deliberately not shipped: custom domain is configured in Pages Settings.
-          # The legacy repo is private and no longer part of deployment.
-          # Reject accidental server/ops files in the public *repository* before publishing.
           while IFS= read -r -d '' f; do
             b=${f#./}
             case "$b" in
@@ -98,7 +94,6 @@ jobs:
             echo "::error::Non-site file in PUBLIC repository: $b"
             exit 1
           done < <(find . -maxdepth 1 -type f -print0)
-          # Artifact may contain ONLY the allowlisted public files, verified images and .nojekyll.
           while IFS= read -r -d '' f; do
             b=${f#_site/}
             case "$b" in
@@ -109,7 +104,6 @@ jobs:
             echo "::error::Forbidden item in Pages artifact: $b"
             exit 1
           done < <(find _site -maxdepth 1 -type f -print0)
-          # Fail closed for common server credential fingerprints before artifact upload.
           if grep -RIEq -- '(sk-proj-[A-Za-z0-9_-]{12,}|(live|test)_sk_[A-Za-z0-9_-]{12,}|gh[pousr]_[A-Za-z0-9_]{24,}|-----BEGIN ([A-Z]+ )?PRIVATE KEY-----)' _site; then
             echo '::error::Potential secret literal in published website; investigate locally.'
             exit 1
@@ -121,17 +115,21 @@ jobs:
           set -euo pipefail
           cd _site
           missing=0
-          while IFS= read -r ref; do
+          # Extract static local refs; drop absolute paths and JS template fragments
+          mapfile -t refs < <(
+            grep -ohE '(src|href)="[^":#?]+\.(js|css|webp|jpg|jpeg|png|svg|ico|html)' *.html \
+              | sed -E 's/^(src|href)="//' \
+              | sed 's#^\./##' \
+              | grep -v '^/' \
+              | grep -v "['+[:space:]]" \
+              | sort -u || true
+          )
+          for ref in "${refs[@]+"${refs[@]}"}" ; do
             [ -z "$ref" ] && continue
-            # Skip JS template / dynamic string fragments embedded in HTML (e.g. '+esc(...)+'.webp)
-            if [[ "$ref" == *"'"* || "$ref" == *"+"* || "$ref" == *"`"* ]]; then
-              continue
-            fi
             if [[ "$ref" == *'..'* ]] || [ ! -f "$ref" ]; then
               echo "::error::Missing or unsafe local reference: $ref"; missing=1
             fi
-          done < <(grep -ohE '(src|href)="[^":#?]+\.(js|css|webp|jpg|jpeg|png|svg|ico|html)' *.html \
-                   | sed -E 's/^(src|href)="//' | sed 's#^\./##' | grep -v '^/' | sort -u || true)
+          done
           exit "$missing"
       - uses: actions/configure-pages@v5
       - name: Upload verified Pages artifact
