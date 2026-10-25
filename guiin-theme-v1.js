@@ -11,7 +11,7 @@ var flag=window.GUIIN_THEME_V1_ON;
 var isDemo=/(^|\/)demo\.html$/.test(location.pathname||'');
 var ON=flag===true||(flag===undefined&&isDemo);
 var LOG=[];
-window.GUIIN_THEME_V1={enabled:ON,fallbackLog:function(){return LOG.slice()}};
+window.GUIIN_THEME_V1={enabled:ON,interpretationVersion:'relationship-v2.4-ai-bridge-a08091e',fallbackLog:function(){return LOG.slice()}};
 if(!ON)return;
 
 /* ───────── 공통 도구 ───────── */
@@ -134,7 +134,7 @@ function yearLine(n,t,alt){
 function luckLine(n,t){if(!t||!t.luckKo)return '';return n+'의 현재 대운은 '+Y(t.luckKo+(t.luckGod?'('+t.luckGod+')':''))+'.'}
 
 /* ───────── 근거(명리 데이터) ───────── */
-function evidenceRows(f){
+function evidenceRowsV1(f){
  var rows=[
   ['일간',f.nA+' '+f.a.pillars.day.stem+'('+f.eA+') · '+f.nB+' '+f.b.pillars.day.stem+'('+f.eB+')'],
   ['일주',f.a.pillars.day.ko+' · '+f.b.pillars.day.ko],
@@ -153,7 +153,7 @@ function evidenceRows(f){
 /* ───────── 테마별 해석 ───────── */
 function headTone(f){var t=f.sig.tension,c=f.sig.combine;return t>=c+3?'tense':c>=t+2?'bond':'mix'}
 
-function buildCompat(f,metrics){
+function buildCompatV1(f,metrics){
  var k=REL_KIND[f.dayRel]||'none',d=DAYREL[k],sa=see(f.gA),sb=see(f.gB),la=STEM_LOVE[f.a.pillars.day.stem]||{},lb=STEM_LOVE[f.b.pillars.day.stem]||{};
  var tone=headTone(f);
  var head=tone==='bond'?'서로를 붙잡는 힘이 분명한 관계야.':tone==='tense'?'끌림만큼 조율할 숙제도 분명한 관계야.':'끌림과 차이가 함께 있는 관계야.';
@@ -173,7 +173,7 @@ function buildCompat(f,metrics){
  return {head:head,sum:sum,cards:cards};
 }
 
-function buildBreakup(f,x){
+function buildBreakupV1(f,x){
  var k=REL_KIND[f.dayRel]||'none',d=DAYREL[k],sa=see(f.gA),sb=see(f.gB);
  var tone=headTone(f);
  var head=tone==='tense'?'감정보다 풀어야 할 구조가 먼저 보이는 관계야.':tone==='bond'?'연결은 깊지만 지쳐 있는 지점이 있는 관계야.':'감정은 남아 있지만 풀어야 할 과제가 있는 관계야.';
@@ -193,7 +193,7 @@ function buildBreakup(f,x){
  return {head:head,sum:[d.short,pick(['가장 먼저 볼 것은 같은 갈등이 같은 방식으로 반복되는지야.','먼저 확인할 것은 다툼의 주제가 바뀌는지, 같은 주제가 돌아오는지야.','이 관계에서는 싸움의 내용보다 회복 방식이 더 큰 힌트야.'],f.seed),pick(['결정은 사주가 아니라 실제 행동의 변화로 하는 게 좋아.','판단 근거는 명식이 아니라 최근 두 달의 행동이어야 해.','명식은 방향을 보여 줄 뿐, 결론은 두 사람이 실제로 바꾼 행동이 내려.'],f.seed+1)],cards:cards};
 }
 
-function buildCrush(f,x){
+function buildCrushV1(f,x){
  var k=REL_KIND[f.dayRel]||'none',d=DAYREL[k],lb=STEM_LOVE[f.b.pillars.day.stem]||STEM_LOVE['갑'],sa=see(f.gA),sb=see(f.gB);
  var dist={far:'아직 연락이 거의 없는 사이라면 관계의 첫 단추는 자연스러운 접점을 만드는 데서 시작해.',know:'아는 사이라면 둘만의 대화 시간을 조금씩 늘리는 게 다음 단계야.',close:'이미 친한 사이라면 지금의 편안함을 잃지 않는 속도가 중요해.'}[x.dist]||'';
  var head=k==='bond'?'자연스럽게 가까워질 연결 고리가 있는 인연이야.':k==='clash'?'끌림은 강하지만 속도 조절이 필요한 인연이야.':k!=='none'?'가까워질수록 조심스럽게 다뤄야 할 인연이야.':({관성:'상대에게 믿음직한 사람으로 남을 때 가까워지는 인연이야.',재성:'상대가 먼저 챙기고 싶어질 여지가 있는 인연이야.',인성:'상대가 편안함을 느낄 때 열리는 인연이야.',식상:'대화가 이어질수록 가까워지는 인연이야.',비겁:'친구 같은 편안함에서 시작하는 인연이야.'})[f.gB]||'천천히 쌓아 갈수록 선명해지는 인연이야.';
@@ -207,7 +207,7 @@ function buildCrush(f,x){
  return {head:head,sum:[f.nB+'의 명식은 '+lb.key+'에 가까워.',d.short,pick(['상대의 실제 마음은 사주로 단정할 수 없어. 현실의 신호로 확인해.','상대의 마음은 명식으로 단정할 수 없어. 행동이 반복되는지로 확인해.','상대의 속마음은 사주로 단정할 수 없어. 상대가 보여 주는 반응이 답이야.'],f.seed)],cards:cards};
 }
 
-function buildReunion(f,x){
+function buildReunionV1(f,x){
  var k=REL_KIND[f.dayRel]||'none',d=DAYREL[k],sa=see(f.gA),sb=see(f.gB);
  var head=k==='bond'?'떨어져 있어도 연결감이 쉽게 끊기지 않는 관계야.':f.sig.combine>f.sig.tension?'두 사람은 아직 서로에게 영향을 주는 관계야.':({clash:'다시 만나면 같은 충돌을 먼저 정리해야 하는 관계야.',knot:'다시 만나도 같은 문제가 반복되기 쉬워서 규칙이 먼저 필요한 관계야.',hurt:'말하지 못한 서운함을 먼저 풀어야 하는 관계야.',break:'약속을 다시 세우는 것부터 시작해야 하는 관계야.'})[k]||'다시 끌릴 이유와 다시 부딪힐 이유가 함께 있는 관계야.';
  var since={short:'헤어진 지 3개월이 안 됐다면 아직 감정의 여운이 판단을 크게 좌우하는 시기야.',mid:'헤어진 지 1년이 안 됐다면 감정과 현실을 나눠 볼 수 있는 시기야.',long:'1년 이상 지났다면 두 사람 모두 이미 달라져 있을 가능성을 먼저 인정해야 해.'}[x.since]||'';
@@ -221,6 +221,198 @@ function buildReunion(f,x){
   {t:'재회 후 조율할 부분',b:[d.fix,f.gA===f.gB?'두 사람의 명식은 모두 '+J(sa.need,'을/를')+' 중요하게 여기는 경향이 있어. 다시 만난다면 이걸 어떤 행동으로 확인할지 처음부터 말로 맞춰 둬.':J(f.nA,'은/는')+' '+sa.need+', '+f.nB+'의 명식은 '+J(sb.need,'을/를')+' 중요하게 여기는 경향이 있어. 다시 만난다면 이 두 가지를 처음부터 말로 맞춰 둬.']}
  ];
  return {head:head,sum:[d.short,sa.pull+'이 남아 있기 쉬운 구조야.',pick(['시기는 분위기일 뿐, 결과는 두 사람의 실제 행동이 정해.','때가 맞는지보다 다시 만났을 때 같은 문제를 어떻게 다루는지가 더 중요해.','명식은 흐름을 보여 줄 뿐, 재회 여부는 두 사람이 정해.'],f.seed+3)],cards:cards};
+}
+
+/* ───────── 관계 해석 V2.3: 최신 a08091e 위에 premium-evidence-v5.14 해석 자산을 관계 테마에 연결 ─────────
+ * 계산식을 새로 만들지 않는다.
+ * GuiinCompatQuality634 / GuiinExpert가 제공하는 계산·해석 결과를 우선 사용하고,
+ * 사용할 수 없거나 오류가 나면 바로 V1 문장으로 되돌린다.
+ */
+function richPairContext(f){
+ if(window.GUIIN_RELATION_V2_ON===false)return {rows:[],by:{},metrics:null,model:null};
+ var metrics=null,model=null,rows=[],by={};
+ try{if(typeof guiinCompatMetricsV56==='function')metrics=guiinCompatMetricsV56(f.a,f.b)}catch(_e){}
+ try{if(window.GuiinCompatQuality634&&typeof GuiinCompatQuality634.model==='function')model=GuiinCompatQuality634.model(f.a,f.b)}catch(_e){}
+ var x;
+ if(model){
+  x=Object.assign({},model);
+  x.a=f.a;x.b=f.b;
+  x.A=Object.assign({},model.A||{},{name:f.nA,c:f.a});
+  x.B=Object.assign({},model.B||{},{name:f.nB,c:f.b});
+  if(!x.m&&metrics)x.m=metrics;
+ }else{
+  x={a:f.a,b:f.b,A:{name:f.nA,c:f.a},B:{name:f.nB,c:f.b},m:metrics||{},
+    d:{q:{dayRel:f.dayRel,sig:{bond:+f.sig.combine||0,combine:+f.sig.combine||0,tension:+f.sig.tension||0}}}};
+ }
+ try{
+  if(window.GuiinExpert&&typeof GuiinExpert.premiumCompatibilitySections==='function'){
+   rows=GuiinExpert.premiumCompatibilitySections(x)||[];
+  }
+ }catch(e){LOG.push({theme:'relationship-v2.3',reason:'premiumCompatibilitySections:'+(e&&e.message)})}
+ rows.forEach(function(r){if(r&&r.id)by[r.id]=r});
+ return {rows:rows,by:by,metrics:metrics,model:x};
+}
+function richParas(ctx,id){
+ var r=ctx&&ctx.by&&ctx.by[id],a=r&&r.paragraphs;
+ return Array.isArray(a)?a.filter(function(x){return typeof x==='string'&&x.trim()}):[];
+}
+function uniqTextV2(a){
+ var out=[],seen={};
+ (a||[]).forEach(function(x){
+  x=String(x||'').trim();
+  if(!x)return;
+  var k=x.replace(/\s+/g,' ');
+  if(seen[k])return;
+  seen[k]=1;out.push(x);
+ });
+ return out;
+}
+function firstSentenceV2(s){
+ s=String(s||'').trim();if(!s)return '';
+ var cut=s.length,chars=['.','!','?'];
+ chars.forEach(function(c){var i=s.indexOf(c);if(i>=0&&i<cut)cut=i});
+ return cut<s.length?s.slice(0,cut+1):s;
+}
+function breakupHeadV2(f,k){
+ var sa=see(f.gA),sb=see(f.gB);
+ if(k==='bond')return '붙는 힘은 분명하지만, 가까워질수록 서로 원하는 행동을 말로 맞춰야 하는 관계야.';
+ if(k==='clash')return '마음의 크기보다 생활 속도와 반응 방식의 충돌을 먼저 풀어야 하는 관계야.';
+ if(k==='knot')return '좋아하는 마음과 별개로 같은 문제를 같은 자리에서 반복하기 쉬운 관계야.';
+ if(k==='hurt')return '큰 싸움보다 말하지 않은 서운함이 쌓이는 방식을 먼저 봐야 하는 관계야.';
+ if(k==='break')return '감정보다 약속이 바뀌는 방식과 책임의 빈칸을 먼저 정리해야 하는 관계야.';
+ if(f.gA&&f.gB&&f.gA!==f.gB)return J(f.nA,'은/는')+' '+J(sa.need,'을/를')+' 중요하게 보고, '+J(f.nB,'은/는')+' '+J(sb.need,'을/를')+' 중요하게 보는 관계야.';
+ if(f.gA&&f.gA===f.gB)return '둘 다 비슷한 것을 원해서, 채워지지 않을 때 같은 지점에서 더 크게 서운해지기 쉬운 관계야.';
+ if(f.sA.band!==f.sB.band)return '한쪽이 관계의 속도와 결정을 더 많이 잡기 쉬워서 부담의 균형을 먼저 봐야 하는 관계야.';
+ return '겉으로 큰 충돌이 없어도 가까운 생활에서 무엇을 주고받는지가 관계를 가르는 조합이야.';
+}
+function evidenceRows(f){
+ if(window.GUIIN_RELATION_V2_ON===false)return evidenceRowsV1(f);
+ var rows=evidenceRowsV1(f),pa=null,pb=null,extra=[];
+ try{
+  if(window.GuiinExpert&&typeof GuiinExpert.narrativeProfile==='function'){
+   pa=GuiinExpert.narrativeProfile(f.a);pb=GuiinExpert.narrativeProfile(f.b);
+  }
+ }catch(_e){}
+ if(f.a&&f.a.pillars&&f.a.pillars.month&&f.b&&f.b.pillars&&f.b.pillars.month){
+  extra.push(['월주',f.nA+' '+f.a.pillars.month.ko+' · '+f.nB+' '+f.b.pillars.month.ko]);
+ }
+ if(pa&&pb&&(pa.social||pb.social))extra.push(['월간 십성',f.nA+' '+(pa.social||'-')+' · '+f.nB+' '+(pb.social||'-')]);
+ if(pa&&pb&&(pa.intimate||pb.intimate))extra.push(['일지 본기 십성',f.nA+' '+(pa.intimate||'-')+' · '+f.nB+' '+(pb.intimate||'-')]);
+ return rows.slice(0,2).concat(extra,rows.slice(2));
+}
+function softV2(s){
+ s=String(s||'').trim();if(!s)return '';
+ return s
+  .replace(/에 끌려\./g,'에 끌리기 쉬워.')
+  .replace(/에 마음이 가\./g,'에 마음이 가기 쉬워.')
+  .replace(/평가당했다고 느끼고 마음이 닫혀\./g,'평가받는 느낌으로 받아들여 마음을 닫기 쉬워.')
+  .replace(/관계가 식어 간다고 느껴\./g,'관계가 식는 것처럼 느끼기 쉬워.')
+  .replace(/방어부터 하게 돼\./g,'방어적으로 반응하기 쉬워.')
+  .replace(/눈치만 보게 돼\./g,'눈치를 보게 되기 쉬워.');
+}
+function themeParas(ctx,id,allowScore){
+ var a=richParas(ctx,id).map(softV2);
+ if(allowScore)return a;
+ return a.filter(function(p){return !/(궁합|\d+점|점수\(|맞는 쪽|연애 흐름\s*\d|성향 조화\s*\d|돈 감각\s*\d|앞으로의 방향\s*\d)/.test(p)});
+}
+function axisHeadV2(m){
+ var axes=[['끌림',m&&m.love],['대화',m&&m.personality],['생활·돈',m&&m.money],['장기 조율',m&&m.future]].filter(function(r){return isFinite(+r[1])}).sort(function(a,b){return +b[1]-+a[1]});
+ if(axes.length<2)return '';
+ if(+axes[0][1]-+axes[axes.length-1][1]>=8)return J(axes[0][0],'은/는')+' 강점인데 '+J(axes[axes.length-1][0],'은/는')+' 따로 맞춰야 하는 관계야.';
+ return J(axes[0][0],'과/와')+' '+J(axes[1][0],'은/는')+' 비교적 잘 맞고, 다른 영역은 생활 속에서 맞춰 가는 관계야.';
+}
+function crushHeadV2(f,k){
+ var sa=see(f.gA),sb=see(f.gB);
+ if(k==='bond')return '편하게 가까워질 연결은 있지만, 호감 여부는 상대가 반복해서 내는 시간과 행동으로 확인해야 해.';
+ if(k==='clash')return '끌림이 생겨도 반응 속도가 엇갈리기 쉬워서, 답을 재촉하지 않는 접근이 중요한 인연이야.';
+ if(k==='knot')return '가까워질수록 같은 지점을 다시 확인하기 쉬워서, 서두르기보다 편한 대화가 반복되는지 보는 게 중요해.';
+ if(k==='hurt')return '큰 표현보다 작은 오해가 남지 않게 확인하면서 가까워지는 편이 맞는 인연이야.';
+ if(k==='break')return '호감보다 약속과 연락 방식이 자주 바뀌지 않는지를 먼저 봐야 하는 인연이야.';
+ if(f.gA&&f.gB&&f.gA!==f.gB)return f.nA+'에게 '+J(f.nB,'은/는')+' '+sa.feel+'으로 다가오기 쉽고, '+f.nB+' 쪽에서는 '+J(f.nA,'을/를')+' '+sb.feel+'으로 받아들이기 쉬운 조합이야.';
+ return '친해지는 속도보다 서로 편하다고 느끼는 행동이 반복되는지를 보는 게 중요한 인연이야.';
+}
+function buildCompat(f,metrics){
+ var ctx=richPairContext(f);
+ if(!ctx.rows.length)return buildCompatV1(f,metrics);
+ var core=themeParas(ctx,'pair-core',true),attr=themeParas(ctx,'pair-attraction',true),conf=themeParas(ctx,'pair-conflict',true),
+     cool=themeParas(ctx,'pair-cooling',true),space=themeParas(ctx,'pair-space',true),rules=themeParas(ctx,'pair-rules',true),
+     money=themeParas(ctx,'pair-money',true),conditions=themeParas(ctx,'pair-conditions',true),fin=themeParas(ctx,'pair-final',true);
+ var m=metrics||ctx.metrics||{},head=axisHeadV2(m)||firstSentenceV2(core[0])||'두 사람은 끌리는 지점과 맞춰야 할 지점이 함께 있는 관계야.';
+ var sum=uniqTextV2([firstSentenceV2(attr[0]),firstSentenceV2(conf[0]),firstSentenceV2(core[0])]).slice(0,3);
+ var timing=uniqTextV2([yearLine(f.nA,f.tA),yearLine(f.nB,f.tB,true),luckLine(f.nA,f.tA)+(f.tB&&f.tB.luckKo?' '+luckLine(f.nB,f.tB):'')]);
+ var cards=[
+  {t:'끌리는 이유',b:uniqTextV2(attr.slice(0,3).concat([dmLine(f)])).slice(0,4)},
+  {t:'잘 맞는 점',b:uniqTextV2(core.slice(3,5).concat([complementPos(f)])).slice(0,4)},
+  {t:'갈등 포인트',b:uniqTextV2(conf.slice(0,4).concat([strengthPair(f)])).slice(0,4)},
+  {t:'소통',b:uniqTextV2(cool.slice(0,3).concat(rules.slice(0,1))).slice(0,4)},
+  {t:'생활·돈',b:uniqTextV2(money.slice(0,4)).slice(0,4)},
+  {t:'장기 관계',b:uniqTextV2(timing.concat(conditions.slice(0,2),fin.slice(0,1))).slice(0,4)}
+ ];
+ return {head:head,sum:sum,cards:cards};
+}
+function buildBreakup(f,x){
+ var ctx=richPairContext(f);
+ if(!ctx.rows.length)return buildBreakupV1(f,x);
+ var k=REL_KIND[f.dayRel]||'none',d=DAYREL[k];
+ var attr=themeParas(ctx,'pair-attraction',false),conf=themeParas(ctx,'pair-conflict',false),cool=themeParas(ctx,'pair-cooling',false),
+     space=themeParas(ctx,'pair-space',false),rules=themeParas(ctx,'pair-rules',false),conditions=themeParas(ctx,'pair-conditions',false);
+ var len={short:'만난 지 아직 오래되지 않았기 때문에, 지금의 불편이 서로를 덜 알아서 생긴 건지 이미 반복되는 구조인지 분리해서 봐야 해.',mid:'1년 안팎을 지나며 서로의 습관과 역할이 드러나는 시기라, 한 번의 싸움보다 반복되는 장면이 더 중요한 자료야.',long:'오래 함께한 관계라면 지금의 갈등 하나보다 이미 굳어진 역할과 회복 방식이 바뀔 수 있는지를 봐야 해.'}[x.len]||'';
+ var state={now:'지금도 만나는 중이라면 결론을 먼저 정하기보다, 다음 갈등에서 실제 행동 하나가 달라지는지 확인해.',pause:'잠시 거리를 둔 상태라면 연락의 횟수보다, 다시 대화했을 때 이전과 다른 행동이 가능한지를 확인해.'}[x.state]||'';
+ var head=breakupHeadV2(f,k);
+ var sum=uniqTextV2([firstSentenceV2(conf[0]||d.short),firstSentenceV2(attr[0]||dmLine(f)),firstSentenceV2(conditions[0]||state)]).slice(0,3);
+ var cards=[
+  {t:'지금 힘든 이유',b:uniqTextV2(conf.slice(0,2).concat([dmLine(f),len])).slice(0,4)},
+  {t:'반복되는 갈등',b:uniqTextV2(conf.slice(2,4).concat(space.slice(1,3),[strengthPair(f)])).slice(0,4)},
+  {t:'아직 붙잡게 되는 이유',b:uniqTextV2(attr.slice(0,3).concat([complementPos(f),d.short])).slice(0,4)},
+  {t:'개선 가능한 부분',b:uniqTextV2(conditions.slice(0,4).concat([d.fix])).slice(0,4)},
+  {t:'확인해야 할 행동',list:uniqTextV2(rules.slice(0,3).concat([state,'계속 만날지의 결론은 명식보다 실제 행동이 달라지는지로 판단하는 게 좋아.'])).slice(0,5)}
+ ];
+ return {head:head,sum:sum,cards:cards};
+}
+function buildCrush(f,x){
+ var ctx=richPairContext(f);
+ if(!ctx.rows.length)return buildCrushV1(f,x);
+ var k=REL_KIND[f.dayRel]||'none',d=DAYREL[k],lb=STEM_LOVE[f.b.pillars.day.stem]||STEM_LOVE['갑'];
+ var attr=themeParas(ctx,'pair-attraction',false),conf=themeParas(ctx,'pair-conflict',false),cool=themeParas(ctx,'pair-cooling',false),
+     space=themeParas(ctx,'pair-space',false),rules=themeParas(ctx,'pair-rules',false);
+ var dist={far:'아직 연락이 거의 없다면 먼저 자연스럽게 답할 수 있는 작은 접점을 만드는 게 우선이야.',know:'아는 사이라면 둘만의 대화가 실제로 반복되는지부터 확인해.',close:'이미 친한 사이라면 친밀함 자체를 호감으로 단정하지 말고, 둘만을 위해 따로 시간과 행동을 내는지 봐.'}[x.dist]||'';
+ var head=crushHeadV2(f,k);
+ var cards=[
+  {t:'상대의 연애 성향',b:uniqTextV2([f.nB+'의 일간은 '+Y(f.b.pillars.day.stem+'('+f.eB+')')+'. '+lb.tend,firstSentenceV2(cool[1]||cool[0]),'이건 명식에서 읽는 관계 성향이야. '+f.nB+'의 실제 속마음은 대화와 행동으로 확인하는 게 가장 정확해.']).slice(0,3)},
+  {t:'두 사람의 관계 특징',b:uniqTextV2(attr.slice(0,3).concat([dmLine(f),d.short])).slice(0,4)},
+  {t:'접근 방법',b:uniqTextV2([lb.approach,firstSentenceV2(rules[0]),dist]).slice(0,3)},
+  {t:'부담이 되는 방식',b:uniqTextV2(conf.slice(0,2).concat(space.slice(0,2))).slice(0,4)},
+  {t:'현실에서 볼 신호',list:uniqTextV2([lb.sign,'약속을 미룰 때 대신 가능한 날짜나 시간을 먼저 제안하는지','대화가 끝난 뒤 상대 쪽에서도 다음 이야기를 다시 꺼내는지','한 번의 친절보다 2~3주 동안 비슷한 행동이 반복되는지']).slice(0,4)}
+ ];
+ var sum=uniqTextV2([firstSentenceV2(attr[0]||d.short),firstSentenceV2(space[0]),'상대의 실제 마음은 사주로 단정하지 않고 현실의 반복 행동으로 확인해.']).slice(0,3);
+ return {head:head,sum:sum,cards:cards};
+}
+function buildReunion(f,x){
+ var ctx=richPairContext(f);
+ if(!ctx.rows.length)return buildReunionV1(f,x);
+ var k=REL_KIND[f.dayRel]||'none',d=DAYREL[k];
+ var attr=themeParas(ctx,'pair-attraction',false),conf=themeParas(ctx,'pair-conflict',false),rules=themeParas(ctx,'pair-rules',false),
+     conditions=themeParas(ctx,'pair-conditions',false),space=themeParas(ctx,'pair-space',false);
+ var head=k==='bond'?'다시 끌리는 힘은 남기 쉬워도, 재회 여부는 예전과 다른 행동이 가능한지를 먼저 봐야 해.':
+  k==='clash'?'다시 만나면 감정보다 먼저 같은 충돌을 다른 방식으로 풀 수 있는지 확인해야 하는 관계야.':
+  k==='knot'?'재회 자체보다, 다시 만났을 때 같은 문제가 반복되지 않을 새 규칙이 필요한 관계야.':
+  k==='hurt'?'남은 마음보다 말하지 못했던 서운함을 어떻게 확인할지 먼저 정해야 하는 관계야.':
+  k==='break'?'다시 이어지려면 마음보다 약속과 책임을 다시 세우는 과정이 먼저 필요한 관계야.':
+  (f.gA&&f.gB&&f.gA!==f.gB?f.nA+'에게 '+J(f.nB,'은/는')+' '+see(f.gA).feel+'으로 남기 쉽고, '+f.nB+' 쪽에서는 '+J(f.nA,'을/를')+' '+see(f.gB).feel+'으로 받아들이기 쉬워서 다시 끌리는 이유와 지치는 이유를 따로 봐야 해.':
+   f.sA.band!==f.sB.band?'강약 차이가 있어서 예전과 같은 속도로 다시 시작하기보다 서로 감당할 수 있는 속도를 먼저 맞춰야 하는 관계야.':
+   '다시 끌릴 이유와 다시 지칠 이유가 함께 있어서, 재회 여부보다 바뀐 조건을 먼저 확인해야 하는 관계야.');
+ var since={short:'헤어진 지 3개월이 안 됐다면 아직 감정의 여운이 판단에 섞일 수 있어서, 연락 전에 헤어진 이유가 실제로 달라졌는지 먼저 적어 보는 게 좋아.',mid:'헤어진 지 1년이 안 됐다면 감정과 현실에서 달라진 부분을 나눠 보기 좋은 시기야.',long:'1년 이상 지났다면 예전 관계를 그대로 복원하려 하기보다 두 사람이 지금 어떻게 달라졌는지를 먼저 봐야 해.'}[x.since]||'';
+ var contact={on:'지금도 연락이 이어진다면 횟수보다 대화 내용과 행동이 예전과 달라졌는지가 더 중요해.',off:'연락이 끊긴 상태라면 다시 연락할지보다, 연락해서 확인할 한 가지가 무엇인지 먼저 정리해.'}[x.contact]||'';
+ var flow=uniqTextV2([yearLine(f.nA,f.tA),yearLine(f.nB,f.tB,true),luckLine(f.nA,f.tA)+(f.tB&&f.tB.luckKo?' '+luckLine(f.nB,f.tB):''),'대운과 세운은 시기의 분위기를 보여 주는 참고값이야. 특정 날짜의 연락이나 재회를 확정하지 않아.']);
+ var cards=[
+  {t:'다시 끌리는 이유',b:uniqTextV2(attr.slice(0,3).concat([complementPos(f),d.short])).slice(0,4)},
+  {t:'과거 문제',b:uniqTextV2(conf.slice(0,3).concat([strengthPair(f)])).slice(0,4)},
+  {t:'현재 관계 흐름',b:flow},
+  {t:'재접촉을 고민할 때 기준',list:uniqTextV2([since,contact,firstSentenceV2(conditions[1]||conditions[0]),firstSentenceV2(rules[0])]).slice(0,4)},
+  {t:'재회 후 조율할 부분',b:uniqTextV2(rules.slice(0,2).concat(conditions.slice(1,3),space.slice(0,1),[d.fix])).slice(0,4)}
+ ];
+ var sum=uniqTextV2([firstSentenceV2(attr[0]||d.short),firstSentenceV2(conf[0]),'재회가 정해져 있다고 보지 않고, 이전과 다른 행동이 실제로 가능한지를 기준으로 봐.']).slice(0,3);
+ return {head:head,sum:sum,cards:cards};
 }
 
 /* 신살·귀인 (한 사람) */
@@ -426,6 +618,47 @@ var NEXT={
  compat:['궁합 전체 풀이 보기','기존 궁합 화면에서 점수와 전체 풀이를 이어서 볼 수 있어.'],
  shinsal:['내 평생사주에서 신살·귀인 전체 보기','기존 결과 화면의 신살·귀인 탭으로 이동해.']
 };
+var AI_THEME_Q={
+ compat:'방금 본 궁합 풀이를 바탕으로 우리 관계에서 가장 중요한 장점과 반복해서 부딪힐 지점을 내 상황에 맞게 더 자세히 상담해줘.',
+ breakup:'방금 본 이별 고민 풀이를 바탕으로 지금 관계에서 내가 먼저 확인해야 할 행동과 바꿀 수 있는 부분을 내 상황에 맞게 같이 정리해줘.',
+ crush:'방금 본 짝사랑 풀이를 바탕으로 상대의 속마음을 단정하지 말고, 부담 없이 다가갈 방법과 현실에서 확인할 신호를 내 상황에 맞게 상담해줘.',
+ reunion:'방금 본 재회운 풀이를 바탕으로 재회 가능성을 단정하지 말고, 다시 연락하기 전에 확인할 기준과 다시 만난다면 조율할 부분을 내 상황에 맞게 상담해줘.'
+};
+function aiThemeSnapshot(k,out,ev,x,f){
+ var labels={compat:'궁합',breakup:'이별 고민',crush:'짝사랑',reunion:'재회운'};
+ var kw=(x&&x.kw||[]).map(function(v){var row=KW.find(function(o){return o[0]===v});return row?row[1]:v}).filter(Boolean);
+ return {
+  version:'relationship-theme-v2.4',theme:k,theme_label:labels[k]||k,
+  relationship_state:Object.keys(x||{}).filter(function(key){return key!=='kw'}).reduce(function(o,key){o[key]=x[key];return o},{}),
+  selected_keywords:kw,
+  headline:String(out&&out.head||'').slice(0,300),
+  summary:(out&&out.sum||[]).slice(0,4).map(function(v){return String(v).slice(0,500)}),
+  sections:(out&&out.cards||[]).slice(0,7).map(function(c){return {title:String(c.t||'').slice(0,120),body:(c.b||c.list||[]).slice(0,5).map(function(v){return String(v).slice(0,700)})}}),
+  evidence:(ev||[]).slice(0,14).map(function(r){return {label:String(r[0]||'').slice(0,80),value:String(r[1]||'').slice(0,500)}}),
+  pair:{a_name:f&&f.nA||'',b_name:f&&f.nB||'',day_relation:f&&f.dayRel||'',cross_ten_god:f&&f.tg?{a_sees_b:f.tg.aSeesB||'',b_sees_a:f.tg.bSeesA||''}:null}
+ };
+}
+function handoffThemeAI(k,d){
+ if(!d||!d.a||!d.b||!AI_THEME_Q[k])return false;
+ try{
+  var metrics=d.metrics||null;
+  if(!metrics&&typeof guiinCompatMetricsV56==='function')metrics=guiinCompatMetricsV56(d.a,d.b);
+  var pair={a:d.a,b:d.b,score:metrics&&metrics.score,love:metrics&&metrics.love,personality:metrics&&metrics.personality,money:metrics&&metrics.money,future:metrics&&metrics.future};
+  pair.aiRelationship={signals:metrics&&metrics.q&&metrics.q.sig||null,dayRelation:metrics&&metrics.q&&metrics.q.dayRel||null,theme_reading:d.aiReading||null};
+  if(typeof guiinOpenResultConsultation==='function'){
+   var old=null,had=false;
+   try{had=typeof matchMeta!=='undefined';if(had){old=matchMeta;matchMeta=pair}}
+   catch(_e){}
+   try{guiinOpenResultConsultation('compatibility',AI_THEME_Q[k])}
+   finally{if(had){try{matchMeta=old}catch(_e){}}}
+   return true;
+  }
+  if(typeof go==='function'){go('ask');return true}
+ }catch(e){LOG.push({theme:k,reason:'ai-bridge:'+(e&&e.message)})}
+ return false;
+}
+function openThemeAI(){return handoffThemeAI(state.theme,state.data)}
+
 function run(){
  var el=$('theme'),k=state.theme,T=THEMES[k];if(!el||!T)return;
  var msg=el.querySelector('[data-gtmsg]'),res=el.querySelector('[data-gtres]');msg.textContent='';
@@ -450,11 +683,12 @@ function run(){
   }
   if(T.pair&&x.kw&&x.kw.length&&out&&out.cards){out.cards=out.cards.concat([{t:'고민 키워드로 본 포인트',b:x.kw.map(function(v){return KW_NOTE[v]}).filter(Boolean)}])}
   out=clean(out,k);
-  state.data={a:a,b:b,A:A.inp,B:B&&B.inp};
+  state.data={a:a,b:b,A:A.inp,B:B&&B.inp,metrics:metrics,x:x,aiReading:T.pair?aiThemeSnapshot(k,out,ev,x,f):null};
   var html='<div class="gtSum"><small>핵심 요약</small><h3>'+esc(out.head)+'</h3>'+out.sum.map(function(s){return '<p>'+esc(s)+'</p>'}).join('')+'</div>';
   if(metrics&&isFinite(metrics.score)){html+='<div class="gtD"><div class="in" style="padding-top:14px">'+[['연애·끌림',metrics.love],['성격·대화',metrics.personality],['돈·생활',metrics.money],['장기조율',metrics.future]].filter(function(r){return isFinite(r[1])}).map(function(r){return '<p style="margin:0 0 6px;display:flex;justify-content:space-between"><span>'+r[0]+'</span><b>'+r[1]+'</b></p>'}).join('')+'<p class="gtNote" style="margin:4px 0 0">기존 궁합 화면과 같은 계산값이야.</p></div></div>'}
   html+=out.cards.map(function(c,i){return cardHTML(c,i,i===0)}).join('');
   html+=evidenceHTML(ev);
+  if(T.pair)html+='<div class="gtNext"><button type="button" class="main" data-gtai>AI 상담으로 이어서 묻기 ›</button></div><p class="gtNote">방금 본 '+esc(T.title)+' 계산값과 풀이를 AI 상담에 이어서 참고해.</p>';
   if(NEXT[k])html+='<div class="gtNext"><button type="button" class="main" data-gtnext>'+esc(NEXT[k][0])+' ›</button></div><p class="gtNote">'+esc(NEXT[k][1])+'</p>';
   html+='<p class="gtNote">사주 풀이는 참고 정보야. 사람의 실제 마음이나 특정 날짜의 일을 정해 주지 않아.</p>';
   res.innerHTML=html;
@@ -487,6 +721,7 @@ function onClick(e){
  if(t.closest('[data-gtback]')){if(state.theme)render(null);else go('home');window.scrollTo(0,0);return}
  var g=t.closest('[data-gt]');if(g){render(g.getAttribute('data-gt'));window.scrollTo(0,0);return}
  if(t.closest('[data-gtrun]')){run();return}
+ if(t.closest('[data-gtai]')){openThemeAI();return}
  if(t.closest('[data-gtnext]')){next();return}
 }
 function homeArt(){
@@ -515,7 +750,7 @@ function boot(){
   var tries=0,iv=setInterval(function(){tries++;if($('gHomeV2')&&!$('gHomeV2').querySelector('#gThemeHome')){var o=$('gThemeHome');if(o)o.remove();mountHome()}if(tries>20)clearInterval(iv)},250);
   if(location.hash==='#theme')open(null);
   window.GUIIN_THEME_V1.open=open;
-  window.GUIIN_THEME_V1._test={facts:facts,buildCompat:buildCompat,buildBreakup:buildBreakup,buildCrush:buildCrush,buildReunion:buildReunion,buildShinsal:buildShinsal,clean:clean};
+  window.GUIIN_THEME_V1._test={facts:facts,buildCompat:buildCompat,buildBreakup:buildBreakup,buildCrush:buildCrush,buildReunion:buildReunion,buildShinsal:buildShinsal,richPairContext:richPairContext,evidenceRows:evidenceRows,aiThemeSnapshot:aiThemeSnapshot,handoffThemeAI:handoffThemeAI,clean:clean};
  }catch(e){LOG.push({reason:'boot:'+(e&&e.message)});try{var s=$('gThemeHome');if(s)s.remove()}catch(_){}}
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();

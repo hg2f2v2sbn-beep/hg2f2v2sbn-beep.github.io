@@ -4,7 +4,7 @@
    실패하면 null을 돌려주고 기존 요청은 그대로 나간다. */
 (function(){
 'use strict';
-var V='20261013-deep-ai-bridge';
+var V='20261025-theme-ai-bridge-v2';
 var BODY_MAX=600, TOTAL_MAX=2400;
 function parse(html){
   try{
@@ -36,19 +36,46 @@ function personal(c){
     return s?{version:V,source:'site-deep-voice',sections:s}:null;
   }catch(e){return null}
 }
+function themeSections(pair){
+  try{
+    var t=pair&&pair.aiRelationship&&pair.aiRelationship.theme_reading;
+    if(!t||typeof t!=='object')return null;
+    var out=[],total=0;
+    function add(title,body,evidence){
+      body=String(body||'').replace(/\s+/g,' ').trim().slice(0,BODY_MAX);if(!body||total+body.length>TOTAL_MAX)return;
+      total+=body.length;out.push({title:String(title||'관계 테마').slice(0,40),body:body,evidence:evsafe(evidence)});
+    }
+    var ev=(t.evidence||[]).slice(0,5).map(function(r){return String(r.label||'')+' '+String(r.value||'')}).join(' / ');
+    add('관계 테마 · '+String(t.theme_label||t.theme||''),[t.headline].concat(t.summary||[]).filter(Boolean).join(' '),ev);
+    (t.sections||[]).slice(0,4).forEach(function(r){add(r.title,(r.body||[]).join(' '),ev)});
+    return out.length?out:null;
+  }catch(e){return null}
+}
+function mergeSections(primary,secondary){
+  var out=[],total=0,seen={};
+  (primary||[]).concat(secondary||[]).forEach(function(r){
+    if(!r||!r.body)return;var key=String(r.title||'')+'|'+String(r.body||'').slice(0,80);if(seen[key])return;
+    var body=String(r.body).slice(0,BODY_MAX);if(total+body.length>TOTAL_MAX)return;
+    seen[key]=1;total+=body.length;out.push({title:String(r.title||'').slice(0,40),body:body,evidence:evsafe(r.evidence)});
+  });
+  return out.length?out:null;
+}
 function compat(pair){
   try{
-    var DC=window.GUIIN_DEEP_COMPAT;
-    if(!DC||typeof DC.build!=='function'||!pair||!pair.a||!pair.b)return null;
-    var swapped=false,old;
-    try{
-      if(typeof matchMeta!=='undefined'&&matchMeta!==pair){old=matchMeta;matchMeta=pair;swapped=true}
-    }catch(_e){swapped=false}
-    var html;
-    try{html=DC.build(['verdict','good','hard','fight','marry'])}
-    finally{if(swapped){try{matchMeta=old}catch(_e){}}}
-    var s=html?parse(html):null;
-    return s?{version:V,source:'site-deep-compat',sections:s}:null;
+    if(!pair||!pair.a||!pair.b)return null;
+    var themed=themeSections(pair),generic=null,DC=window.GUIIN_DEEP_COMPAT;
+    if(DC&&typeof DC.build==='function'){
+      var swapped=false,old;
+      try{
+        if(typeof matchMeta!=='undefined'&&matchMeta!==pair){old=matchMeta;matchMeta=pair;swapped=true}
+      }catch(_e){swapped=false}
+      var html;
+      try{html=DC.build(['verdict','good','hard','fight','marry'])}
+      finally{if(swapped){try{matchMeta=old}catch(_e){}}}
+      generic=html?parse(html):null;
+    }
+    var s=mergeSections(themed,generic);
+    return s?{version:V,source:themed?'site-theme+deep-compat':'site-deep-compat',sections:s}:null;
   }catch(e){return null}
 }
 window.GUIIN_DEEP_AI={version:V,personal:personal,compat:compat};
