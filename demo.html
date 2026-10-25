@@ -12883,7 +12883,7 @@ try{Object.assign(window,{guiinPaymentCenterStart});}catch(_e){}
  }
 })();
 </script>
-<script src="guiin-interpretation-v4-b3.js?v=20261020-b9"></script>
+<script src="guiin-interpretation-v4-b3.js?v=20261025-final"></script>
 <script id="GUIIN_RELEASE_INTEGRATION">
 /* Release QA integration: calculation, permission and navigation functions stay authoritative. */
 (function(){
@@ -13700,7 +13700,7 @@ try{Object.assign(window,{guiinPaymentCenterStart});}catch(_e){}
 .guiinSeenBar span{flex:1}.guiinSeenBar button{min-height:36px;padding:0 12px;border-radius:999px;border:1px solid #b9d5c3;background:#fff;color:#1f5a43;font-weight:800}
 </style>
 <script id="GUIIN_B3_FIX_V1" src="guiin-b3-fix.js?v=20261020-b9"></script>
-<script id="GUIIN_B6_FEATURES_V1" src="guiin-b6-features.js?v=20261020-b9"></script>
+<script id="GUIIN_B6_FEATURES_V1" src="guiin-b6-features.js?v=20261025-final"></script>
 <style id="guiin-ui-products-v1">
 /* 홈 판매 상품 2카드 + 상품·이용권 안내 화면 (UI 전용, 기능 변경 없음) */
 .homeProductReview.duo{padding:15px 12px 12px}
@@ -13751,5 +13751,174 @@ try{Object.assign(window,{guiinPaymentCenterStart});}catch(_e){}
 #paymentInfo.payCenterV2 .payGroup .paymentInfoStatus{margin-top:0}
 #paymentInfo.payCenterV2 .softBtn,#paymentInfo.payCenterV2 .ctaGold{white-space:normal;word-break:keep-all}
 </style>
+<!-- GUIIN_HOME_V2 — 새 홈 화면 (운영 스위치: window.GUIIN_HOME_V2_ON). 기존 홈 블록은 지우지 않고 숨김. 기존 ID·이벤트·사업자정보 원문 유지. API 호출 없음. -->
+<style id="GUIIN_HOME_V2_CSS">
+html body #home.hv2On.hv2On.hv2On.hv2On>.homeHero,html body #home.hv2On.hv2On.hv2On.hv2On>.tiles,html body #home.hv2On.hv2On.hv2On.hv2On>.slogan,html body #home.hv2On.hv2On.hv2On.hv2On>.rankRow,html body #home.hv2On.hv2On.hv2On.hv2On>.ghTeaser,html body #home.hv2On.hv2On.hv2On.hv2On>.guiinJourney,html body #home.hv2On.hv2On.hv2On.hv2On>.guiinPersonalHome,html body #home.hv2On.hv2On.hv2On.hv2On>.homeProductReview{display:none!important}
+h1.brandline.hv2H1{margin:0;line-height:inherit;font-family:inherit}
+.hv2{--hvG:#0b6b4f;--hvP:#d93b66;--hvY:#ffd65c;--hvY2:#f6c43b;--hvInk:#222c25;--hvSub:#4f574f;display:flex;flex-direction:column;gap:12px;margin:10px 0 16px}
+.hv2 *{box-sizing:border-box}
+.hv2 img{display:block}
+.hv2Card{position:relative;border-radius:22px;overflow:hidden;border:1px solid rgba(214,200,170,.55);box-shadow:0 3px 12px rgba(80,70,40,.06)}
+/* 오늘의 운세 */
+.hv2Hero{background:linear-gradient(135deg,#fffbe9 0%,#f2fbef 55%,#e4f6e8 100%);padding:18px 16px 18px}
+.hv2Hero .k{font-size:15px;font-weight:800;color:#33443a;margin:0 0 8px;position:relative;z-index:1;word-break:keep-all;max-width:80%}
+.hv2Hero h2{font-size:23px;line-height:1.34;margin:0 0 8px;color:#1f2a22;font-weight:900;letter-spacing:-.03em;position:relative;z-index:1;max-width:64%;word-break:keep-all}
+.hv2Hero p{font-size:14px;line-height:1.6;color:var(--hvSub);margin:0 0 14px;position:relative;z-index:1;max-width:60%;word-break:keep-all}
+.hv2Hero .art{position:absolute;right:-2px;bottom:-2px;width:38%;max-width:170px;z-index:0}
+.hv2Hero .art img{width:100%;height:auto;mix-blend-mode:multiply}
+.hv2Cta{position:relative;z-index:1;display:inline-flex;align-items:center;gap:7px;min-height:50px;padding:0 18px;border:0;border-radius:999px;background:linear-gradient(180deg,var(--hvY),var(--hvY2));color:#2b2a1f;font-size:16px;font-weight:900;box-shadow:0 3px 0 rgba(190,140,20,.25);cursor:pointer;max-width:100%}
+.hv2Cta .free{font-size:12px;background:#1c7a52;color:#fff;border-radius:999px;padding:2px 8px;font-weight:800}
+.hv2Cta .sun{width:20px;height:20px;flex:none}
+/* 배너 */
+.hv2Banner{background:linear-gradient(180deg,#fff0f3,#ffe6ee);padding:16px 16px 16px}
+.hv2Banner h2{font-size:19px;line-height:1.4;margin:0 0 6px;color:var(--hvP);font-weight:900;max-width:70%;position:relative;z-index:1;word-break:keep-all}
+.hv2Banner p{font-size:14px;line-height:1.6;color:var(--hvSub);margin:0;max-width:64%;position:relative;z-index:1;word-break:keep-all}
+.hv2Banner .art{position:absolute;right:0;bottom:0;width:38%;height:100%;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 30%);mask-image:linear-gradient(90deg,transparent 0,#000 30%)}
+.hv2Banner .art img{width:100%;height:100%;object-fit:cover;object-position:30% 70%}
+/* 상품 카드 */
+.hv2Duo{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hv2Prod{padding:14px 12px 12px;display:flex;flex-direction:column}
+.hv2Prod.saju{background:linear-gradient(180deg,#fffaf0,#fff2d6)}
+.hv2Prod.comp{background:linear-gradient(180deg,#fff5f7,#ffe8ef)}
+.hv2Prod h3{display:flex;align-items:center;gap:6px;font-size:19px;margin:0 0 4px;color:var(--hvInk);font-weight:900;letter-spacing:-.02em}
+.hv2Prod h3 svg{width:22px;height:22px;flex:none}
+.hv2Prod .sub{font-size:13.5px;line-height:1.5;color:var(--hvSub);margin:0 0 10px;word-break:keep-all}
+.hv2Prod ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.hv2Prod li{display:flex;gap:6px;align-items:flex-start;font-size:13.5px;line-height:1.45;color:#333c35;word-break:keep-all}
+.hv2Prod li i{flex:none;width:16px;height:16px;border-radius:50%;margin-top:2px;background:#2e9a5e;position:relative}
+.hv2Prod.comp li i{background:var(--hvP)}
+.hv2Prod li i::after{content:"";position:absolute;left:5px;top:2.6px;width:3.5px;height:7px;border:solid #fff;border-width:0 1.8px 1.8px 0;transform:rotate(45deg)}
+.hv2Prod .foot{display:flex;align-items:flex-end;justify-content:space-between;gap:6px;margin-top:auto;padding-top:10px}
+.hv2Prod .price{font-size:22px;font-weight:900;color:#b85a0a;letter-spacing:-.01em;line-height:1.1;white-space:nowrap}
+.hv2Prod.comp .price{color:#c03a63}
+.hv2Prod .art{flex:none;width:64px;height:64px}
+.hv2Prod .art img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
+.hv2Prod .art.cp{border-radius:50%;overflow:hidden;-webkit-mask-image:radial-gradient(circle,#000 58%,transparent 71%);mask-image:radial-gradient(circle,#000 58%,transparent 71%)}
+.hv2Prod .art.cp img{object-fit:cover;object-position:50% 58%;transform:scale(1.9)}
+.hv2Btn{margin-top:10px;width:100%;min-height:48px;border:0;border-radius:999px;background:linear-gradient(180deg,var(--hvY),var(--hvY2));font-size:15.5px;font-weight:900;color:#2b2a1f;cursor:pointer}
+.hv2Meta{font-size:12.5px;line-height:1.6;color:#6d726b;margin:-2px 4px 0;text-align:center;word-break:keep-all}
+.hv2Meta button{border:0;background:none;color:var(--hvG);font-weight:800;font-size:14px;text-decoration:underline;padding:4px;cursor:pointer;min-height:32px}
+/* AI·별 */
+.hv2Row{display:grid;grid-template-columns:1fr;gap:12px}
+.hv2Ai{background:linear-gradient(180deg,#effaf3,#e1f5e8);padding:16px 14px;min-height:168px;display:flex;flex-direction:column}
+.hv2Ai h3,.hv2Star h3{display:flex;align-items:center;gap:6px;margin:0 0 6px;font-size:18px;font-weight:900;color:var(--hvInk);position:relative;z-index:1}
+.hv2Ai h3 svg,.hv2Star h3 svg{width:24px;height:24px;flex:none}
+.hv2Chip{font-size:12px;font-weight:800;color:#fff;background:#2e9a5e;border-radius:999px;padding:3px 9px;white-space:nowrap}
+.hv2Ai p,.hv2Star p{font-size:14px;line-height:1.55;color:var(--hvSub);margin:0;word-break:keep-all;position:relative;z-index:1}
+.hv2Ai p{max-width:58%}
+.hv2Ai .art{position:absolute;right:4px;bottom:-4px;width:132px;max-width:38%}
+.hv2Ai .art img{width:100%;mix-blend-mode:multiply}
+.hv2Ai .go{margin-top:14px;position:relative;z-index:1;min-height:46px;width:max-content;max-width:60%;padding:0 18px;border:1.5px solid #2e9a5e;background:#fff;border-radius:999px;font-size:15px;font-weight:800;color:#1f3a2c;cursor:pointer}
+.hv2Star{background:linear-gradient(180deg,#f5f2ff,#ebe6fb);padding:16px 14px 14px;display:flex;flex-direction:column}
+.hv2Star .arr{position:absolute;right:8px;top:10px;border:0;background:none;padding:8px;cursor:pointer;min-width:44px;min-height:44px}
+.hv2Star h3{padding-right:46px;line-height:1.3}
+.hv2Star p{margin-bottom:10px}
+.hv2Stars{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.hv2Stars button{border:0;background:#fff;border-radius:12px;padding:6px 2px 6px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;min-width:0}
+.hv2Stars img{width:100%;max-width:64px;aspect-ratio:1/1;object-fit:contain}
+.hv2Stars span{font-size:12px;font-weight:800;color:#3c3a55;white-space:nowrap;letter-spacing:-.03em}
+.hv2Stars .empty{grid-column:1/-1;font-size:13.5px;color:#5c5778;background:rgba(255,255,255,.75);border-radius:12px;padding:12px;text-align:center;line-height:1.55;word-break:keep-all}
+/* 바로가기 */
+.hv2Mini{display:grid;grid-template-columns:1fr;gap:8px}
+.hv2Mini button{display:flex;align-items:center;gap:10px;text-align:left;background:#fff;border:1px solid rgba(214,200,170,.6);border-radius:16px;padding:12px 14px;cursor:pointer;min-width:0;min-height:64px}
+.hv2Mini .ic{flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center}
+.hv2Mini .ic svg{width:20px;height:20px}
+.hv2Mini .tx{flex:1;min-width:0}
+.hv2Mini b{display:block;font-size:17px;color:var(--hvInk);margin-bottom:2px;letter-spacing:-.02em}
+.hv2Mini small{display:block;font-size:13px;line-height:1.45;color:#636962;word-break:keep-all}
+.hv2Mini .chev{flex:none;color:#8a8f88;font-size:20px;font-weight:700}
+@media (max-width:359px){
+ .hv2Duo{grid-template-columns:1fr}
+ .hv2Hero h2{font-size:21px;max-width:66%}
+ .hv2Hero p{max-width:62%}
+ .hv2Cta{font-size:15px;padding:0 14px}
+ .hv2Banner h2{font-size:18px}
+ .hv2Stars span{font-size:11.5px}
+ .hv2Prod .art{width:72px;height:72px}
+}
+@media (min-width:360px) and (max-width:399px){.hv2Prod .art{width:54px;height:54px}.hv2Prod .price{font-size:20px}}
+@media (max-width:429px){
+ .hv2Hero .art{bottom:74px;width:32%}
+ .hv2Cta{width:100%;justify-content:center}
+}
+@media (max-width:359px){
+ .hv2Ai .art{display:none}
+ .hv2Ai p{max-width:100%}
+ .hv2Ai .go{width:100%;max-width:100%}
+}
+</style>
+<script id="GUIIN_HOME_V2">
+(function(){'use strict';
+var ON=false;try{var F=window.GUIIN_HOME_V2_ON;ON=F===true?true:F===false?false:/demo\.html$/i.test(location.pathname)}catch(_e){}
+window.GUIIN_HOME_V2={on:ON};if(!ON)return;
+var STAR_PICK=['천을귀인','문창귀인','태극귀인','월덕귀인','천덕귀인','학당귀인','암록','천의성','금여','건록','협록','문곡귀인'];
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function chartNow(){try{return typeof chart!=='undefined'&&chart&&chart.pillars?chart:null}catch(_e){return null}}
+function starsHTML(){var c=chartNow(),A=window.GUIIN_STAR_ART,map=A&&Object.assign({},A.map||{},A.more||{});
+  if(!c||!c.stars||!map)return '<div class="empty">생년월일을 입력하면 내 명식에 실제로 성립한 귀인만 골라 보여 줄게.</div>';
+  var have={};(c.stars.hits||[]).forEach(function(h){if(h&&h.name)have[h.name]=1});
+  var list=STAR_PICK.filter(function(n){return have[n]&&map[n]&&map[n].f}).slice(0,4);
+  if(!list.length)return '<div class="empty">이 명식에는 대표 귀인이 따로 잡히지 않았어. 다른 신살은 자세히 보기에서 확인해.</div>';
+  return list.map(function(n){return '<button type="button" data-hv2="stars" aria-label="'+esc(n)+' 자세히 보기"><img src="'+esc(map[n].f)+'.webp" alt="'+esc(map[n].alt||n)+'" loading="lazy" decoding="async"><span>'+esc(n)+'</span></button>'}).join('');}
+function heroName(){var n=document.getElementById('homeName');var t=n?n.textContent.replace(/[›>\s]+$/,'').trim():'';return /님$/.test(t)?t:''}
+var SVG={sun:'<svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="#fff4c2" stroke="#e6a400" stroke-width="1.5"/><g stroke="#e6a400" stroke-width="1.6" stroke-linecap="round"><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6"/></g></svg>',
+ crown:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z" fill="#ffc83d" stroke="#e0a100" stroke-width="1.2" stroke-linejoin="round"/></svg>',
+ heart:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-8-4.8-8-10a4.5 4.5 0 018-2.8A4.5 4.5 0 0120 10c0 5.2-8 10-8 10z" fill="#ff6b8b"/></svg>',
+ chat:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z" fill="#3fb8a0"/><circle cx="9" cy="10.5" r="1.2" fill="#fff"/><circle cx="12.5" cy="10.5" r="1.2" fill="#fff"/><circle cx="16" cy="10.5" r="1.2" fill="#fff"/></svg>',
+ star:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.3l-5.9 3.2 1.2-6.5-4.8-4.6 6.6-.9z" fill="#9b7bf0"/></svg>',
+ arrow:'<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="#4b3fa0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+ bars:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19V11h3v8zm5.5 0V6h3v13zM16 19v-5h3v5z" fill="#1aa69a"/></svg>',
+ leaf:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19C5 10 11 5 20 4c0 9-5 15-14 15zm0 0l8-8" fill="#2fb2c8" stroke="#2fb2c8" stroke-width="1.2"/></svg>',
+ doc:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l3 3v15H6z" fill="none" stroke="#e0a100" stroke-width="1.8"/><path d="M9 10h6M9 14h6" stroke="#e0a100" stroke-width="1.8"/></svg>'};
+function brandH1(){try{var b=document.querySelector('#home>.topbar .brandline');if(!b||b.tagName==='H1')return;var h=document.createElement('h1');h.className=b.className+' hv2H1';while(b.firstChild)h.appendChild(b.firstChild);b.replaceWith(h);
+  var old=document.querySelector('#home>.homeHero h1');if(old){var d=document.createElement('div');d.className='hv2OldH1';d.textContent=old.textContent;old.replaceWith(d)}}catch(_e){}}
+function build(){
+ var home=document.getElementById('home');if(!home||document.getElementById('gHomeV2'))return;
+ var pb=home.querySelector(':scope>.profilebar');if(!pb)return;
+ var nm=heroName();
+ var w=document.createElement('div');w.className='hv2';w.id='gHomeV2';
+ w.innerHTML=
+ '<section class="hv2Card hv2Hero" aria-label="오늘의 운세"><p class="k"><span data-hv2-name>'+esc(nm?nm+', ':'')+'</span>오늘의 운세가 도착했어요.</p><h2>오늘도 좋은 일이 가득한 하루가 되길!</h2><p>오늘 나에게 들어오는 기운과 주의할 점을 무료로 확인해 보세요.</p>'+
+   '<button type="button" class="hv2Cta" data-hv2="today">'+SVG.sun+'오늘의 운세 보기 <span class="free">무료</span> ›</button><div class="art" aria-hidden="true"><img src="guiin-ai-profile.webp" alt="" decoding="async"></div></section>'+
+ '<section class="hv2Card hv2Banner" aria-label="프리미엄 풀이 소개"><h2>오늘 하루가 아니라, 나라는 사람을 깊이 읽는 시간</h2><p>성격, 재능, 사랑하는 방식, 돈과 일의 흐름, 귀인과 대운까지 더 깊게 읽어 봐요.</p><div class="art" aria-hidden="true"><img src="hero-animals.jpg" alt="" loading="lazy" decoding="async"></div></section>'+
+ '<div class="hv2Duo">'+
+   '<section class="hv2Card hv2Prod saju" aria-label="평생사주 5,900원"><h3>'+SVG.crown+'평생사주</h3><p class="sub">나라는 사람을 가장 깊이 이해하는 사주풀이</p><ul><li><i></i>성격과 타고난 재능</li><li><i></i>연애와 인간관계</li><li><i></i>돈과 일, 적성의 방향</li><li><i></i>귀인과 대운, 인생의 흐름</li></ul><div class="foot"><div class="price">5,900원</div><div class="art" aria-hidden="true"><img src="guiin-saju-cat.webp" alt="" loading="lazy" decoding="async"></div></div><button type="button" class="hv2Btn" data-hv2="saju">자세히 보기 ›</button></section>'+
+   '<section class="hv2Card hv2Prod comp" aria-label="우리 궁합 7,900원"><h3>'+SVG.heart+'우리 궁합</h3><p class="sub">두 사람의 성향과 관계의 흐름을 깊이 읽는 궁합</p><ul><li><i></i>두 사람의 성향과 끌림</li><li><i></i>갈등 패턴과 관계의 방향</li><li><i></i>결혼과 재물 궁합</li><li><i></i>함께할 앞으로의 흐름</li></ul><div class="foot"><div class="price">7,900원</div><div class="art cp" aria-hidden="true"><img src="compat-animals.jpg" alt="" loading="lazy" decoding="async"></div></div><button type="button" class="hv2Btn" data-hv2="match">자세히 보기 ›</button></section>'+
+ '</div>'+
+ '<p class="hv2Meta">무료 결과를 먼저 보고 원할 때만 결제해요. 결제 승인 후 즉시 제공 · 제공 시작 전 7일 이내 환불 가능 <button type="button" data-hv2="pay">상품·이용권 안내 ›</button></p>'+
+ '<div class="hv2Row">'+
+   '<section class="hv2Card hv2Ai" aria-label="AI 사주상담"><h3>'+SVG.chat+'AI 사주상담 <span class="hv2Chip">처음 3회 무료</span></h3><p>궁금한 부분을 AI에게 물어보세요.</p><div class="art" aria-hidden="true"><img src="guiin-ai-profile.webp" alt="" loading="lazy" decoding="async"></div><button type="button" class="go" data-hv2="ask">AI 상담 시작하기 ›</button></section>'+
+   '<section class="hv2Card hv2Star" aria-label="내 사주에 숨겨진 특별한 별"><h3>'+SVG.star+'내 사주에 숨겨진 특별한 별</h3><button type="button" class="arr" data-hv2="stars" aria-label="신살·귀인 자세히 보기">'+SVG.arrow+'</button><p>내 명식에 실제로 성립한 귀인만 그림으로 보여드려요.</p><div class="hv2Stars" data-hv2-stars>'+starsHTML()+'</div></section>'+
+ '</div>'+
+ '<div class="hv2Mini">'+
+   '<button type="button" data-hv2="year"><span class="ic" style="background:#e3f6f3">'+SVG.bars+'</span><span class="tx"><b>대운·세운·연운</b><small>10년 단위 대운과 올해의 흐름을 확인해요.</small></span><span class="chev" aria-hidden="true">›</span></button>'+
+   '<button type="button" data-hv2="manage"><span class="ic" style="background:#e3f4f8">'+SVG.leaf+'</span><span class="tx"><b>내 사주관리</b><small>저장한 프로필로 더 빠르고 편리하게</small></span><span class="chev" aria-hidden="true">›</span></button>'+
+   '<button type="button" data-hv2="guide"><span class="ic" style="background:#fff4d6">'+SVG.doc+'</span><span class="tx"><b>이용안내</b><small>처음 오셨나요? 이용 방법을 알려드려요.</small></span><span class="chev" aria-hidden="true">›</span></button>'+
+ '</div>';
+ pb.after(w);home.classList.add('hv2On');brandH1();
+ w.addEventListener('click',function(e){var b=e.target.closest('[data-hv2]');if(!b)return;var k=b.getAttribute('data-hv2');
+  try{
+   if(k==='today'){renderToday();go('today')}
+   else if(k==='saju'){if(chartNow())openResultTab('summary');else go('saju')}
+   else if(k==='match'){go('match')}
+   else if(k==='pay'){go('paymentInfo')}
+   else if(k==='ask'){go('ask')}
+   else if(k==='stars'){if(chartNow())openResultTab('stars');else go('saju')}
+   else if(k==='year'){renderYearLuck();go('yearLuck')}
+   else if(k==='manage'){go('manage')}
+   else if(k==='guide'){go('guide')}
+  }catch(err){try{console.warn('[hv2]',err)}catch(_){}}
+ });
+}
+function refresh(){var w=document.getElementById('gHomeV2');if(!w)return;var s=w.querySelector('[data-hv2-stars]');if(s)s.innerHTML=starsHTML();var n=w.querySelector('[data-hv2-name]');if(n){var nm=heroName();n.textContent=nm?nm+', ':''}}
+function boot(){try{build();refresh()}catch(e){try{var h=document.getElementById('home');if(h)h.classList.remove('hv2On');var w=document.getElementById('gHomeV2');if(w)w.remove();console.warn('[hv2] fallback to old home',e)}catch(_){}}
+ var nmEl=document.getElementById('homeName');
+ try{if(nmEl)new MutationObserver(refresh).observe(nmEl,{childList:true,characterData:true,subtree:true})}catch(_e){}
+ document.addEventListener('click',function(e){if(e.target.closest('[data-guiin-nav="home"],[onclick*="go(\'home\')"]'))setTimeout(refresh,300)},true);}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(boot,0)});else setTimeout(boot,0);
+window.addEventListener('pageshow',function(){setTimeout(refresh,300)});
+})();
+</script>
+
 </body>
 </html>
