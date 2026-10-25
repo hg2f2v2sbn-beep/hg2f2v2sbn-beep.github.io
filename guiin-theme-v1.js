@@ -298,7 +298,18 @@ function evidenceRows(f){
  }
  if(pa&&pb&&(pa.social||pb.social))extra.push(['월간 십성',f.nA+' '+(pa.social||'-')+' · '+f.nB+' '+(pb.social||'-')]);
  if(pa&&pb&&(pa.intimate||pb.intimate))extra.push(['일지 본기 십성',f.nA+' '+(pa.intimate||'-')+' · '+f.nB+' '+(pb.intimate||'-')]);
- return rows.slice(0,2).concat(extra,rows.slice(2));
+ function pill(c){var P=c&&c.pillars||{},h=P.hour?P.hour.ko:'시주 없음';return [P.year&&P.year.ko,P.month&&P.month.ko,P.day&&P.day.ko,h].join(' ')}
+ var fillTxt=f.fill&&f.fillB?'양쪽 모두 보완 구조':f.fill?f.nA+'의 부족 오행을 '+f.nB+'이 채움':f.fillB?f.nB+'의 부족 오행을 '+f.nA+'이 채움':'없음';
+ var ordered=[
+  ['기둥',f.nA+' '+pill(f.a)+' · '+f.nB+' '+pill(f.b)],
+  ['일간·교차 십신',rows[0][1]+' / '+rows[3][1]],
+  ['일지 관계',f.dayRel],
+  ['결속·긴장','결속 '+f.sig.combine+' / 긴장 '+f.sig.tension],
+  ['부족 오행 보완',fillTxt],
+  ['오행 분포',rows[5][1]]
+ ];
+ var rest=rows.filter(function(r){return ['일간','일주','일지 관계','교차 십신','합·긴장 신호','오행 분포'].indexOf(r[0])<0});
+ return ordered.concat(extra,rest);
 }
 function softV2(s){
  s=String(s||'').trim();if(!s)return '';
@@ -546,6 +557,20 @@ function clean(out,theme){
    if(c.list)c.list=c.list.filter(function(x){return specDropV3(x,theme)}).map(specV3);
    return c}).filter(function(c){return ((c.b||[]).length+(c.list||[]).length)>0});
  }
+ /* 같은 문장은 한 결과에서 한 번만 쓴다. 앞에서 나온 문장을 우선 남긴다. */
+ var seenS={};
+ function dedupeS(s){
+  if(typeof s!=='string')return s;
+  var parts=s.match(/[^.]*\.+\s*|[^.]+$/g)||[s];
+  return parts.filter(function(p){var k=p.trim();if(k.length<6)return true;if(seenS[k])return false;seenS[k]=1;return true}).join('');
+ }
+ out.head=dedupeS(out.head);
+ out.sum=(out.sum||[]).map(dedupeS).filter(function(x){return typeof x==='string'&&x.trim()});
+ out.cards=(out.cards||[]).filter(function(c){
+  var had=(c.b&&c.b.length)||(c.list&&c.list.length);
+  if(c.b)c.b=c.b.map(dedupeS).filter(function(x){return typeof x==='string'&&x.trim()});
+  if(c.list)c.list=c.list.map(dedupeS).filter(function(x){return typeof x==='string'&&x.trim()});
+  return !had||(c.b&&c.b.length)||(c.list&&c.list.length)});
  return out;
 }
 
