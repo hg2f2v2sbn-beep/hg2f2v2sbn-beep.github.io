@@ -36,6 +36,8 @@ Object.keys(EXTRA).forEach(function(k){var e=EXTRA[k];if(CHAIN[k]){CHAIN[k].gift
 /* 일간이 정하는 '어떻게': 같은 십성이라도 일간에 따라 그 방식이 드러나는 결이 다르다 */
 var STEM_TONE={갑:'한번 정한 방향으로 곧게 밀고 가는 쪽',을:'상황에 맞춰 유연하게 길을 바꾸는 쪽',병:'밝고 빠르게 드러내는 쪽',정:'조용히 오래 공들이는 쪽',무:'묵직하게 버티는 쪽',기:'사람을 품고 세심하게 챙기는 쪽',경:'단호하고 분명하게 정리하는 쪽',신:'정확하고 깔끔하게 따지는 쪽',임:'넓게 보고 여유 있게 가는 쪽',계:'조용히 스며들듯 움직이는 쪽'};
 var STEM_HOW={갑:'한번 정한 방향으로 곧게',을:'상황에 맞춰 유연하게 돌아가면서',병:'밝고 빠르게 드러내면서',정:'조용히 오래 공들여서',무:'묵직하게 버티면서',기:'사람을 품고 세심하게 챙기면서',경:'단호하고 분명하게',신:'정확하고 깔끔하게 따져서',임:'넓게 보고 여유 있게',계:'조용히 스며들듯'};
+
+var DIRECT={"비견": ["솔직히 말하면, 도와주겠다는 말을 간섭으로 듣는 순간이 꽤 있어.", "가까운 사람이 “내가 대신 해 줄게”라고 하면, 고마움보다 “내가 할 수 있는데”가 먼저 올라와.", "이건 내가 할게. 대신 이 부분은 네가 맡아 줄래?"], "겁재": ["솔직히 말하면, 이기고 싶은 마음이 관계보다 먼저 나갈 때가 있어.", "친구나 연인과 계획을 짤 때도 누가 주도하는지가 은근히 신경 쓰여.", "이번엔 네 방식대로 해 보자. 끝나고 내 생각도 말할게."], "식신": ["솔직히 말하면, 하기 싫은 일은 미루다가 마감 직전에 몰아서 하는 쪽이야.", "좋아하는 사람에게는 말보다 먹을 것, 만든 것, 같이 보내는 시간으로 마음을 보여 줘.", "지금 속도로 하면 목요일쯤 끝나. 급한 거 있으면 먼저 말해 줘."], "상관": ["솔직히 말하면, 맞는 말을 하는데 듣는 사람 기분까지는 계산하지 않을 때가 있어.", "연인이 고민을 꺼내면 끝까지 듣기 전에 해결책부터 말하고 싶어져.", "내 생각 말해도 돼? 아니면 지금은 그냥 들어 줄까?"], "편재": ["솔직히 말하면, 시작은 빠른데 끝맺음은 남에게 넘어가는 일이 생겨.", "약속을 많이 잡는 만큼, 정작 가까운 사람과의 약속이 뒤로 밀릴 때가 있어.", "새로 하나 시작하기 전에, 이거 하나는 이번 주에 끝낼게."], "정재": ["솔직히 말하면, 손해 보기 싫어서 작은 것까지 계산하다가 정작 큰 기회 앞에서 망설여.", "연인과도 돈·시간·약속이 분명해야 마음이 편해서, 흐지부지한 걸 오래 못 견뎌.", "이번 달은 이 정도만 쓰고, 남는 건 같이 정하자."], "편관": ["솔직히 말하면, 힘들다는 말을 못 해서 혼자 버티다 한 번에 터지는 쪽이야.", "가까운 사람이 힘들어하면 위로보다 “그럼 이렇게 하자”며 대신 떠안으려고 해.", "나 사실 이번 주 좀 버거워. 하나만 나눠 줄 수 있어?"], "정관": ["솔직히 말하면, 틀리는 게 싫어서 남이 보기엔 지나치게 조심스러울 때가 있어.", "연인이 약속을 가볍게 바꾸면 사소해 보여도 마음속 신뢰가 한 칸씩 깎여.", "이건 꼭 지켜야 하는 거고, 이건 바뀌어도 괜찮아."], "편인": ["솔직히 말하면, 혼자 결론을 내려 두고 상대에게 설명을 건너뛰는 일이 잦아.", "서운한 게 생기면 말하기 전에 혼자 이유를 다 정리해 두고, 상대는 갑자기 거리감을 느껴.", "나 이렇게 생각했는데, 네 생각은 어때?"], "정인": ["솔직히 말하면, 준비가 덜 됐다는 이유로 시작 자체를 늦추는 쪽이야.", "연인이 급하게 결정을 요구하면 마음이 있어도 “조금만 생각해 볼게”가 먼저 나와.", "지금까지 생각한 건 여기까지야. 나머지는 금요일까지 말해 줄게."]};
 var LIMIT={ /* 누르는 그룹이 같이 있을 때: 언제 드러나고 언제 막히는지 */
 비겁:'이 패턴이 늘 같은 모습으로 나오지는 않아. 기준과 평가가 강하게 들어오는 자리에서는 자기 판단을 바로 꺼내지 않고 한 번 눌러 두는 면도 같이 있어. 혼자 정할 수 있을 때와 위에서 정해 줄 때 모습이 꽤 달라.',
 식상:'이 패턴이 늘 같은 모습으로 나오지는 않아. 충분히 이해하기 전에는 말을 아끼는 면도 같이 있어서, 낯선 자리에서는 표현이 늦게 나와. 편한 사람 앞과 처음 보는 자리에서 모습이 달라.',
@@ -86,22 +88,26 @@ function personSection(c){
   var C=CHAIN[J.god]||CHAIN[{비겁:'비견',식상:'식신',재성:'정재',관성:'정관',인성:'정인'}[J.hyp]],n=J.name,paras=[];
   var sup=J.support.join(', ');
   var head=J.firm
-    ?topic(n)+' '+C.core+'에 가까워. '+subj(sup)+' 같은 쪽을 가리켜서 이걸 중심 패턴으로 읽었어. '+WHERE[J.where]
+    ?topic(n)+' '+ida(C.core)+'. '+subj(sup)+' 같은 쪽을 가리켜서 이걸 중심으로 읽었어. '+WHERE[J.where]
     :topic(n)+' '+C.core+' 쪽 신호가 가장 먼저 보여. 다만 '+sup+' 한 자리에서만 보이는 신호라, 중심 패턴이라고 단정하지는 않을게.';
   var tone=STEM_TONE[J.P.stem];if(tone&&J.firm)head+=' 같은 '+J.god+' 중심이라도 일간이 '+J.P.stem+(J.P.el||'')+'라서 '+n+'의 방식은 '+ida(tone)+'.';
   if(J.god2&&CHAIN[J.god2])head+=' 같은 계열 안에서 '+J.god2+'도 같이 있어서, 상황에 따라 '+CHAIN[J.god2].core.replace(/ 사람$/,'')+' 모습이 섞여 나와.';
+  if(J.pctHyp)head+=' 십성 분포로 보면 '+subj(J.hyp)+' '+J.pctHyp+'%야.';
   paras.push(head.trim());
   var how=STEM_HOW[J.P.stem]||'';
-  paras.push('예를 들어 '+C.sit+', '+topic(n)+' '+C.think+'. 그래서 '+(how?how+' ':'')+C.act+'. '+C.react+'. 이때 남는 건 '+ida(C.gain)+'.');
+  var D=DIRECT[J.god]||DIRECT[{비겁:'비견',식상:'식신',재성:'정재',관성:'정관',인성:'정인'}[J.hyp]];
+  if(D&&J.firm)paras.push(D[0]);
+  paras.push('일에서는 이렇게 나와. '+C.sit+', '+topic(n)+' '+C.think+'. 그래서 '+C.act+'. '+C.react+'. 이때 남는 건 '+ida(C.gain)+'.');
+  if(D&&(J.where==='both'||J.where==='close'))paras.push('가까운 사이에서는 이렇게 나와. '+D[1]);
   paras.push('이건 '+ida(C.gift)+'. '+C.use+'에서 가장 빛나고, 곁의 사람에게는 '+subj(C.help)+' 돼. 이 강점을 오래 쓰려면 '+subj(C.keep)+' 필요해.');
-  paras.push(obj(C.flaw)+' 들을 때가 있다면, 그건 '+ida(C.flawWhy)+'. 이 방식이 문제로 커지는 건 같은 방식이 반복돼서 '+subj(C.cost)+' 쌓일 때야. 그럴 땐 '+C.fix+'부터 해 봐.');
+  paras.push(obj(C.flaw)+' 들을 때가 있다면, 그건 '+ida(C.flawWhy)+'. 문제가 커지는 건 이 흐름이 반복될 때야. '+C.costShort+'. 그럴 땐 '+C.fix+'부터 해 봐.'+(D?' 말로 하면 이 정도면 충분해. “'+D[2]+'”':''));
   var lim=[];
   if(J.limited)lim.push(LIMIT[J.hyp]);
   if(J.tierNote)lim.push(TIER[J.tierNote]);
   if(lim.length)paras.push(lim.join(' '));
   var unk=['실제로 어떤 일을 하고 어떤 관계 속에 있는지는 명식만으로 알 수 없어서, 위 장면은 가능한 상황으로 읽어 줘.'];
   if(J.unknownHour)unk.push('출생시간을 몰라서 시주에서 나오는 신호는 빼고 판단했어.');
-  if(J.pctHyp&&J.top===J.hyp)unk.push('십성 분포에서도 '+subj(J.hyp)+' '+J.pctHyp+'%로 가장 크지만, 같은 글자에서 나온 크기라 별도 근거로 세지는 않았어.');
+  if(J.pctHyp)unk.push('분포 %는 같은 글자에서 나온 크기라 별도 근거로 세지는 않았어.');
   paras.push(unk.join(' '));
   var share=C.core+(tone&&J.firm?', 그중에서도 '+tone:'')+'. 다만 '+C.costShort+'.';
   return {id:'core-judgment',eyebrow:'핵심 결론',title:'핵심 결론 — '+C.core,paragraphs:paras,body:paras.join('\n\n'),
@@ -121,6 +127,32 @@ function pairLoop(a,b){
       :('이 관계의 핵심 고리는 이거야. 부담이 생기면 '+topic(an)+' '+sa.act+'. '+topic(bn)+' 그 모습을 보면서 '+sa.felt+'. 그러면 '+topic(bn)+' '+sb.act+'. '+topic(an)+' 그런 '+obj(bn)+' 보며 '+sb.felt+'. 둘 다 상대를 밀어내려는 게 아니라 각자 편한 방식으로 버티는 건데, 순서가 맞물리면서 거리가 생겨.')};
 }
 
+/* 사주: 거의 모든 사람에게 똑같이 들어가는 연결·위로·메타 문장 (정보 없음) */
+var PERSON_TRIM=[
+'일주 60가지와 월지 12가지, 영역 순서 60가지만 곱해도 이론상 4만 가지가 넘는 조합이라, 같은 일간이어도 이 구성으로 읽히는 사람의 힘의 모양은 따로 있어.',
+'이 해설은 그 일반 설명 위에 네 구성을 하나씩 얹어서 읽은 거야.',
+'먼저 네 강점이 쉬는 시간까지 따라오는 이유부터 말할게.',
+'바꿀 수 있는 건 어렵지 않은 쪽부터야.',
+'가까워지면 다른 면이 보이기 시작해.',
+'어느 쪽도 거짓이 아니라 같은 사람의 다른 층이야.',
+'이걸 알고 있으면 상대가 네 반응을 오해하는 일이 줄어들고, 너도 무엇 때문에 마음이 닫혔는지 설명하기 쉬워져.',
+'네가 마음을 건네는 방식에는 분명한 가치가 있어.',
+'연애에서 중심이 되는 방식이 있지만 다른 방식도 곁들여서, 상대에 따라 접근법을 어느 정도 바꿀 수 있어.',
+'크지 않아 보여도 쌓이면 달마다 체감이 달라져.',
+'지키는 방법은 어렵지 않아.',
+'원국의 성향은 평생 가져가는 바탕이고, 대운과 세운은 그 바탕에 어떤 과제가 들어오는지를 알려 주는 시기별 신호야.',
+'이번 주는 중심 방식 하나와 보조 방식 하나를 짝지어 써 봐.',
+'두 힘을 같이 쓰면 부담이 나뉘어.'
+];
+var PERSON_TRIM_SET={};PERSON_TRIM.forEach(function(t){PERSON_TRIM_SET[t]=1});
+function trimPersonRow(r){
+  if(!r||r.id==='core-judgment')return r;
+  var paras=(r.paragraphs&&r.paragraphs.length?r.paragraphs:String(r.body||'').split(/\n\n+/)).map(function(p){
+    return splitS(p).filter(function(x){var t=x.trim();return t&&!PERSON_TRIM_SET[t]}).join('').trim();
+  }).filter(Boolean);
+  if(!paras.length)return r;
+  return Object.assign({},r,{paragraphs:paras,body:paras.join('\n\n')});
+}
 function wrapPerson(fn){
   return function(c){
     var rows=fn.apply(this,arguments);
@@ -128,7 +160,7 @@ function wrapPerson(fn){
     try{
       if(!Array.isArray(rows)||!rows.length||rows.some(function(r){return r&&r.id==='core-judgment'}))return rows;
       var s=personSection(c);if(!s||/undefined|NaN|\[object /.test(s.body))return rows;
-      return [s].concat(rows);
+      return [s].concat(rows.map(trimPersonRow));
     }catch(e){LOG.push({fn:'person',reason:String(e&&e.message||e)});return rows;}
   };
 }
