@@ -13851,7 +13851,18 @@ h1.brandline.hv2H1{margin:0;line-height:inherit;font-family:inherit}
 @media (min-width:400px) and (max-width:430px){.hv2Banner{grid-template-columns:minmax(0,1.18fr) minmax(128px,.82fr)}.hv2Prod .art{width:98px;height:90px}.hv2Prod .art.cp{width:114px;height:90px}.hv2Prod .price{font-size:29px}}
 .hv2Prod .foot{flex-wrap:wrap;align-items:center;row-gap:8px;min-height:0;padding-top:12px}
 .hv2Prod .foot .art,.hv2Prod .foot .art.cp{order:-1;flex:0 0 100%;width:100%;height:112px;display:flex;align-items:center;justify-content:center;overflow:visible}
-.hv2Prod .foot .art img{width:auto;height:100%;max-width:100%;object-fit:contain;object-position:center;mix-blend-mode:multiply}
+.hv2Prod .foot .art img{width:auto;height:100%;max-width:100%;object-fit:contain;object-position:center;mix-blend-mode:multiply;-webkit-mask-image:radial-gradient(ellipse 60% 62% at 50% 50%,#000 55%,transparent 100%);mask-image:radial-gradient(ellipse 60% 62% at 50% 50%,#000 55%,transparent 100%)}
+.hv2Prod .foot .art.cp img{-webkit-mask-image:linear-gradient(to right,transparent,#000 14%,#000 86%,transparent),linear-gradient(to bottom,transparent,#000 16%,#000 84%,transparent);mask-image:linear-gradient(to right,transparent,#000 14%,#000 86%,transparent),linear-gradient(to bottom,transparent,#000 16%,#000 84%,transparent);-webkit-mask-composite:source-in;mask-composite:intersect}
+.hv2Banner .art{overflow:hidden;border-radius:14px}
+.hv2Banner .art img{object-fit:cover;object-position:66% 45%;transform:scale(2.6);transform-origin:66% 45%}
+.hv2Prod h3{font-size:21px}
+.hv2Prod .sub{font-size:15px}
+.hv2Prod li{font-size:15px}
+.hv2Prod .foot{position:relative;min-height:100px;padding-top:12px}
+.hv2Prod .foot .price{font-size:20px}
+.hv2Prod .foot .art,.hv2Prod .foot .art.cp{position:absolute;right:-4px;bottom:4px;margin:0;width:74px;height:74px;flex:none;order:0;display:flex;align-items:flex-end;justify-content:flex-end;overflow:visible}
+.hv2Prod .foot .art img{width:auto;height:100%;max-width:100%}
+@media (max-width:399px){.hv2Prod .foot .price{font-size:18px}.hv2Prod .foot .art,.hv2Prod .foot .art.cp{width:62px;height:62px;right:-2px;bottom:6px}}
 .hv2Prod .foot .price{order:0}
 @media (max-width:359px){
  .hv2Ai .art{display:none}
@@ -13894,7 +13905,7 @@ function build(){
    '<button type="button" class="hv2Cta" data-hv2="today">'+SVG.sun+'오늘의 운세 보기 <span class="free">무료</span> ›</button><div class="art" aria-hidden="true"><img src="guiin-ai-profile.webp" alt="" decoding="async"></div></section>'+
  '<section class="hv2Card hv2Banner" aria-label="프리미엄 풀이 소개"><h2>오늘 하루가 아니라, 나라는 사람을 깊이 읽는 시간</h2><p>성격, 재능, 사랑하는 방식, 돈과 일의 흐름, 귀인과 대운까지 더 깊게 읽어 봐요.</p><div class="art" aria-hidden="true"><img src="hero-animals.jpg" alt="" loading="lazy" decoding="async"></div></section>'+
  '<div class="hv2Duo">'+
-   '<section class="hv2Card hv2Prod saju" aria-label="평생사주 5,900원"><h3>'+SVG.crown+'평생사주</h3><p class="sub">나라는 사람을 가장 깊이 이해하는 사주풀이</p><ul><li><i></i>성격과 타고난 재능</li><li><i></i>연애와 인간관계</li><li><i></i>돈과 일, 적성의 방향</li><li><i></i>귀인과 대운, 인생의 흐름</li></ul><div class="foot"><div class="price">5,900원</div><div class="art" aria-hidden="true"><img src="guiin-saju-cat.webp" alt="" loading="lazy" decoding="async"></div></div><button type="button" class="hv2Btn" data-hv2="saju">자세히 보기 ›</button></section>'+
+   '<section class="hv2Card hv2Prod saju" aria-label="평생사주 5,900원"><h3>'+SVG.crown+'평생사주</h3><p class="sub">나라는 사람을 가장 깊이 이해하는 사주풀이</p><ul><li><i></i>성격과 타고난 재능</li><li><i></i>연애와 인간관계</li><li><i></i>돈과 일, 적성의 방향</li><li><i></i>귀인과 대운, 인생의 흐름</li></ul><div class="foot"><div class="price">5,900원</div><div class="art" aria-hidden="true"><img src="extra_02_rabbit.webp" alt="" loading="lazy" decoding="async"></div></div><button type="button" class="hv2Btn" data-hv2="saju">자세히 보기 ›</button></section>'+
    '<section class="hv2Card hv2Prod comp" aria-label="우리 궁합 7,900원"><h3>'+SVG.heart+'우리 궁합</h3><p class="sub">두 사람의 성향과 관계의 흐름을 깊이 읽는 궁합</p><ul><li><i></i>두 사람의 성향과 끌림</li><li><i></i>갈등 패턴과 관계의 방향</li><li><i></i>결혼과 재물 궁합</li><li><i></i>함께할 앞으로의 흐름</li></ul><div class="foot"><div class="price">7,900원</div><div class="art cp" aria-hidden="true"><img src="compat-animals.jpg" alt="" loading="lazy" decoding="async"></div></div><button type="button" class="hv2Btn" data-hv2="match">자세히 보기 ›</button></section>'+
  '</div>'+
  '<p class="hv2Meta">무료 결과를 먼저 보고 원할 때만 결제해요. 결제 승인 후 즉시 제공 · 제공 시작 전 7일 이내 환불 가능 <button type="button" data-hv2="pay">상품·이용권 안내 ›</button></p>'+
