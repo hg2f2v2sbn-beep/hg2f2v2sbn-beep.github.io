@@ -601,7 +601,7 @@ var THEMES={
 };
 var HOME_POS={compat:'50% 50%',breakup:'50% 50%',crush:'50% 50%',reunion:'50% 50%'};
 var HOME_ORDER=['compat','breakup','crush','reunion'];
-var HOME_IMG={compat:'concept2/guiin-theme-compatibility.webp',breakup:'concept2/guiin-theme-breakup.webp',crush:'concept2/guiin-theme-crush.webp',reunion:'concept2/guiin-theme-reunion.webp'};
+var HOME_IMG={compat:'c2-guiin-theme-compatibility.webp',breakup:'c2-guiin-theme-breakup.webp',crush:'c2-guiin-theme-crush.webp',reunion:'c2-guiin-theme-reunion.webp'};
 var HOME_TXT={compat:['궁합','인연 흐름','알아보기'],breakup:['이별 고민','마음 정리','살펴보기'],crush:['짝사랑','다가갈 기회','살펴보기'],reunion:['재회운','다시 인연','살펴보기']};
 
 /* ───────── 스타일 ───────── */
