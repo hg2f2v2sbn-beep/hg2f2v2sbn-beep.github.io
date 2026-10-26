@@ -106,7 +106,7 @@ function personSection(c){
   var share=C.core+(tone&&J.firm?', 그중에서도 '+tone:'')+'. 다만 '+C.costShort+'.';
   return {id:'core-judgment',eyebrow:'핵심 결론',title:'핵심 결론 — '+C.core,paragraphs:paras,body:paras.join('\n\n'),
     evidence:['중심: '+J.hyp+(J.god?'·'+J.god:'')+' ('+J.support.join(' · ')+')',J.limited?('제한: '+J.lim+(J.limSeats.length?' ('+J.limSeats.join(' · ')+')':' '+J.limPct+'%')):'',J.tierNote?('강약: '+J.tier):''].filter(Boolean).join(' · '),
-    share:share,judgment:{hypothesis:J.hyp,god:J.god,where:J.where,core:C.core,support:J.support,limit:J.limited?{group:J.lim,seats:J.limSeats,pct:J.limPct}:null,strengthTier:J.tier,firm:J.firm,unknownHour:J.unknownHour}};
+    share:share,judgment:{hypothesis:J.hyp,god:J.god,stem:J.P.stem,where:J.where,core:C.core,support:J.support,limit:J.limited?{group:J.lim,seats:J.limSeats,pct:J.limPct}:null,strengthTier:J.tier,firm:J.firm,unknownHour:J.unknownHour}};
 }
 
 /* 궁합: 기존 엔진의 반응 사전(STRESS)을 그대로 읽어 반복 고리 하나를 고른다 */
@@ -115,7 +115,7 @@ function pairLoop(a,b){
   var PA=E.analyze(a),PB=E.analyze(b),S=E.STRESS||root.GUIIN_INTERPRETATION_V4&&root.GUIIN_INTERPRETATION_V4.STRESS;
   if(!PA||!PB||!S||!S[PA.stress]||!S[PB.stress])return null;
   var an=PA.name,bn=PB.name,sa=S[PA.stress],sb=S[PB.stress],same=PA.stress===PB.stress;
-  return {an:an,bn:bn,same:same,a:{tag:sa.tag,act:sa.act,felt:sa.felt,fix:sa.fix},b:{tag:sb.tag,act:sb.act,felt:sb.felt,fix:sb.fix},
+  return {an:an,bn:bn,same:same,keys:[PA.stress,PB.stress],a:{tag:sa.tag,act:sa.act,felt:sa.felt,fix:sa.fix},b:{tag:sb.tag,act:sb.act,felt:sb.felt,fix:sb.fix},
     text:same
       ?('이 관계의 핵심 고리는 둘이 같은 방식으로 반응한다는 점이야. 부담이 생기면 '+an+'도 '+bn+'도 '+sa.tag+' 쪽이라, 서로 상대가 먼저 움직이길 기다리는 사이에 같은 일이 쌓여. 그래서 누가 잘못했느냐보다 누가 먼저 이 순서를 끊느냐가 중요해.')
       :('이 관계의 핵심 고리는 이거야. 부담이 생기면 '+topic(an)+' '+sa.act+'. '+topic(bn)+' 그 모습을 보면서 '+sa.felt+'. 그러면 '+topic(bn)+' '+sb.act+'. '+topic(an)+' 그런 '+obj(bn)+' 보며 '+sb.felt+'. 둘 다 상대를 밀어내려는 게 아니라 각자 편한 방식으로 버티는 건데, 순서가 맞물리면서 거리가 생겨.')};
@@ -190,6 +190,15 @@ install();
 var FB_KEY='guiin_reading_feedback_v1';
 function fbRead(){try{return JSON.parse(root.localStorage.getItem(FB_KEY)||'[]')||[]}catch(_e){return []}}
 function fbWrite(rows){try{root.localStorage.setItem(FB_KEY,JSON.stringify(rows.slice(-200)))}catch(_e){}}
+/* 서버 집계: 이름·생년월일·명식은 보내지 않고 종류·응답·풀이 키·버전만 보낸다. 실패해도 화면 동작에는 영향 없음 */
+function sendFeedback(info,vote){
+  try{
+    if(!info||!info.key||info.sent[vote])return;info.sent[vote]=1;
+    var base='';try{base=typeof guiinStableApiBase==='function'?guiinStableApiBase():'';}catch(_e){}
+    if(!base||typeof root.fetch!=='function')return;
+    root.fetch(base+'/api/reading-feedback',{method:'POST',mode:'cors',keepalive:true,headers:{'Content-Type':'application/json'},body:JSON.stringify({kind:info.kind,vote:vote,key:info.key,ver:'reading-core-v1'})}).catch(function(){});
+  }catch(_e){}
+}
 function pairShare(L){if(!L)return '';return L.same
   ?'둘 다 '+L.a.tag+' 쪽이라, 불편이 생겨도 서로 먼저 꺼내길 기다리다 거리가 생기는 사이.'
   :'한 사람은 '+L.a.tag+' 쪽, 다른 한 사람은 '+L.b.tag+' 쪽. 둘 다 각자 편한 방식으로 버티다 엇갈리는 사이.';}
@@ -213,14 +222,15 @@ function enhance(){
     a.setAttribute('data-grc-done','1');
     var pair=a.getAttribute('data-human-section')==='pair-core',text='',core='';
     try{
-      if(pair){var P=currentPair();var L=P&&P.a&&P.b?pairLoop(P.a,P.b):null;text=pairShare(L);core=L?(L.an+'·'+L.bn+' 반응 고리'):'';}
-      else{var c=currentChart();var sct=c?personSection(c):null;text=sct?sct.share:'';core=sct?sct.judgment.core:'';}
+      var key='';
+      if(pair){var P=currentPair();var L=P&&P.a&&P.b?pairLoop(P.a,P.b):null;text=pairShare(L);core=L?(L.an+'·'+L.bn+' 반응 고리'):'';key=L?L.keys.join('|'):'';}
+      else{var c=currentChart();var sct=c?personSection(c):null;text=sct?sct.share:'';core=sct?sct.judgment.core:'';key=sct?(sct.judgment.god+'|'+sct.judgment.stem):'';}
     }catch(_e){text='';}
     if(!text)return;
     var holder=root.document.createElement('div');holder.innerHTML=cardHTML(pair?'pair':'person',text,core);
     var card=holder.firstChild,ask=a.querySelector('.guiinMidAsk');
     if(ask)a.insertBefore(card,ask);else a.appendChild(card);
-    card.__grc={kind:pair?'pair':'person',text:text,core:core};
+    card.__grc={kind:pair?'pair':'person',text:text,core:core,key:key,sent:{}};
   });
 }
 function onClick(e){
@@ -228,6 +238,7 @@ function onClick(e){
   var info=card.__grc,msg=card.querySelector('.grcMsg');
   if(t.closest('[data-grc-share]')){
     var url='https://gwiinsaju.com/';try{if(typeof guiinPublicShareUrl==='function')url=guiinPublicShareUrl();}catch(_e){}
+    sendFeedback(info,'share');
     var body=info.text+'\n\n— 귀인사주 '+(info.kind==='pair'?'궁합':'사주')+' 풀이';
     (async function(){try{
       if(root.navigator.share){await root.navigator.share({title:'귀인사주',text:body,url:url});return;}
@@ -239,7 +250,8 @@ function onClick(e){
   var fb=t.closest('[data-grc-fb]');if(!fb)return;
   var v=fb.getAttribute('data-grc-fb');
   card.querySelectorAll('[data-grc-fb]').forEach(function(b){b.classList.toggle('on',b===fb)});
-  var row={v:v,kind:info.kind,core:info.core,ver:'reading-core-v1',at:new Date().toISOString()};
+  var row={v:v,kind:info.kind,core:info.core,key:info.key,ver:'reading-core-v1',at:new Date().toISOString()};
+  sendFeedback(info,v);
   var rows=fbRead();rows.push(row);fbWrite(rows);
   try{root.dispatchEvent(new CustomEvent('guiin:reading-feedback',{detail:row}))}catch(_e){}
   if(v==='yes'){if(msg)msg.textContent='알려 줘서 고마워. 이 결론을 기준으로 상담에서도 이어서 볼게.';return;}
