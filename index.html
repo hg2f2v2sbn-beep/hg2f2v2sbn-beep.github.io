@@ -13994,6 +13994,35 @@ h1.brandline.hv2H1{margin:0;line-height:inherit;font-family:inherit}
 #gHomeV2 .hv2Prod .price{font-size:19px!important}
 #gHomeV2 .hv2Prod .art{position:relative!important;left:auto!important;top:auto!important;right:auto!important;bottom:auto!important;grid-column:2!important;grid-row:auto!important;width:100%!important;max-width:none!important;aspect-ratio:4/5!important;height:auto!important;margin:0 0 4px!important}
 #gHomeV2 .hv2Prod .hv2Btn{grid-column:1/-1!important;margin-top:8px!important}
+#gThemeHome .gtGrid{gap:8px!important}
+#gThemeHome .gtCard{position:relative!important;aspect-ratio:1/1!important;height:auto!important;border-radius:20px!important;background:#fff!important;border:0!important;box-shadow:0 4px 12px rgba(120,80,90,.1)!important;display:block!important}
+#gThemeHome .gtCard .ph{position:absolute!important;inset:0!important;height:100%!important;aspect-ratio:auto!important;flex:none!important;background:transparent!important}
+#gThemeHome .gtCard .ph img{width:100%!important;height:100%!important;object-fit:cover!important;object-position:50% 40%!important}
+#gThemeHome .gtCard .bd{position:absolute!important;left:0;top:0;right:0;padding:9px 8px!important;z-index:2;text-align:left!important;align-items:flex-start!important;gap:0!important;min-height:0!important;pointer-events:none}
+#gThemeHome .gtCard h3{font-size:14px!important;line-height:1.2!important;color:#1d1a35!important;font-weight:900!important;letter-spacing:-.03em!important}
+#gThemeHome .gtCard p{font-size:10px!important;line-height:1.3!important;color:#3c3850!important;margin-top:3px!important;word-break:keep-all!important;text-align:left!important}
+#gThemeHome .gtCard.ru h3{color:#fff!important}
+#gThemeHome .gtCard.ru p{color:#e8e6ff!important}
+#gThemeHome .gtCard button{position:absolute!important;right:7px!important;bottom:7px!important;left:auto!important;top:auto!important;width:30px!important;height:30px!important;min-height:0!important;padding:0!important;margin:0!important;border-radius:50%!important;background:rgba(255,255,255,.92)!important;color:transparent!important;font-size:0!important;opacity:1!important;box-shadow:0 2px 6px rgba(0,0,0,.12)!important;z-index:3}
+#gThemeHome .gtCard button::after{content:"›";position:absolute;inset:0;display:grid;place-items:center;font-size:18px;color:#3c3850;line-height:1}
+#gHomeV2 .hv2Themes{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+#gHomeV2 .hv2Themes>h3{grid-column:1/-1}
+#gHomeV2 .hv2TBan{position:relative!important;display:block!important;aspect-ratio:1.12/1!important;min-height:0!important;width:100%!important;margin:0!important;padding:0!important;border:0!important;border-radius:20px!important;overflow:hidden!important;background:#fff!important;box-shadow:0 4px 12px rgba(120,80,90,.1)!important}
+#gHomeV2 .hv2TBan .im{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;border-radius:0!important}
+#gHomeV2 .hv2TBan .im img{width:100%!important;height:100%!important;object-fit:cover!important;object-position:50% 40%!important}
+#gHomeV2 .hv2TBan .tx{position:absolute!important;left:0;top:0;right:0;z-index:2;padding:10px 10px!important;background:none!important;pointer-events:none}
+#gHomeV2 .hv2TBan b{font-size:14px!important;color:#1d1a35!important;line-height:1.2!important}
+#gHomeV2 .hv2TBan small{font-size:10px!important;color:#3c3850!important;margin-top:3px!important}
+#gHomeV2 .hv2TBan i{position:absolute!important;right:7px!important;bottom:7px!important;width:30px!important;height:30px!important;border-radius:50%!important;background:rgba(255,255,255,.92)!important;color:#3c3850!important;display:grid!important;place-items:center!important;font-size:18px!important;line-height:1!important;z-index:3;box-shadow:0 2px 6px rgba(0,0,0,.12)!important}
+#gHomeV2 .hv2TBan.k-reunion b,#gHomeV2 .hv2TBan.k-reunion small{color:#fff!important}
+#gHomeV2 .hv2TBan.k-reunion{background:#2d3364!important}
+#gHomeV2 .hv2TBan.k-shinsal .im img{object-position:72% 50%!important}
+#gThemeHome .gtCard h3{font-size:13px!important}
+#gThemeHome .gtCard p{max-width:66%!important;font-size:9.5px!important}
+#gThemeHome .gtCard button{width:24px!important;height:24px!important;right:5px!important;bottom:5px!important}
+#gThemeHome .gtCard button::after{font-size:15px!important}
+#gThemeHome .gtCard .bd{position:absolute!important;inset:0!important;left:0!important;top:0!important;right:0!important;bottom:0!important;height:auto!important}
+#gThemeHome .gtCard button{pointer-events:auto!important}
 </style>
 <script id="GUIIN_HOME_V2">
 (function(){'use strict';
@@ -14024,7 +14053,7 @@ function build(){
  var home=document.getElementById('home');if(!home||document.getElementById('gHomeV2'))return;
  var pb=home.querySelector(':scope>.profilebar');if(!pb)return;
  var nm=heroName();
- var HV4T=[['compat','궁합으로 보는 두 사람의 인연','두 사람의 성격과 관계의 흐름을 살펴봐','concept2/guiin-theme-compatibility.webp'],['breakup','이별 고민, 계속 만나야 할까?','지금 관계의 고민을 차근차근 살펴봐','concept2/guiin-theme-breakup.webp'],['crush','짝사랑하는 상대의 마음','상대의 성향과 다가가는 방법을 살펴봐','concept2/guiin-theme-crush.webp'],['reunion','재회운으로 보는 다시 이어질 인연','이별 후 관계의 흐름과 고민을 살펴봐','concept2/guiin-theme-reunion.webp'],['shinsal','내 사주에 숨겨진 신살·귀인','타고난 재능과 귀인의 의미를 알아봐','concept2/guiin-theme-shinsal.webp']];
+ var HV4T=[['compat','궁합','두 사람의 인연','concept2/guiin-theme-compatibility.webp'],['breakup','이별 고민','마음 정리가 필요할 때','concept2/guiin-theme-breakup.webp'],['crush','짝사랑','다가갈 수 있을까?','concept2/guiin-theme-crush.webp'],['reunion','재회운','다시 이어질 인연','concept2/guiin-theme-reunion.webp'],['shinsal','신살·귀인','타고난 재능과 귀인','concept2/guiin-theme-shinsal.webp']];
 var w=document.createElement('div');w.className='hv2';w.id='gHomeV2';
  w.innerHTML=
  '<section class="hv2Card hv4Hero" aria-label="오늘의 운세"><img class="hv4Art" src="concept2/guiin-hero-today.webp" alt="" decoding="async"><div class="hv4Tx"><p class="k"><span data-hv2-name>'+esc(nm?nm+', ':'')+'</span>오늘의 운세가 도착했어요.</p><h2>오늘의 운세</h2><p class="sub">오늘의 흐름을 가볍게 살펴봐</p><button type="button" class="hv2Cta" data-hv2="today">'+SVG.sun+'운세 보기 <span class="free">무료</span> ›</button></div></section>'+
