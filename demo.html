@@ -13758,7 +13758,7 @@ h1.brandline.hv2H1{margin:0;line-height:inherit;font-family:inherit}
 .hv2{--hvG:#0b6b4f;--hvP:#d93b66;--hvY:#ffd65c;--hvY2:#f6c43b;--hvInk:#222c25;--hvSub:#4f574f;display:flex;flex-direction:column;gap:12px;margin:10px 0 16px}
 .hv2 *{box-sizing:border-box}
 .hv2 img{display:block}
-.hv2Card{position:relative;border-radius:22px;overflow:hidden;border:1px solid rgba(214,200,170,.55);box-shadow:0 3px 12px rgba(80,70,40,.06)}
+.hv2Card{position:relative;border-radius:24px;overflow:hidden;border:1px solid rgba(214,200,170,.55);box-shadow:0 6px 18px rgba(80,70,40,.08)}
 /* 오늘의 운세 */
 .hv2Hero{background:linear-gradient(135deg,#fffbe9 0%,#f2fbef 55%,#e4f6e8 100%);padding:18px 16px 18px}
 .hv2Hero .k{font-size:15px;font-weight:800;color:#33443a;margin:0 0 8px;position:relative;z-index:1;word-break:keep-all;max-width:80%}
@@ -13770,32 +13770,32 @@ h1.brandline.hv2H1{margin:0;line-height:inherit;font-family:inherit}
 .hv2Cta .free{font-size:12px;background:#1c7a52;color:#fff;border-radius:999px;padding:2px 8px;font-weight:800}
 .hv2Cta .sun{width:20px;height:20px;flex:none}
 /* 배너 */
-.hv2Banner{background:linear-gradient(180deg,#fff0f3,#ffe6ee);padding:16px 16px 16px}
-.hv2Banner h2{font-size:19px;line-height:1.4;margin:0 0 6px;color:var(--hvP);font-weight:900;max-width:70%;position:relative;z-index:1;word-break:keep-all}
-.hv2Banner p{font-size:14px;line-height:1.6;color:var(--hvSub);margin:0;max-width:64%;position:relative;z-index:1;word-break:keep-all}
-.hv2Banner .art{position:absolute;right:0;bottom:0;width:38%;height:100%;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 30%);mask-image:linear-gradient(90deg,transparent 0,#000 30%)}
-.hv2Banner .art img{width:100%;height:100%;object-fit:cover;object-position:30% 70%}
+.hv2Banner{background:linear-gradient(180deg,#fff0f3,#ffe6ee);padding:18px 16px;display:grid;grid-template-columns:minmax(0,1.16fr) minmax(118px,.84fr);gap:10px 14px;align-items:end;min-height:182px}
+.hv2Banner h2{grid-column:1;font-size:19px;line-height:1.42;margin:0 0 6px;color:var(--hvP);font-weight:900;max-width:none;position:relative;z-index:1;word-break:keep-all;letter-spacing:-.02em}
+.hv2Banner p{grid-column:1;font-size:14px;line-height:1.62;color:var(--hvSub);margin:0;max-width:none;position:relative;z-index:1;word-break:keep-all}
+.hv2Banner .art{position:relative;grid-column:2;grid-row:1 / span 2;right:auto;bottom:auto;width:100%;height:100%;min-height:148px;display:flex;align-items:flex-end;justify-content:flex-end;overflow:visible;-webkit-mask-image:none;mask-image:none;padding-top:2px}
+.hv2Banner .art img{width:100%;height:100%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 6px 14px rgba(120,96,70,.12))}
 /* 상품 카드 */
-.hv2Duo{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.hv2Prod{padding:14px 12px 12px;display:flex;flex-direction:column}
+.hv2Duo{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:stretch}
+.hv2Prod{padding:16px 14px 14px;display:flex;flex-direction:column;height:100%;min-height:458px}
 .hv2Prod.saju{background:linear-gradient(180deg,#fffaf0,#fff2d6)}
 .hv2Prod.comp{background:linear-gradient(180deg,#fff5f7,#ffe8ef)}
-.hv2Prod h3{display:flex;align-items:center;gap:6px;font-size:19px;margin:0 0 4px;color:var(--hvInk);font-weight:900;letter-spacing:-.02em}
+.hv2Prod h3{display:flex;align-items:center;gap:6px;font-size:19px;margin:0 0 6px;color:var(--hvInk);font-weight:900;letter-spacing:-.02em;line-height:1.25}
 .hv2Prod h3 svg{width:22px;height:22px;flex:none}
-.hv2Prod .sub{font-size:13.5px;line-height:1.5;color:var(--hvSub);margin:0 0 10px;word-break:keep-all}
-.hv2Prod ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
-.hv2Prod li{display:flex;gap:6px;align-items:flex-start;font-size:13.5px;line-height:1.45;color:#333c35;word-break:keep-all}
+.hv2Prod .sub{font-size:14px;line-height:1.55;color:var(--hvSub);margin:0 0 12px;word-break:keep-all;min-height:44px}
+.hv2Prod ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
+.hv2Prod li{display:flex;gap:6px;align-items:flex-start;font-size:14px;line-height:1.5;color:#333c35;word-break:keep-all}
 .hv2Prod li i{flex:none;width:16px;height:16px;border-radius:50%;margin-top:2px;background:#2e9a5e;position:relative}
 .hv2Prod.comp li i{background:var(--hvP)}
 .hv2Prod li i::after{content:"";position:absolute;left:5px;top:2.6px;width:3.5px;height:7px;border:solid #fff;border-width:0 1.8px 1.8px 0;transform:rotate(45deg)}
-.hv2Prod .foot{display:flex;align-items:flex-end;justify-content:space-between;gap:6px;margin-top:auto;padding-top:10px}
-.hv2Prod .price{font-size:22px;font-weight:900;color:#b85a0a;letter-spacing:-.01em;line-height:1.1;white-space:nowrap}
+.hv2Prod .foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding-top:14px;min-height:96px}
+.hv2Prod .price{font-size:28px;font-weight:900;color:#b85a0a;letter-spacing:-.02em;line-height:1.05;white-space:nowrap}
 .hv2Prod.comp .price{color:#c03a63}
-.hv2Prod .art{flex:none;width:64px;height:64px}
-.hv2Prod .art img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
-.hv2Prod .art.cp{border-radius:50%;overflow:hidden;-webkit-mask-image:radial-gradient(circle,#000 58%,transparent 71%);mask-image:radial-gradient(circle,#000 58%,transparent 71%)}
-.hv2Prod .art.cp img{object-fit:cover;object-position:50% 58%;transform:scale(1.9)}
-.hv2Btn{margin-top:10px;width:100%;min-height:48px;border:0;border-radius:999px;background:linear-gradient(180deg,var(--hvY),var(--hvY2));font-size:15.5px;font-weight:900;color:#2b2a1f;cursor:pointer}
+.hv2Prod .art{flex:none;width:96px;height:88px;display:flex;align-items:flex-end;justify-content:center}
+.hv2Prod .art img{width:100%;height:100%;object-fit:contain;object-position:center bottom;mix-blend-mode:multiply}
+.hv2Prod .art.cp{width:112px;height:88px;border-radius:0;overflow:visible;-webkit-mask-image:none;mask-image:none}
+.hv2Prod .art.cp img{object-fit:contain;object-position:center bottom;transform:none}
+.hv2Btn{margin-top:14px;width:100%;min-height:50px;border:0;border-radius:999px;background:linear-gradient(180deg,var(--hvY),var(--hvY2));font-size:15.5px;font-weight:900;color:#2b2a1f;cursor:pointer}
 .hv2Meta{font-size:12.5px;line-height:1.6;color:#6d726b;margin:-2px 4px 0;text-align:center;word-break:keep-all}
 .hv2Meta button{border:0;background:none;color:var(--hvG);font-weight:800;font-size:14px;text-decoration:underline;padding:4px;cursor:pointer;min-height:32px}
 /* AI·별 */
@@ -13832,15 +13832,23 @@ h1.brandline.hv2H1{margin:0;line-height:inherit;font-family:inherit}
  .hv2Hero h2{font-size:21px;max-width:66%}
  .hv2Hero p{max-width:62%}
  .hv2Cta{font-size:15px;padding:0 14px}
+ .hv2Banner{grid-template-columns:minmax(0,1fr);min-height:auto;padding:16px 14px}
+ .hv2Banner .art{grid-column:1;grid-row:auto;justify-self:end;width:min(100%,200px);min-height:122px}
  .hv2Banner h2{font-size:18px}
  .hv2Stars span{font-size:11.5px}
- .hv2Prod .art{width:72px;height:72px}
+ .hv2Prod{min-height:auto}
+ .hv2Prod .art,.hv2Prod .art.cp{width:88px;height:78px}
+ .hv2Prod .price{font-size:26px}
 }
-@media (min-width:360px) and (max-width:399px){.hv2Prod .art{width:54px;height:54px}.hv2Prod .price{font-size:20px}}
+@media (min-width:360px) and (max-width:399px){.hv2Banner{grid-template-columns:minmax(0,1.12fr) minmax(110px,.88fr)}.hv2Banner .art{min-height:138px}.hv2Prod{min-height:446px}.hv2Prod .art{width:86px;height:80px}.hv2Prod .art.cp{width:96px;height:80px}.hv2Prod .price{font-size:26px}}
 @media (max-width:429px){
  .hv2Hero .art{bottom:74px;width:32%}
  .hv2Cta{width:100%;justify-content:center}
+ .hv2Banner{grid-template-columns:minmax(0,1.08fr) minmax(120px,.92fr);gap:8px 12px;min-height:176px}
+ .hv2Banner .art{min-height:132px}
+ .hv2Prod{min-height:438px}
 }
+@media (min-width:400px) and (max-width:430px){.hv2Banner{grid-template-columns:minmax(0,1.18fr) minmax(128px,.82fr)}.hv2Prod .art{width:98px;height:90px}.hv2Prod .art.cp{width:114px;height:90px}.hv2Prod .price{font-size:29px}}
 @media (max-width:359px){
  .hv2Ai .art{display:none}
  .hv2Ai p{max-width:100%}
