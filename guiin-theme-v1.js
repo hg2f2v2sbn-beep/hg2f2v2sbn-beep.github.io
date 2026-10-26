@@ -11,9 +11,10 @@ var flag=window.GUIIN_THEME_V1_ON;
 var isDemo=/(^|\/)demo\.html$/.test(location.pathname||'');
 var ON=flag===true||(flag===undefined&&isDemo);
 var LOG=[];
-window.GUIIN_THEME_OPEN=function(k){return open(k)};
+window.GUIIN_THEME_OPEN=function(){};/* OFF면 아무 일도 하지 않음. ON이면 아래에서 실제 open으로 교체 */
 window.GUIIN_THEME_V1={enabled:ON,interpretationVersion:'relationship-v2.5-priority-qa-45a34d6',fallbackLog:function(){return LOG.slice()}};
 if(!ON)return;
+window.GUIIN_THEME_OPEN=function(k){return open(k)};
 
 /* ───────── 공통 도구 ───────── */
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
@@ -646,7 +647,7 @@ function imgTag(src,alt,pos,cls,dims){var dd=dims?' width="'+dims[0]+'" height="
 function homeSection(){
  var s=document.createElement('section');s.className='gtSec';s.id='gThemeHome';s.setAttribute('aria-label','사랑과 인연이 궁금할 때');
  s.innerHTML='<h2>사랑과 인연이 궁금할 때</h2><p class="lead">두 사람의 명식을 같은 기준으로 읽어 줄게.</p><div class="gtGrid">'+HOME_ORDER.map(function(k){var T=THEMES[k],h=HOME_TXT[k];return '<article class="gtCard '+T.cls+'"><div class="ph">'+imgTag(HOME_IMG[k]||T.img,'',HOME_POS[k]||T.pos,null,[1536,1024])+'</div><div class="bd"><h3>'+esc(h[0])+'</h3><p>'+esc(h[1])+'</p><button type="button" data-gt="'+k+'">'+esc(h[2])+' ›</button></div></article>'}).join('')+'</div>';
- s.addEventListener('click',function(e){var b=e.target.closest('[data-gt]');if(b)open(b.getAttribute('data-gt'))});
+ s.addEventListener('click',function(e){var b=e.target.closest('[data-gt]');if(b){e.stopPropagation();open(b.getAttribute('data-gt'))}});
  return s;
 }
 function screen(){
@@ -827,9 +828,10 @@ function next(){
   return;
  }
  if(k==='shinsal'){
-  var same=false;try{var c=(typeof chart!=='undefined')&&chart;same=!!(c&&c.input&&c.input.year===d.A.year&&c.input.month===d.A.month&&c.input.day===d.A.day&&!!c.input.hourUnknown===!!d.A.hourUnknown&&(d.A.hourUnknown||c.input.hour===d.A.hour))}catch(_e){}
+  var same=false;try{var c=(typeof chart!=='undefined')&&chart;same=!!(c&&c.input&&c.input.year===d.A.year&&c.input.month===d.A.month&&c.input.day===d.A.day&&(c.input.gender||'여')===(d.A.gender||'여')&&!!c.input.hourUnknown===!!d.A.hourUnknown&&(d.A.hourUnknown||(+c.input.hour===+d.A.hour&&+(c.input.minute||0)===+(d.A.minute||0))))}catch(_e){}
   if(same&&typeof openResultTab==='function'){openResultTab('stars');return}
   setv('name',d.A.name==='나'?'':d.A.name);setv('year',d.A.year);setv('month',d.A.month);setv('day',d.A.day);setv('hour',d.A.hourUnknown?'':d.A.hour);setv('minute',d.A.hourUnknown?'':d.A.minute);setSeg('genderSeg',d.A.gender);setSeg('calendarSeg','양력');
+  var hu=$('hourUnknown');if(hu){hu.checked=!!d.A.hourUnknown;if(typeof syncHourUnknownUI==='function'){try{syncHourUnknownUI()}catch(_e){}}else{['hour','minute'].forEach(function(id){var x=$(id);if(x)x.disabled=hu.checked})}}
   go('saju');
  }
 }
