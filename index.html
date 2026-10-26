@@ -14145,5 +14145,31 @@ window.addEventListener('pageshow',function(){setTimeout(refresh,300)});
 </script>
 
 <script src="guiin-theme-v1.js?v=20261026-fix1"></script>
+<style id="GUIIN_BOTTOM_NAV_PIN">
+/* 아이폰 앱 속 브라우저에서 스크롤 중 하단 바가 화면 가운데로 떠오르는 현상 방지: 바를 별도 레이어로 고정 */
+.bottom{-webkit-transform:translate3d(0,var(--gNavShift,0px),0);transform:translate3d(0,var(--gNavShift,0px),0);-webkit-backface-visibility:hidden;backface-visibility:hidden;will-change:transform}
+</style>
+<script id="GUIIN_BOTTOM_NAV_PIN_JS">
+/* 실제로 보이는 화면(visualViewport)의 아래쪽과 레이아웃 기준 아래쪽이 어긋나면 그만큼만 바를 옮긴다. 일반 브라우저에서는 0이라 변화 없음. */
+(function(){
+  var vv=window.visualViewport,nav=document.querySelector('.bottom');
+  if(!vv||!nav)return;
+  var raf=0;
+  function apply(){
+    raf=0;
+    var shift=0;
+    if(!(vv.scale>1.01)&&!document.body.classList.contains('guiinAskKeyboardOpen')){
+      shift=Math.round(vv.offsetTop+vv.height-window.innerHeight);
+      if(Math.abs(shift)<2||Math.abs(shift)>window.innerHeight*0.6)shift=0;
+    }
+    nav.style.setProperty('--gNavShift',shift+'px');
+  }
+  function queue(){if(!raf)raf=requestAnimationFrame(apply);}
+  vv.addEventListener('resize',queue);vv.addEventListener('scroll',queue);
+  window.addEventListener('scroll',queue,{passive:true});window.addEventListener('resize',queue);
+  window.addEventListener('orientationchange',function(){setTimeout(queue,300);});
+  apply();
+})();
+</script>
 </body>
 </html>
