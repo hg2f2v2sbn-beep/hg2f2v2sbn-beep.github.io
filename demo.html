@@ -13871,6 +13871,120 @@ h1.brandline.hv2H1{margin:0;line-height:inherit;font-family:inherit}
  .hv2Ai p{max-width:100%}
  .hv2Ai .go{width:100%;max-width:100%}
 }
+
+/* 카드 배치 확정안: 2열 카드, 그림은 오른쪽 아래 겹침, 가격·CTA 하단 정렬 */
+@media (min-width:360px) and (max-width:430px){
+  .hv2Duo{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:12px!important;align-items:stretch!important}
+  .hv2Prod{position:relative!important;display:flex!important;flex-direction:column!important;min-height:0!important;height:100%!important;padding:16px 14px 14px!important;overflow:hidden!important}
+  .hv2Prod h3{font-size:19px!important;line-height:1.25!important;margin:0 0 6px!important}
+  .hv2Prod .sub{font-size:14px!important;line-height:1.45!important;min-height:0!important;margin:0 0 12px!important}
+  .hv2Prod ul{gap:7px!important;margin:0!important}
+  .hv2Prod li{font-size:14px!important;line-height:1.35!important}
+  .hv2Prod .foot{position:static!important;display:block!important;min-height:0!important;margin:auto 0 0!important;padding:14px 0 0!important}
+  .hv2Prod .foot .price{display:block!important;font-size:24px!important;line-height:1.1!important;margin:0!important;white-space:nowrap!important}
+  .hv2Prod .foot .art,
+  .hv2Prod .foot .art.cp{position:absolute!important;right:-4px!important;bottom:76px!important;width:40%!important;height:80px!important;aspect-ratio:auto!important;margin:0!important;display:flex!important;align-items:flex-end!important;justify-content:center!important;overflow:visible!important;border-radius:0!important;box-shadow:none!important;padding:0!important}
+  .hv2Prod .foot .art img,
+  .hv2Prod .foot .art.cp img{width:100%!important;height:100%!important;max-width:none!important;object-fit:contain!important;object-position:center bottom!important;transform:none!important;mix-blend-mode:multiply!important;-webkit-mask-image:radial-gradient(ellipse 60% 60% at 50% 55%,#000 58%,transparent 100%)!important;mask-image:radial-gradient(ellipse 50% 50% at 50% 55%,#000 52%,transparent 100%)!important}
+  .hv2Btn{width:100%!important;min-height:50px!important;margin:12px 0 0!important;font-size:16px!important}
+}
+@media (max-width:399px){.hv2Prod .foot .price{font-size:21px!important}}
+/* GUIIN HOME MOCKUP EXACT · 2026-10-26
+   최신 main da2e800 기준
+   기존 GUIIN_HOME_V2_CSS 블록의 마지막에 override로 추가
+   계산/결제/로그인/관계테마 로직 변경 없음
+*/
+@media (min-width:360px) and (max-width:430px){
+ html,body{max-width:100%;overflow-x:hidden;background:#fbf6ee}
+ #home.hv2On>.profilebar{display:none!important}
+ #gHomeV2.hv2{display:flex!important;flex-direction:column!important;gap:8px!important;margin:4px 0 10px!important;padding:0 12px calc(96px + env(safe-area-inset-bottom))!important;max-width:430px!important}
+ #gHomeV2>.hv2Hero{order:1!important}
+ #gHomeV2>#gThemeHome{order:2!important}
+ #gHomeV2>.hv2Duo{order:3!important}
+ #gHomeV2>.hv2Banner,#gHomeV2>.hv2Meta,#gHomeV2>.hv2Row,#gHomeV2>.hv2Mini{display:none!important}
+ #gHomeV2 .hv2Card{border-radius:22px!important;border:1px solid rgba(211,194,164,.48)!important;box-shadow:0 5px 16px rgba(93,73,43,.07)!important}
+
+ /* 큰 오늘운세 히어로 */
+ #gHomeV2 .hv2Hero{height:205px!important;min-height:205px!important;padding:14px 14px 12px!important;overflow:hidden!important;background-image:linear-gradient(90deg,rgba(231,250,255,.99) 0%,rgba(239,251,245,.92) 34%,rgba(255,242,245,.16) 59%,rgba(255,238,244,.03) 100%),url("guiin-home-friends.webp")!important;background-size:cover!important;background-position:center,64% center!important;background-repeat:no-repeat!important}
+ #gHomeV2 .hv2Hero .k,#gHomeV2 .hv2Hero .art{display:none!important}
+ #gHomeV2 .hv2Hero h2{max-width:56%!important;margin:1px 0 6px!important;font-size:24px!important;line-height:1.16!important;letter-spacing:-.045em!important;color:#082f33!important;text-shadow:0 1px 0 rgba(255,255,255,.5)!important}
+ #gHomeV2 .hv2Hero>p:not(.k){max-width:53%!important;margin:0 0 8px!important;font-size:0!important;line-height:1.38!important;color:#38515b!important}
+ #gHomeV2 .hv2Hero>p:not(.k)::after{content:"내 사주를 알고,\A더 좋은 선택을 할 수 있어요.";white-space:pre-line;font-size:11.8px!important;line-height:1.4!important}
+ #gHomeV2 .hv2Cta{min-height:42px!important;padding:0 12px!important;gap:5px!important;border-radius:999px!important;background:linear-gradient(180deg,#ffd55a,#f0b92e)!important;color:#302410!important;font-size:14px!important;box-shadow:0 3px 7px rgba(181,130,20,.18)!important}
+ #gHomeV2 .hv2Cta .free{font-size:10.5px!important;padding:3px 7px!important;background:#13a36b!important}
+ #gHomeV2 .hv2Cta .sun{width:18px!important;height:18px!important}
+
+ /* 관계 테마 4칸 */
+ #home.hv2On #gThemeHome{margin:0!important;padding:0!important;width:100%!important;height:140px!important}
+ #home.hv2On #gThemeHome>h2,#home.hv2On #gThemeHome>p.lead{display:none!important}
+ #home.hv2On #gThemeHome .gtGrid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px!important;height:140px!important}
+ #home.hv2On #gThemeHome .gtCard{position:relative!important;display:flex!important;flex-direction:column!important;min-width:0!important;height:140px!important;border-radius:15px!important;overflow:hidden!important;background:#fff7f9!important;border:1px solid rgba(235,192,204,.55)!important;box-shadow:0 3px 10px rgba(112,74,83,.045)!important}
+ #home.hv2On #gThemeHome .gtCard .ph{height:82px!important;aspect-ratio:auto!important;flex:0 0 82px!important;background:#ffeef3!important}
+ #home.hv2On #gThemeHome .gtCard .ph img{width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important}
+ #home.hv2On #gThemeHome .gtCard .bd{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;gap:1px!important;min-height:58px!important;padding:5px 2px 4px!important;text-align:center!important}
+ #home.hv2On #gThemeHome .gtCard h3{margin:0!important;color:#172036!important;font-size:12.6px!important;line-height:1.2!important;font-weight:900!important;letter-spacing:-.04em!important;white-space:nowrap!important}
+ #home.hv2On #gThemeHome .gtCard p{margin:0!important;color:#69728a!important;font-size:0!important;line-height:1.2!important;letter-spacing:-.03em!important;word-break:keep-all!important}
+ #home.hv2On #gThemeHome .gtCard button{position:absolute!important;inset:0!important;z-index:5!important;margin:0!important;padding:0!important;min-height:0!important;border:0!important;border-radius:0!important;background:transparent!important;color:transparent!important;opacity:.001!important}
+ #home.hv2On #gThemeHome .gtCard.cp h3{font-size:0!important}
+ #home.hv2On #gThemeHome .gtCard.cp h3::after{content:"궁합";font-size:12.6px!important}
+ #home.hv2On #gThemeHome .gtCard.cp p::after{content:"두 사람의\A인연 흐름";white-space:pre-line;font-size:9.8px!important}
+ #home.hv2On #gThemeHome .gtCard.bk p::after{content:"계속 만나야 할까?";font-size:9.8px!important}
+ #home.hv2On #gThemeHome .gtCard.cr p::after{content:"상대의 마음이\A궁금하다면";white-space:pre-line;font-size:9.8px!important}
+ #home.hv2On #gThemeHome .gtCard.ru p::after{content:"다시 이어질\A인연일까?";white-space:pre-line;font-size:9.8px!important}
+
+ /* 평생사주 / 사주궁합 */
+ #gHomeV2 .hv2Duo{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;align-items:stretch!important}
+ #gHomeV2 .hv2Prod{position:relative!important;display:flex!important;flex-direction:column!important;min-height:292px!important;height:292px!important;padding:11px 9px 9px!important;overflow:hidden!important}
+ #gHomeV2 .hv2Prod.saju{background:linear-gradient(150deg,#fffdf5 0%,#fff8e6 67%,#fff2cf 100%)!important}
+ #gHomeV2 .hv2Prod.comp{background:linear-gradient(150deg,#fffafa 0%,#fff0f4 66%,#ffe5ed 100%)!important}
+ #gHomeV2 .hv2Prod h3{position:relative!important;z-index:3!important;display:flex!important;align-items:center!important;gap:4px!important;margin:0 0 4px!important;font-size:18px!important;line-height:1.17!important;letter-spacing:-.045em!important;color:#151e31!important;white-space:nowrap!important}
+ #gHomeV2 .hv2Prod.comp h3{font-size:0!important}
+ #gHomeV2 .hv2Prod.comp h3::after{content:"사주궁합";font-size:18px!important}
+ #gHomeV2 .hv2Prod h3 svg{width:19px!important;height:19px!important}
+ #gHomeV2 .hv2Prod .sub{position:relative!important;z-index:3!important;min-height:34px!important;margin:0 0 6px!important;font-size:11.5px!important;line-height:1.38!important;letter-spacing:-.028em!important;color:#465064!important;max-width:92%!important}
+ #gHomeV2 .hv2Prod ul{position:relative!important;z-index:3!important;margin:0!important;padding:0!important;gap:3px!important}
+ #gHomeV2 .hv2Prod li{font-size:10.8px!important;line-height:1.28!important;gap:4px!important;letter-spacing:-.03em!important;color:#344052!important}
+ #gHomeV2 .hv2Prod li i{width:13px!important;height:13px!important;flex:0 0 13px!important;margin-top:0!important}
+ #gHomeV2 .hv2Prod li i::after{left:4px!important;top:2px!important;width:3px!important;height:6px!important}
+ #gHomeV2 .hv2Prod .foot{position:static!important;display:block!important;min-height:0!important;margin-top:auto!important;padding-top:6px!important}
+ #gHomeV2 .hv2Prod .price{position:relative!important;z-index:4!important;font-size:21px!important;line-height:1!important;font-weight:900!important;letter-spacing:-.04em!important;padding-bottom:1px!important}
+ #gHomeV2 .hv2Prod.saju .price{color:#b85a0a!important}
+ #gHomeV2 .hv2Prod.comp .price{color:#b8335a!important}
+ #gHomeV2 .hv2Prod .art,#gHomeV2 .hv2Prod .art.cp{position:absolute!important;right:-7px!important;bottom:47px!important;width:96px!important;height:126px!important;margin:0!important;display:flex!important;align-items:flex-end!important;justify-content:center!important;overflow:visible!important;border-radius:0!important;box-shadow:none!important;z-index:1!important}
+ #gHomeV2 .hv2Prod .art img,#gHomeV2 .hv2Prod .art.cp img{content:url("guiin-saju-cat.webp");width:100%!important;height:100%!important;max-width:100%!important;object-fit:contain!important;object-position:center bottom!important;transform:none!important;mix-blend-mode:multiply!important;-webkit-mask-image:radial-gradient(ellipse 65% 72% at 54% 58%,#000 62%,rgba(0,0,0,.9) 76%,transparent 100%)!important;mask-image:radial-gradient(ellipse 65% 72% at 54% 58%,#000 62%,rgba(0,0,0,.9) 76%,transparent 100%)!important}
+ #gHomeV2 .hv2Prod.comp .art img,#gHomeV2 .hv2Prod.comp .art.cp img{content:url("guiin-compat-friends.webp");mix-blend-mode:normal!important}
+ #gHomeV2 .hv2Prod.comp li:first-child{font-size:0!important}
+ #gHomeV2 .hv2Prod.comp li:first-child::after{content:"두 사람의 성향과 궁합";font-size:10.8px!important;line-height:1.28!important}
+ #gHomeV2 .hv2Btn{position:relative!important;z-index:5!important;width:100%!important;min-height:42px!important;margin-top:6px!important;padding:0 6px!important;border-radius:999px!important;background:linear-gradient(180deg,#ffd55a,#f0b92e)!important;color:#302410!important;font-size:13px!important;font-weight:900!important;letter-spacing:-.025em!important;box-shadow:0 3px 7px rgba(188,137,17,.14)!important}
+ body{padding-bottom:calc(88px + env(safe-area-inset-bottom))!important}
+ nav.bottom,.bottom{padding-bottom:max(6px,env(safe-area-inset-bottom))!important}
+}
+@media (min-width:400px) and (max-width:430px){
+ #gHomeV2 .hv2Hero{height:210px!important;min-height:210px!important}
+ #gHomeV2 .hv2Hero h2{font-size:25px!important}
+ #gHomeV2 .hv2Prod{height:296px!important;min-height:296px!important}
+ #gHomeV2 .hv2Prod .art,#gHomeV2 .hv2Prod .art.cp{width:102px!important;height:130px!important}
+}
+@media (min-width:360px) and (max-width:379px){
+ #gHomeV2.hv2{padding-left:9px!important;padding-right:9px!important}
+ #gHomeV2 .hv2Hero{height:200px!important;min-height:200px!important;padding-left:12px!important}
+ #gHomeV2 .hv2Hero h2{font-size:22px!important}
+ #gHomeV2 .hv2Hero>p:not(.k)::after{font-size:11px!important}
+ #home.hv2On #gThemeHome,#home.hv2On #gThemeHome .gtGrid{height:136px!important}
+ #home.hv2On #gThemeHome .gtGrid{gap:5px!important}
+ #home.hv2On #gThemeHome .gtCard{height:136px!important}
+ #home.hv2On #gThemeHome .gtCard .ph{height:79px!important;flex-basis:79px!important}
+ #gHomeV2 .hv2Duo{gap:6px!important}
+ #gHomeV2 .hv2Prod{height:286px!important;min-height:286px!important;padding-left:7px!important;padding-right:7px!important}
+ #gHomeV2 .hv2Prod h3{font-size:16.5px!important}
+ #gHomeV2 .hv2Prod.comp h3::after{font-size:16.5px!important}
+ #gHomeV2 .hv2Prod .sub{font-size:10.8px!important}
+ #gHomeV2 .hv2Prod li{font-size:10px!important}
+ #gHomeV2 .hv2Prod.comp li:first-child::after{font-size:10px!important}
+ #gHomeV2 .hv2Prod .price{font-size:19px!important}
+ #gHomeV2 .hv2Prod .art,#gHomeV2 .hv2Prod .art.cp{width:88px!important;height:116px!important;right:-7px!important}
+ #gHomeV2 .hv2Btn{font-size:12px!important}
+}
 </style>
 <script id="GUIIN_HOME_V2">
 (function(){'use strict';
