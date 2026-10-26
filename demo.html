@@ -14067,6 +14067,28 @@ h1.brandline.hv2H1{margin:0;line-height:inherit;font-family:inherit}
 #gHomeV2 .hv2Prod.saju{background-image:linear-gradient(90deg,rgba(255,250,236,.97) 0%,rgba(255,250,236,.9) 52%,rgba(255,250,236,.2) 86%),url("concept2/guiin-product-lifetime.webp")!important}
 #gHomeV2 .hv2Prod.comp{background-image:linear-gradient(90deg,rgba(255,240,245,.97) 0%,rgba(255,240,245,.9) 52%,rgba(255,240,245,.2) 86%),url("concept2/guiin-product-compatibility.webp")!important}
 #gHomeV2 .hv2Prod ul{text-align:left!important}
+
+/* HOME V5 — 3장 시안 기준 구성 (review) */
+#gHomeV2 .hv5Row{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:10px!important}
+#gHomeV2 .hv5Hero,#gHomeV2 .hv5Ai{position:relative;height:232px!important;aspect-ratio:auto!important;border-radius:22px;overflow:hidden;padding:0;border:1px solid rgba(214,194,150,.45);background:#fbf6ec;box-shadow:0 5px 14px rgba(120,96,60,.08)}
+#gHomeV2 .hv5Hero .hv4Art,#gHomeV2 .hv5Ai .hv4Art{object-fit:cover;object-position:72% 60%}
+#gHomeV2 .hv5Hero::before,#gHomeV2 .hv5Ai::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.92) 0%,rgba(255,255,255,.75) 42%,rgba(255,255,255,0) 70%)}
+#gHomeV2 .hv5Hero .hv4Tx,#gHomeV2 .hv5Ai .hv4Tx{position:relative;z-index:2;max-width:none;height:auto;padding:14px 12px 12px;display:block}
+#gHomeV2 .hv5Hero h2,#gHomeV2 .hv5Ai h2{margin:0 0 4px;font-size:19px!important;line-height:1.2!important;letter-spacing:-.035em;color:#0e2f39;font-weight:900}
+#gHomeV2 .hv5Hero .k{margin:0 0 2px;font-size:11px!important;color:#38515b}
+#gHomeV2 .hv5Hero .sub,#gHomeV2 .hv5Ai .sub{margin:0 0 10px;font-size:12px!important;line-height:1.4;color:#38515b}
+#gHomeV2 .hv5Hero .hv2Cta,#gHomeV2 .hv5Ai .hv2Cta{min-height:38px!important;padding:0 12px!important;font-size:13px!important;width:auto;display:inline-flex;align-items:center}
+#gHomeV2 .hv5Ai{cursor:pointer}
+#gHomeV2 .hv5Stars{padding:14px 12px!important}
+#gHomeV2 .hv5StarsHd{display:flex;align-items:center;justify-content:space-between}
+#gHomeV2 .hv5StarsHd h3{margin:0;font-size:16px;font-weight:900;color:#172036}
+#gHomeV2 .hv5StarsSub{margin:4px 0 10px;font-size:12px;color:#5d6676}
+#gHomeV2 .hv5Stars .hv2Stars{display:flex!important;gap:8px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+#gHomeV2 .hv5Stars .hv2Stars button{flex:0 0 auto;width:92px;display:flex;flex-direction:column;align-items:center;gap:4px;border:1px solid rgba(214,200,170,.5);border-radius:16px;background:#fff;padding:8px 6px;cursor:pointer}
+#gHomeV2 .hv5Stars .hv2Stars img{width:64px;height:64px;object-fit:contain}
+#gHomeV2 .hv5Stars .hv2Stars span{font-size:12px;font-weight:800;color:#172036}
+#gHomeV2 .hv5Stars .empty{font-size:12.5px;color:#5d6676;line-height:1.5}
+#gHomeV2 .hv2Prod{min-height:250px!important}
 </style>
 <script id="GUIIN_HOME_V2">
 (function(){'use strict';
@@ -14100,19 +14122,19 @@ function build(){
  var HV4T=[['breakup','이별 고민','마음 정리가 필요할 때','concept2/guiin-theme-breakup.webp'],['reunion','재회운','다시 이어질 인연','concept2/guiin-theme-reunion.webp'],['compat','궁합','두 사람의 인연','concept2/guiin-theme-compatibility.webp'],['crush','짝사랑','다가갈 수 있을까?','concept2/guiin-theme-crush.webp'],['shinsal','신살·귀인','타고난 재능과 귀인','concept2/guiin-theme-shinsal.webp']];
 var w=document.createElement('div');w.className='hv2';w.id='gHomeV2';
  w.innerHTML=
- '<section class="hv2Card hv4Hero" aria-label="오늘의 운세"><img class="hv4Art" src="concept2/guiin-hero-today.webp" alt="" decoding="async"><div class="hv4Tx"><p class="k"><span data-hv2-name>'+esc(nm?nm+', ':'')+'</span>오늘의 운세가 도착했어요.</p><h2>오늘의 운세</h2><p class="sub">오늘의 흐름을 가볍게 살펴봐</p><button type="button" class="hv2Cta" data-hv2="today">'+SVG.sun+'운세 보기 <span class="free">무료</span> ›</button></div></section>'+
+ '<div class="hv5Row"><section class="hv2Card hv5Hero" aria-label="오늘의 운세"><img class="hv4Art" src="concept2/guiin-hero-today.webp" alt="" decoding="async"><div class="hv4Tx">'+(nm?'<p class="k"><span data-hv2-name>'+esc(nm)+'님</span></p>':'<p class="k"><span data-hv2-name></span></p>')+'<h2>오늘의 운세</h2><p class="sub">오늘의 흐름을 가볍게 살펴봐</p><button type="button" class="hv2Cta" data-hv2="today">운세 보기 ›</button></div></section>'+
+ '<section class="hv2Card hv5Ai" data-hv2="ask" role="button" tabindex="0" aria-label="AI 귀인이 상담"><img class="hv4Art" src="concept2/guiin-ai-chat.webp" alt="" loading="lazy" decoding="async"><div class="hv4Tx"><h2>AI 귀인이 상담</h2><p class="sub">내 사주를 아는 AI 친구</p><button type="button" class="hv2Cta" data-hv2="ask">대화하기 ›</button></div></section></div>'+
  '<div class="hv2Duo">'+
    '<section class="hv2Card hv2Prod saju" aria-label="평생사주 5,900원"><h3>'+SVG.crown+'평생사주</h3><p class="sub">나라는 사람을 가장 깊이 이해하는 사주풀이</p><ul><li><i></i>성격과 타고난 재능</li><li><i></i>연애와 인간관계</li><li><i></i>돈과 일, 적성의 방향</li><li><i></i>귀인과 대운, 인생의 흐름</li></ul><div class="foot"><div class="price">5,900원</div></div><div class="art" aria-hidden="true"><img src="concept2/guiin-product-lifetime.webp" alt="" loading="lazy" decoding="async"></div><button type="button" class="hv2Btn" data-hv2="saju">자세히 보기 ›</button></section>'+
    '<section class="hv2Card hv2Prod comp" aria-label="우리 궁합 7,900원"><h3>'+SVG.heart+'우리 궁합</h3><p class="sub">두 사람의 성향과 관계의 흐름을 깊이 읽는 궁합</p><ul><li><i></i>두 사람의 성향과 끌림</li><li><i></i>갈등 패턴과 관계의 방향</li><li><i></i>결혼과 재물 궁합</li><li><i></i>함께할 앞으로의 흐름</li></ul><div class="foot"><div class="price">7,900원</div></div><div class="art cp" aria-hidden="true"><img src="concept2/guiin-product-compatibility.webp" alt="" loading="lazy" decoding="async"></div><button type="button" class="hv2Btn" data-hv2="match">자세히 보기 ›</button></section>'+
  '</div>'+
- '<section class="hv2Card hv4Shin" data-gt="shinsal" aria-label="내 사주에 숨겨진 특별한 별"><img class="hv4Art" src="concept2/guiin-theme-shinsal.webp" alt="" loading="lazy" decoding="async"><div class="hv4Tx"><b>내 사주에 숨겨진 특별한 별</b><span>타고난 재능부터 나를 돕는 귀인까지, 내 사주의 신살을 알아봐.</span><em>내 신살·귀인 보기 ›</em></div></section>'+
- '<section class="hv2Card hv4Ai" data-hv2="ask" role="button" tabindex="0" aria-label="내 사주를 아는 AI 친구"><img class="hv4Art" src="concept2/guiin-ai-chat.webp" alt="" loading="lazy" decoding="async"><div class="hv4Tx"><b>AI 사주 상담</b><span>내 사주를 아는 AI 친구. 연애도, 돈도, 일도 편하게 물어봐.</span><em>대화하기 ›</em></div></section>'+
+ '<section class="hv2Card hv5Stars" aria-label="내 명식의 귀인·신살"><div class="hv5StarsHd"><h3>내 명식의 귀인·신살</h3><button type="button" class="hv4More" data-gt="shinsal">자세히 ›</button></div><p class="hv5StarsSub">내 명식에 실제로 성립한 귀인·신살만 보여 드려요.</p><div class="hv2Stars" data-hv2-stars>'+starsHTML()+'</div></section>'+
  '<div class="hv2Themes"><h3>테마별로 살펴보기 <button type="button" class="hv4More" data-hv4-more>전체 보기 ›</button></h3>'+HV4T.map(function(t,i){return '<button type="button" class="hv2TBan k-'+t[0]+(i>1?' hv4Extra':'')+'" data-gt="'+t[0]+'"><span class="tx"><b>'+t[1]+'</b><small>'+t[2]+'</small></span><span class="im"><img src="'+t[3]+'" alt="" loading="lazy"></span><i aria-hidden="true">›</i></button>'}).join('')+'</div>'+
  '<p class="hv2Meta">무료 결과를 먼저 보고 원할 때만 결제해요. 결제 승인 후 즉시 제공 · 제공 시작 전 7일 이내 환불 가능 <button type="button" data-hv2="pay">상품·이용권 안내 ›</button></p>'+
  '<div class="hv2Mini">'+
    '<button type="button" data-hv2="year"><span class="ic" style="background:#e3f6f3">'+SVG.bars+'</span><span class="tx"><b>대운·세운·연운</b><small>10년 단위 대운과 올해의 흐름을 확인해요.</small></span><span class="chev" aria-hidden="true">›</span></button>'+
    '<button type="button" data-hv2="manage"><span class="ic" style="background:#e3f4f8">'+SVG.leaf+'</span><span class="tx"><b>내 사주관리</b><small>저장한 프로필로 더 빠르고 편리하게</small></span><span class="chev" aria-hidden="true">›</span></button>'+
-   '<button type="button" data-hv2="guide"><span class="ic" style="background:#fff4d6">'+SVG.doc+'</span><span class="tx"><b>이용안내</b><small>처음 오셨나요? 이용 방법을 알려드려요.</small></span><span class="chev" aria-hidden="true">›</span></button>'+
+   '<button type="button" data-hv2="guide"><span class="ic" style="background:#fff4d6">'+SVG.doc+'</span><span class="tx"><b>이용가이드</b><small>처음 오셨나요? 이용 방법을 알려드려요.</small></span><span class="chev" aria-hidden="true">›</span></button>'+
  '</div>';
  w.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('[data-hv4-more]')){var tw=w.querySelector('.hv2Themes');if(tw)tw.classList.toggle('open');return}var g=e.target.closest&&e.target.closest('[data-gt]');if(g){(window.GUIIN_THEME_OPEN||function(){})(g.getAttribute('data-gt'));return}if(e.target.closest&&e.target.closest('.hv2Friend')){go('ask')}});
  pb.after(w);home.classList.add('hv2On');brandH1();
