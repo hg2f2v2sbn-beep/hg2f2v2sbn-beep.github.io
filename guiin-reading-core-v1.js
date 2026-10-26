@@ -30,6 +30,12 @@ var CHAIN={
 편인:{core:'남들이 안 보는 각도로 혼자 깊이 파고드는 사람',sit:'다들 당연하게 넘기는 일이 이상하게 느껴질 때',think:'“이건 다른 이유가 있을 거야”라는 생각에 빠져들어',act:'혼자 조용히 파고들어서 자기만의 답을 찾아',react:'주변은 생각지 못한 관점이라며 놀라기도 하고, 무슨 생각인지 몰라 거리를 느끼기도 해',gain:'남이 못 본 걸 찾아냈다는 확신',cost:'혼자 내린 결론을 설명하지 않아서 오해가 쌓이는 것',use:'깊이 있는 분석과 독자적인 관점이 가치가 되는 자리',keep:'혼자 내린 결론을 한 줄이라도 먼저 말로 꺼내는 것',flaw:'속을 모르겠다는 말',flawWhy:'충분히 확신하기 전에는 섣불리 말하지 않으려는 방식'},
 정인:{core:'충분히 이해하고 배운 다음에 움직이는 사람',sit:'처음 겪는 일이나 판단할 정보가 부족할 때',think:'“먼저 제대로 알아보고 싶어”가 앞서',act:'자료와 사람 말을 모아 충분히 정리한 뒤 움직여',react:'주변은 깊이 있게 본다고 믿고 의견을 물어',gain:'이해가 끝났을 때 오래 흔들리지 않는 확신',cost:'정리가 끝나기 전엔 움직이지 않아서 속도를 원하는 사람과 엇갈리는 것',use:'충분히 배우고 깊이 볼수록 가치가 커지는 자리',keep:'다 알기 전이라도 지금까지 이해한 만큼을 중간에 꺼내는 것',flaw:'생각만 많다는 말',flawWhy:'잘못 판단해서 일을 되돌리는 걸 피하려는 방식'}
 };
+
+var EXTRA={"비견": ["혼자서도 방향을 정하고 끝까지 책임지는 능력", "맡겨 두면 결론이 난다는 안심", "‘이건 같이 정하자’를 일 시작할 때 한 번 말하는 것", "혼자 지는 몫이 커져"], "겁재": ["사람을 모아 판을 빠르게 키우는 능력", "일이 멈춰 있을 때 먼저 움직여 주는 추진력", "같이 쓰는 돈과 시간의 한도를 먼저 말해 두는 것", "비교와 경쟁이 길어지면 멈추지 못해"], "식신": ["꾸준히 손에 익혀 일정한 품질을 내는 능력", "믿고 맡길 수 있는 결과물", "마감이 몰리기 전에 ‘이 속도로 하면 언제 끝나’를 먼저 공유하는 것", "내 속도가 깨지면 의욕이 확 꺼져"], "상관": ["막힌 방식을 알아보고 더 나은 길을 말로 여는 능력", "답답한 상황을 바꾸는 새 관점", "지적하기 전에 잘된 점 하나를 사실로 먼저 짚는 것", "맞는 말이 평가로 들려서 수습이 길어져"], "편재": ["흩어진 사람과 기회를 하나로 엮는 능력", "혼자서는 몰랐을 기회와 연결", "새 일을 하나 늘릴 때 끝낼 일 하나를 같이 정하는 것", "벌인 일이 많아지면 마무리할 힘이 먼저 모자라"], "정재": ["흩어진 비용과 일정을 실제 숫자로 묶는 능력", "현실에서 발이 묶이지 않는 안정감", "‘이번 주 성과 없는 시간’ 하나를 일정에 미리 넣어 두는 것", "성과가 안 보이는 시간이 비용처럼 느껴져"], "편관": ["위기에서 겁먹지 않고 책임을 떠안는 능력", "무너질 뻔한 일을 붙잡아 주는 든든함", "위기가 끝난 날 바로 쉬는 날을 정하는 것", "위기가 끝나도 몸이 긴장을 놓지 못해"], "정관": ["기준을 세워 모두가 헤매지 않게 하는 능력", "각자 할 일이 분명해지는 질서", "내가 맡지 않아도 되는 일 하나를 이름 붙여 넘기는 것", "평가가 끝나지 않는 느낌에 쉬어도 쉬는 것 같지 않아"], "편인": ["남이 놓친 각도에서 답을 찾는 능력", "생각지 못한 관점", "혼자 내린 결론을 한 줄이라도 먼저 말로 꺼내는 것", "혼자 내린 결론을 말하지 않아서 오해가 쌓여"], "정인": ["충분히 이해해서 흔들리지 않는 판단을 내리는 능력", "믿고 물어볼 수 있는 깊이", "다 알기 전이라도 ‘지금까지는 여기까지야’를 중간에 꺼내는 것", "정리가 끝나기 전엔 움직이지 않아서 속도가 엇갈려"]};
+Object.keys(EXTRA).forEach(function(k){var e=EXTRA[k];if(CHAIN[k]){CHAIN[k].gift=e[0];CHAIN[k].help=e[1];CHAIN[k].fix=e[2];CHAIN[k].costShort=e[3];}});
+/* 일간이 정하는 '어떻게': 같은 십성이라도 일간에 따라 그 방식이 드러나는 결이 다르다 */
+var STEM_TONE={갑:'한번 정한 방향으로 곧게 밀고 가는 쪽',을:'상황에 맞춰 유연하게 길을 바꾸는 쪽',병:'밝고 빠르게 드러내는 쪽',정:'조용히 오래 공들이는 쪽',무:'묵직하게 버티는 쪽',기:'사람을 품고 세심하게 챙기는 쪽',경:'단호하고 분명하게 정리하는 쪽',신:'정확하고 깔끔하게 따지는 쪽',임:'넓게 보고 여유 있게 가는 쪽',계:'조용히 스며들듯 움직이는 쪽'};
+var STEM_HOW={갑:'한번 정한 방향으로 곧게',을:'상황에 맞춰 유연하게 돌아가면서',병:'밝고 빠르게 드러내면서',정:'조용히 오래 공들여서',무:'묵직하게 버티면서',기:'사람을 품고 세심하게 챙기면서',경:'단호하고 분명하게',신:'정확하고 깔끔하게 따져서',임:'넓게 보고 여유 있게',계:'조용히 스며들듯'};
 var LIMIT={ /* 누르는 그룹이 같이 있을 때: 언제 드러나고 언제 막히는지 */
 비겁:'이 패턴이 늘 같은 모습으로 나오지는 않아. 기준과 평가가 강하게 들어오는 자리에서는 자기 판단을 바로 꺼내지 않고 한 번 눌러 두는 면도 같이 있어. 혼자 정할 수 있을 때와 위에서 정해 줄 때 모습이 꽤 달라.',
 식상:'이 패턴이 늘 같은 모습으로 나오지는 않아. 충분히 이해하기 전에는 말을 아끼는 면도 같이 있어서, 낯선 자리에서는 표현이 늦게 나와. 편한 사람 앞과 처음 보는 자리에서 모습이 달라.',
@@ -82,19 +88,22 @@ function personSection(c){
   var head=J.firm
     ?topic(n)+' '+C.core+'에 가까워. '+subj(sup)+' 같은 쪽을 가리켜서 이걸 중심 패턴으로 읽었어. '+WHERE[J.where]
     :topic(n)+' '+C.core+' 쪽 신호가 가장 먼저 보여. 다만 '+sup+' 한 자리에서만 보이는 신호라, 중심 패턴이라고 단정하지는 않을게.';
+  var tone=STEM_TONE[J.P.stem];if(tone&&J.firm)head+=' 같은 '+J.god+' 중심이라도 일간이 '+J.P.stem+(J.P.el||'')+'라서 '+n+'의 방식은 '+ida(tone)+'.';
   if(J.god2&&CHAIN[J.god2])head+=' 같은 계열 안에서 '+J.god2+'도 같이 있어서, 상황에 따라 '+CHAIN[J.god2].core.replace(/ 사람$/,'')+' 모습이 섞여 나와.';
   paras.push(head.trim());
-  paras.push('예를 들어 '+C.sit+', '+topic(n)+' '+C.think+'. 그래서 '+C.act+'. '+C.react+'. 이때 남는 건 '+ida(C.gain)+'. 다만 같은 방식이 반복되면 '+subj(C.cost)+' 부담으로 남기 쉬워.');
+  var how=STEM_HOW[J.P.stem]||'';
+  paras.push('예를 들어 '+C.sit+', '+topic(n)+' '+C.think+'. 그래서 '+(how?how+' ':'')+C.act+'. '+C.react+'. 이때 남는 건 '+ida(C.gain)+'.');
+  paras.push('이건 '+ida(C.gift)+'. '+C.use+'에서 가장 빛나고, 곁의 사람에게는 '+subj(C.help)+' 돼. 이 강점을 오래 쓰려면 '+subj(C.keep)+' 필요해.');
+  paras.push(obj(C.flaw)+' 들을 때가 있다면, 그건 '+ida(C.flawWhy)+'. 이 방식이 문제로 커지는 건 같은 방식이 반복돼서 '+subj(C.cost)+' 쌓일 때야. 그럴 땐 '+C.fix+'부터 해 봐.');
   var lim=[];
   if(J.limited)lim.push(LIMIT[J.hyp]);
   if(J.tierNote)lim.push(TIER[J.tierNote]);
   if(lim.length)paras.push(lim.join(' '));
-  paras.push('이 힘이 가장 잘 쓰이는 곳은 '+ida(C.use)+'. 이 강점을 오래 쓰려면 '+subj(C.keep)+' 필요해. '+obj(C.flaw)+' 들을 때가 있다면, 그건 '+subj(C.flawWhy)+' 강하게 나온 거라고 봐도 돼.');
   var unk=['실제로 어떤 일을 하고 어떤 관계 속에 있는지는 명식만으로 알 수 없어서, 위 장면은 가능한 상황으로 읽어 줘.'];
   if(J.unknownHour)unk.push('출생시간을 몰라서 시주에서 나오는 신호는 빼고 판단했어.');
   if(J.pctHyp&&J.top===J.hyp)unk.push('십성 분포에서도 '+subj(J.hyp)+' '+J.pctHyp+'%로 가장 크지만, 같은 글자에서 나온 크기라 별도 근거로 세지는 않았어.');
   paras.push(unk.join(' '));
-  var share=topic(n)+' '+ida(C.core)+'.';
+  var share=C.core+(tone&&J.firm?', 그중에서도 '+tone:'')+'. 다만 '+C.costShort+'.';
   return {id:'core-judgment',eyebrow:'핵심 결론',title:'핵심 결론 — '+C.core,paragraphs:paras,body:paras.join('\n\n'),
     evidence:['중심: '+J.hyp+(J.god?'·'+J.god:'')+' ('+J.support.join(' · ')+')',J.limited?('제한: '+J.lim+(J.limSeats.length?' ('+J.limSeats.join(' · ')+')':' '+J.limPct+'%')):'',J.tierNote?('강약: '+J.tier):''].filter(Boolean).join(' · '),
     share:share,judgment:{hypothesis:J.hyp,god:J.god,where:J.where,core:C.core,support:J.support,limit:J.limited?{group:J.lim,seats:J.limSeats,pct:J.limPct}:null,strengthTier:J.tier,firm:J.firm,unknownHour:J.unknownHour}};
@@ -172,5 +181,79 @@ function wrapPair(fn){
   };
 }
 install();
-root.GuiinReadingCore={enabled:ON,version:'reading-core-v1',judge:judge,personSection:personSection,pairLoop:pairLoop,log:function(){return LOG.slice()}};
+
+/* ===== 화면: 공유 카드 + 맞아/조금 달라 =====
+ * - 공유 문장은 핵심 결론에서 그대로 가져온다(이름·생년월일은 넣지 않음).
+ * - '맞아/조금 달라'는 이 브라우저에 기록하고 'guiin:reading-feedback' 이벤트로도 알린다(수집 서버는 아직 없음).
+ * - '조금 달라'는 상담 화면 입력창에 질문만 채운다. 자동 전송·이용권 차감 없음.
+ */
+var FB_KEY='guiin_reading_feedback_v1';
+function fbRead(){try{return JSON.parse(root.localStorage.getItem(FB_KEY)||'[]')||[]}catch(_e){return []}}
+function fbWrite(rows){try{root.localStorage.setItem(FB_KEY,JSON.stringify(rows.slice(-200)))}catch(_e){}}
+function pairShare(L){if(!L)return '';return L.same
+  ?'둘 다 '+L.a.tag+' 쪽이라, 불편이 생겨도 서로 먼저 꺼내길 기다리다 거리가 생기는 사이.'
+  :'한 사람은 '+L.a.tag+' 쪽, 다른 한 사람은 '+L.b.tag+' 쪽. 둘 다 각자 편한 방식으로 버티다 엇갈리는 사이.';}
+function escH(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function cardHTML(kind,text,core){
+  return '<div class="grcCard" data-grc="'+kind+'"><div class="grcQuote">'+escH(text)+'</div>'+
+    '<div class="grcRow"><button type="button" class="grcBtn grcShare" data-grc-share>이 문장 공유하기</button></div>'+
+    '<div class="grcAsk">이 풀이, 너랑 맞아?</div>'+
+    '<div class="grcRow"><button type="button" class="grcBtn" data-grc-fb="yes">맞아</button><button type="button" class="grcBtn" data-grc-fb="no">조금 달라</button></div>'+
+    '<div class="grcMsg" role="status" aria-live="polite"></div></div>';
+}
+var CSS='.grcCard{margin:14px 0 4px;padding:14px;border:1px solid #e7dcc7;border-radius:16px;background:#fffaf0}.grcQuote{font-weight:700;line-height:1.6;color:#2f3b2f;margin-bottom:10px}.grcRow{display:flex;gap:8px;margin-top:6px}.grcBtn{flex:1;min-height:44px;border:1px solid #d9caa8;border-radius:12px;background:#fff;color:#315643;font-size:15px}.grcBtn.on{background:#315643;color:#fff;border-color:#315643}.grcShare{background:#315643;color:#fff;border-color:#315643}.grcAsk{margin-top:12px;font-size:14px;color:#66708c}.grcMsg{margin-top:8px;font-size:14px;color:#66708c;min-height:1em}';
+function ensureCss(){if(!root.document||root.document.getElementById('grcCss'))return;var st=root.document.createElement('style');st.id='grcCss';st.textContent=CSS;root.document.head.appendChild(st);}
+function currentChart(){try{return typeof chart!=='undefined'?chart:null}catch(_e){return null}}
+function currentPair(){try{return typeof matchMeta!=='undefined'?matchMeta:null}catch(_e){return null}}
+function enhance(){
+  if(!ON||!root.document)return;
+  var arts=root.document.querySelectorAll('[data-human-section="core-judgment"]:not([data-grc-done]),[data-human-section="pair-core"]:not([data-grc-done])');
+  if(!arts.length)return;ensureCss();
+  Array.prototype.forEach.call(arts,function(a){
+    a.setAttribute('data-grc-done','1');
+    var pair=a.getAttribute('data-human-section')==='pair-core',text='',core='';
+    try{
+      if(pair){var P=currentPair();var L=P&&P.a&&P.b?pairLoop(P.a,P.b):null;text=pairShare(L);core=L?(L.an+'·'+L.bn+' 반응 고리'):'';}
+      else{var c=currentChart();var sct=c?personSection(c):null;text=sct?sct.share:'';core=sct?sct.judgment.core:'';}
+    }catch(_e){text='';}
+    if(!text)return;
+    var holder=root.document.createElement('div');holder.innerHTML=cardHTML(pair?'pair':'person',text,core);
+    var card=holder.firstChild,ask=a.querySelector('.guiinMidAsk');
+    if(ask)a.insertBefore(card,ask);else a.appendChild(card);
+    card.__grc={kind:pair?'pair':'person',text:text,core:core};
+  });
+}
+function onClick(e){
+  var t=e.target,card=t&&t.closest?t.closest('.grcCard'):null;if(!card||!card.__grc)return;
+  var info=card.__grc,msg=card.querySelector('.grcMsg');
+  if(t.closest('[data-grc-share]')){
+    var url='https://gwiinsaju.com/';try{if(typeof guiinPublicShareUrl==='function')url=guiinPublicShareUrl();}catch(_e){}
+    var body=info.text+'\n\n— 귀인사주 '+(info.kind==='pair'?'궁합':'사주')+' 풀이';
+    (async function(){try{
+      if(root.navigator.share){await root.navigator.share({title:'귀인사주',text:body,url:url});return;}
+      if(root.navigator.clipboard&&root.navigator.clipboard.writeText){await root.navigator.clipboard.writeText(body+'\n'+url);if(msg)msg.textContent='문장과 주소를 복사했어.';return;}
+    }catch(err){if(err&&err.name==='AbortError')return;}
+    if(msg)msg.textContent='공유를 열지 못했어. 문장을 길게 눌러 복사해 줘.';})();
+    return;
+  }
+  var fb=t.closest('[data-grc-fb]');if(!fb)return;
+  var v=fb.getAttribute('data-grc-fb');
+  card.querySelectorAll('[data-grc-fb]').forEach(function(b){b.classList.toggle('on',b===fb)});
+  var row={v:v,kind:info.kind,core:info.core,ver:'reading-core-v1',at:new Date().toISOString()};
+  var rows=fbRead();rows.push(row);fbWrite(rows);
+  try{root.dispatchEvent(new CustomEvent('guiin:reading-feedback',{detail:row}))}catch(_e){}
+  if(v==='yes'){if(msg)msg.textContent='알려 줘서 고마워. 이 결론을 기준으로 상담에서도 이어서 볼게.';return;}
+  if(msg)msg.textContent='어느 부분이 다른지 상담에서 같이 짚어 볼게. 질문만 채워 두고 보내지는 않아.';
+  var q=info.kind==='pair'
+    ?'궁합 핵심 고리에서 우리 관계랑 조금 다른 부분이 있어. 실제로는 이렇게 달라: '
+    :'핵심 결론의 "'+info.core+'" 부분이 나랑 조금 달라. 실제로는 이래: ';
+  try{if(typeof root.guiinOpenResultConsultation==='function')setTimeout(function(){root.guiinOpenResultConsultation(info.kind==='pair'?'compatibility':'personal',q)},350);}catch(_e){}
+}
+if(root.document&&root.MutationObserver){
+  var pending=false;
+  var mo=new root.MutationObserver(function(){if(pending)return;pending=true;root.requestAnimationFrame(function(){pending=false;try{enhance()}catch(_e){}})});
+  var start=function(){try{mo.observe(root.document.body,{childList:true,subtree:true});root.document.addEventListener('click',onClick);enhance();}catch(_e){}};
+  if(root.document.body)start();else root.document.addEventListener('DOMContentLoaded',start);
+}
+root.GuiinReadingCore={feedback:fbRead,enabled:ON,version:'reading-core-v1',judge:judge,personSection:personSection,pairLoop:pairLoop,log:function(){return LOG.slice()}};
 })(typeof globalThis!=='undefined'?globalThis:this);
