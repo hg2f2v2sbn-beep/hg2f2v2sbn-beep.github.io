@@ -11,6 +11,7 @@ var flag=window.GUIIN_THEME_V1_ON;
 var isDemo=/(^|\/)demo\.html$/.test(location.pathname||'');
 var ON=flag===true||(flag===undefined&&isDemo);
 var LOG=[];
+window.GUIIN_THEME_OPEN=function(k){return open(k)};
 window.GUIIN_THEME_V1={enabled:ON,interpretationVersion:'relationship-v2.5-priority-qa-45a34d6',fallbackLog:function(){return LOG.slice()}};
 if(!ON)return;
 
@@ -600,6 +601,7 @@ var THEMES={
 };
 var HOME_POS={compat:'50% 50%',breakup:'50% 50%',crush:'50% 50%',reunion:'50% 50%'};
 var HOME_ORDER=['compat','breakup','crush','reunion'];
+var HOME_IMG={compat:'home-v3/theme-compat.webp',breakup:'home-v3/theme-breakup.webp',crush:'home-v3/theme-crush.webp',reunion:'home-v3/theme-reunion.webp'};
 var HOME_TXT={compat:['우리 궁합','두 사람의 끌림과 갈등, 함께하는 미래를 살펴봐.','궁합 알아보기'],breakup:['이별 고민','계속 만나야 할지, 관계를 다시 생각해야 할지 고민된다면.','관계 흐름 살펴보기'],crush:['짝사랑','좋아하는 사람과 어떤 관계를 만들어갈 수 있을까?','인연 가능성 살펴보기'],reunion:['재회운','헤어진 사람과 다시 이어질 가능성과 관계의 흐름을 살펴봐.','재회운 살펴보기']};
 
 /* ───────── 스타일 ───────── */
@@ -643,7 +645,7 @@ var CSS=[
 function imgTag(src,alt,pos,cls,dims){var dd=dims?' width="'+dims[0]+'" height="'+dims[1]+'"':'';return '<img'+(cls?' class="'+cls+'"':'')+' src="'+esc(src)+'" alt="'+esc(alt||'')+'"'+dd+' loading="lazy" decoding="async"'+(pos?' style="object-position:'+pos+'"':'')+' onerror="this.style.display=\'none\'">'}
 function homeSection(){
  var s=document.createElement('section');s.className='gtSec';s.id='gThemeHome';s.setAttribute('aria-label','사랑과 인연이 궁금할 때');
- s.innerHTML='<h2>사랑과 인연이 궁금할 때</h2><p class="lead">두 사람의 명식을 같은 기준으로 읽어 줄게.</p><div class="gtGrid">'+HOME_ORDER.map(function(k){var T=THEMES[k],h=HOME_TXT[k];return '<article class="gtCard '+T.cls+'"><div class="ph">'+imgTag(T.img,'',HOME_POS[k]||T.pos,null,[1536,1024])+'</div><div class="bd"><h3>'+esc(h[0])+'</h3><p>'+esc(h[1])+'</p><button type="button" data-gt="'+k+'">'+esc(h[2])+' ›</button></div></article>'}).join('')+'</div>';
+ s.innerHTML='<h2>사랑과 인연이 궁금할 때</h2><p class="lead">두 사람의 명식을 같은 기준으로 읽어 줄게.</p><div class="gtGrid">'+HOME_ORDER.map(function(k){var T=THEMES[k],h=HOME_TXT[k];return '<article class="gtCard '+T.cls+'"><div class="ph">'+imgTag(HOME_IMG[k]||T.img,'',HOME_POS[k]||T.pos,null,[1536,1024])+'</div><div class="bd"><h3>'+esc(h[0])+'</h3><p>'+esc(h[1])+'</p><button type="button" data-gt="'+k+'">'+esc(h[2])+' ›</button></div></article>'}).join('')+'</div>';
  s.addEventListener('click',function(e){var b=e.target.closest('[data-gt]');if(b)open(b.getAttribute('data-gt'))});
  return s;
 }
