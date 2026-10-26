@@ -7666,7 +7666,7 @@ function guiinQuestionIntent(q){
   return 'personality';
 }
 function guiinConversationMemory(){
-  const older=guiinAIHistory.slice(0,-6).filter(x=>x?.role==='user'&&typeof x.content==='string');
+  const older=guiinAIHistory.slice(0,-12).filter(x=>x?.role==='user'&&typeof x.content==='string');
   if(!older.length)return '';
   return older.slice(-8).map((x,i)=>`${i+1}. ${String(x.content||'').replace(/\s+/g,' ').trim().slice(0,220)}`).join(' | ').slice(0,1600);
 }
@@ -7905,7 +7905,7 @@ async function sendQ(preset){
         name:cp.name||'',
         message,
         chart:cp,
-        history:guiinAIHistory.slice(-6),
+        history:guiinAIHistory.slice(-12),
         conversationMemory:guiinConversationMemory(),
         styleMode:guiinCurrentConsultStyle(),
         conversationId:serverContext?.conversationId||null,
