@@ -4,7 +4,7 @@
    실패하면 null을 돌려주고 기존 요청은 그대로 나간다. */
 (function(){
 'use strict';
-var V='20261025-theme-ai-bridge-v2';
+var V='20261026-reading-core-bridge-v3';
 var BODY_MAX=600, TOTAL_MAX=2400;
 function parse(html){
   try{
@@ -27,13 +27,24 @@ function parse(html){
   }catch(e){return null}
 }
 function evsafe(s){return String(s||'').slice(0,240)}
+/* 화면 풀이 맨 앞의 '핵심 결론'과 같은 판단을 AI에도 먼저 넘긴다 */
+function coreSection(c){
+  try{var R=window.GuiinReadingCore;if(!R||!R.enabled)return null;var x=R.personSection(c);if(!x)return null;
+    return {title:'핵심 결론(화면 풀이와 같은 판단)',body:x.paragraphs.slice(0,3).join(' '),evidence:x.evidence};}catch(e){return null}
+}
+function loopSection(pair){
+  try{var R=window.GuiinReadingCore;if(!R||!R.enabled)return null;var L=R.pairLoop(pair.a,pair.b);if(!L)return null;
+    return {title:'관계의 핵심 고리(화면 풀이와 같은 판단)',body:L.text,evidence:L.an+' '+L.a.tag+' / '+L.bn+' '+L.b.tag};}catch(e){return null}
+}
 function personal(c){
   try{
     var DV=window.GUIIN_DEEP_VOICE;
     if(!DV||typeof DV.build!=='function'||!c||!c.pillars)return null;
     var html=DV.build(c,['self','flaw','money','time']);
     var s=html?parse(html):null;
-    return s?{version:V,source:'site-deep-voice',sections:s}:null;
+    var core=coreSection(c);
+    if(core)s=mergeSections([core],s);
+    return s?{version:V,source:core?'site-reading-core+deep-voice':'site-deep-voice',sections:s}:null;
   }catch(e){return null}
 }
 function themeSections(pair){
@@ -74,7 +85,8 @@ function compat(pair){
       finally{if(swapped){try{matchMeta=old}catch(_e){}}}
       generic=html?parse(html):null;
     }
-    var s=mergeSections(themed,generic);
+    var loop=loopSection(pair);
+    var s=mergeSections(loop?[loop].concat(themed||[]):themed,generic);
     return s?{version:V,source:themed?'site-theme+deep-compat':'site-deep-compat',sections:s}:null;
   }catch(e){return null}
 }

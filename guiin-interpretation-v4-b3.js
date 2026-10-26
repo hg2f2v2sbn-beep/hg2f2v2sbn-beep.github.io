@@ -2684,7 +2684,7 @@ function pairCtx(x){
   const byIdx=idxKeys.slice().sort((p,q)=>m[q]-m[p]);
   const hits=dedupeHits(d),cross=d.cross||{},patt=stressPattern(PA.stress,PB.stress);
   const dir=(PG,PR)=>{const cg=CUR[PG.give],cw=CUR[PR.want];const match=PG.give===PR.want;const same=!match&&cg.fam===cw.fam;return {match,same,fg:cg.fam,fr:cw.fam};};
-  return {x,ca,cb,d,m,PA,PB,a,b,score,tone,idx:{keys:idxKeys,best:byIdx[0],worst:byIdx[byIdx.length-1]},hits,cross,patt,ab:dir(PA,PB),ba:dir(PB,PA),sameW:PA.want===PB.want,tempoDiff:!!(PA.tempo&&PB.tempo&&PA.tempo!==PB.tempo),opp:!!d.q?.oppositeTemp,tension:d.q?.sig?.tension||0,combine:d.q?.sig?.combine||0};
+  return {x,ca,cb,d,m,PA,PB,a,b,score,tone,idx:{keys:idxKeys,best:byIdx[0],worst:byIdx[byIdx.length-1]},hits,cross,patt,ab:dir(PA,PB),ba:dir(PB,PA),sameW:PA.want===PB.want,tempoDiff:!!(PA.tempo&&PB.tempo&&((PA.tempo==='fast'&&PB.tempo==='slow')||(PA.tempo==='slow'&&PB.tempo==='fast'))),opp:!!d.q?.oppositeTemp,tension:d.q?.sig?.tension||0,combine:d.q?.sig?.combine||0};
 }
 const fl=s=>String(s).replace(/네가/g,'상대가').replace(/네 /g,'상대 ');
 function dirText(g,r,PG,PR,o){
@@ -2757,7 +2757,10 @@ function pairCore(C){
   const hard=`가장 큰 어려움은 ${fr}`;
   const p4=P_(strong);
   const title=`${a}님과 ${b}님 — ${score}점, ${{high:'기본 결이 잘 맞는',good:'장점이 크고 합의가 중요한',mid:'끌림과 마찰이 함께 있는',hard:'차이가 커서 조율이 필요한'}[tone]} 조합`;
-  return PR_('pair-core',title,[pairConcl(C)+` 가장 큰 관계 자원은 ${IDX_PRO[idx.best]}이고, 가장 어려운 문제는 ${IDX_CON[idx.worst]}이야.`,p1,...openAnswers(C),p2,p3,p4],C,`${a}님과 ${b}님 관계에서 가장 먼저 지켜야 할 한 가지가 뭔지 알려 줘`);
+  const spreadC=(Number.isFinite(+m[idx.best])&&Number.isFinite(+m[idx.worst]))?(m[idx.best]-m[idx.worst]):0;
+  const lead=pairConcl(C)+(spreadC>=8?` 가장 큰 관계 자원은 ${IDX_PRO[idx.best]}이고, 가장 어려운 문제는 ${IDX_CON[idx.worst]}이야.`:` 영역별 점수가 고르게 나와서, 어느 영역이 좋고 나쁜지보다 두 사람이 부딪힐 때 반응하는 순서가 관계를 더 크게 좌우해.`);
+  let loop='';try{const L=root.GuiinReadingCore&&root.GuiinReadingCore.pairLoop?root.GuiinReadingCore.pairLoop(C.ca,C.cb):null;loop=L&&L.text||'';}catch(_e){}
+  return PR_('pair-core',title,[lead,loop,p1,...openAnswers(C),p2,p3,p4].filter(Boolean),C,`${a}님과 ${b}님 관계에서 가장 먼저 지켜야 할 한 가지가 뭔지 알려 줘`);
 }
 function pairAttraction(C){
   const {PA,PB,a,b,cross,hits,tone}=C;
@@ -2985,8 +2988,8 @@ function tendency(C){
 }
 function openAnswers(C){
   const {PA,PB,a,b,score,m,tone}=C,st=areaStats(C),fr=frictionBrief(C),ad=adjustables(C);
-  const q1=`${a}님과 ${b}님은 ${score}점이고, 영역별로 나눠 보면 ${st.strong&&st.weak?(st.spread>=8?`가장 잘 맞는 쪽은 ${st.strong.n}(${st.strong.v}점)이고 가장 약한 쪽은 ${st.weak.n}(${st.weak.v}점)이야.`:`영역 사이의 점수 차(${st.weak.v}~${st.strong.v}점)가 크지 않아서 어느 한 영역이 관계를 끌고 가는 구조는 아니야.`):''} 끌림이 큰 것과 대화가 편한 것, 생활이 맞는 것, 오래 가는 것은 서로 다른 문제라서 이 글에서는 따로 읽을게.`;
-  const q2=`서로에게 주는 좋은 영향은 ${a}님의 ${toolOf(PA)}과 ${b}님의 ${toolOf(PB)}이야. 부담은 ${J(a,'이/가')} ${STRESS[PA.stress].tag} 쪽이고 ${J(b,'이/가')} ${STRESS[PB.stress].tag} 쪽이라는 점에서 와.`;
+  const q1=`영역별로 나눠 보면 ${st.strong&&st.weak?(st.spread>=8?`가장 잘 맞는 쪽은 ${st.strong.n}(${st.strong.v}점)이고 가장 약한 쪽은 ${st.weak.n}(${st.weak.v}점)이야.`:`영역 사이의 점수 차(${st.weak.v}~${st.strong.v}점)가 크지 않아서 어느 한 영역이 관계를 끌고 가는 구조는 아니야.`):''} 끌림이 큰 것과 대화가 편한 것, 생활이 맞는 것, 오래 가는 것은 서로 다른 문제라서 이 글에서는 따로 읽을게.`;
+  const q2=`서로에게 주는 좋은 영향은 ${a}님의 ${toolOf(PA)}과 ${b}님의 ${toolOf(PB)}이야. ${PA.stress===PB.stress?`부담은 둘 다 ${STRESS[PA.stress].tag} 쪽이라, 불편이 생겨도 먼저 꺼내는 사람이 없을 때 생겨.`:`부담은 ${J(a,'이/가')} ${STRESS[PA.stress].tag} 쪽이고 ${J(b,'이/가')} ${STRESS[PB.stress].tag} 쪽이라는 점에서 와.`}`;
   const q3=`좋아하는 마음이 있어도 함께 있을 때 힘이 드는 이유는 ${fr}`;
   const adjT=ad.adj.length?ad.adj.slice(0,3).map(x=>x.t).join(', '):'';
   const strT=ad.str.length?ad.str.map(x=>x.t).join(', '):'';
@@ -3043,7 +3046,7 @@ function pairVerdict(C){
 /* 끌림과 불편이 함께 있는 이유: 점수는 영역별 강약을 읽는 근거로만 쓰고 확률로 쓰지 않는다 */
 function pairPull(C){
   const {a,b,idx,m,tone}=C,st=areaStats(C);
-  const bi=idx.best,wi=idx.worst,same=bi===wi||!Number.isFinite(+m[bi])||!Number.isFinite(+m[wi]);
+  const bi=idx.best,wi=idx.worst,same=bi===wi||!Number.isFinite(+m[bi])||!Number.isFinite(+m[wi])||(m[bi]-m[wi])<8;
   const gap=same?0:(m[bi]-m[wi]);
   const p1=same
     ?`헤어지고 싶다가도 다시 끌리는 건 이상한 일이 아니야. 이 궁합은 영역별 차이가 크게 갈리지 않아서, 끌림도 불편도 한 가지 이유로 나뉘지 않고 생활 곳곳에 조금씩 섞여 있어.`
@@ -3076,7 +3079,10 @@ function pairSeven(C){
   const love=(mm('love')+mm('personality'))/2,life=(mm('money')+mm('future'))/2,gap=Math.round(love-life);
   const out=[];
   out.push(`서로에게 주는 좋은 영향은 ${IDX_PRO[idx.best]}에서 나와. 구체적으로는 ${a}님의 ${toolOf(PA)}과 ${b}님의 ${toolOf(PB)}이 서로의 빈 곳을 덮어 줘.`);
-  out.push(mm(idx.worst)>=75
+  const spread7=mm(idx.best)-mm(idx.worst);
+  out.push(spread7<8
+    ?`영역별 점수(${mm(idx.worst)}~${mm(idx.best)}점)가 고르게 나와서, 힘든 순간에도 끌리는 이유를 특정 영역 하나로 나누기는 어려워. 이 관계에서 오래 남는 건 점수보다 앞에서 본 반응 순서를 둘이 어떻게 다루느냐야.`
+    :mm(idx.worst)>=75
     ?`힘든 순간이 와도 끌리는 건 끌림이 큰 영역(${IDX[idx.best]} ${mm(idx.best)}점)과 상대적으로 덜 받쳐 주는 영역(${IDX[idx.worst]} ${mm(idx.worst)}점)이 서로 다른 곳에서 나오기 때문이야. 점수가 낮은 건 아니지만, 이 영역은 합의가 없으면 가장 먼저 흔들려.`
     :`힘들면서도 끌리는 건 끌리게 하는 영역(${IDX[idx.best]} ${mm(idx.best)}점)과 지치게 하는 영역(${IDX[idx.worst]} ${mm(idx.worst)}점)이 서로 다른 곳에서 나오기 때문이야. 앞에서 본 것처럼 한쪽이 좋다고 다른 쪽이 해결되지 않아.`);
   out.push(Math.abs(gap)<8
@@ -3084,14 +3090,16 @@ function pairSeven(C){
     :gap>0
       ?`끌림·대화(연애 흐름 ${mm('love')}, 성향 조화 ${mm('personality')})가 생활·장기(돈 감각 ${mm('money')}, 앞으로의 방향 ${mm('future')})보다 앞서 있어. 만나는 순간의 끌림은 큰데 돈·시간·방향을 맞추는 일에서 편안함이 따라오지 못하는 지점이 갈림길이야.`
       :`생활·장기(돈 감각 ${mm('money')}, 앞으로의 방향 ${mm('future')})가 끌림·대화(연애 흐름 ${mm('love')}, 성향 조화 ${mm('personality')})보다 앞서 있어. 설렘의 크기보다 함께 지내는 편안함이 더 큰 관계라서, 설렘이 줄어든 걸 관계가 식은 것으로 오해하지 않는 게 중요해.`);
-  out.push(`계속 만나면 반복되기 쉬운 부담은 ${IDX_CON[idx.worst]}이야.${st.weak?` 합의 없이 두면 ${st.weak.n} 영역에서 같은 장면이 되풀이돼.`:''}`);
+  out.push(spread7<8?`계속 만나면 반복되기 쉬운 부담은 특정 영역보다 부딪힐 때의 반응 순서에서 나와.`:`계속 만나면 반복되기 쉬운 부담은 ${IDX_CON[idx.worst]}이야.${st.weak?` 합의 없이 두면 ${st.weak.n} 영역에서 같은 장면이 되풀이돼.`:''}`);
   out.push(`이어 가려면 각자 앞에서 정한 행동 한 가지씩을 이번 달 안에 실제로 해 보는 데서 시작해야 해.${st.weak?` 특히 ${st.weak.n} 영역은 합의한 기준을 말로만 두지 말고 문장으로 남겨 두는 게 첫 단계야.`:''}`);
   out.push(`좋아지고 있다고 볼 수 있는 변화는 ${WEAK_CHECK[(st.weak&&st.weak.k)||'talk']}이야. 이 변화가 4주 넘게 확인되면 점수가 아니라 실제 행동으로 근거가 쌓이는 거야.`);
   return out;
 }
 
 function pairEndConcl(C){
-  const {tone,idx}=C,B=IDX[idx.best],W=IDX[idx.worst];
+  const {tone,idx,m}=C,B=IDX[idx.best],W=IDX[idx.worst];
+  const sp=(Number.isFinite(+m[idx.best])&&Number.isFinite(+m[idx.worst]))?(m[idx.best]-m[idx.worst]):0;
+  if(sp<8&&(tone==='high'||tone==='good'))return `다시 묻는다면 답은 ${tone==='high'?'잘 맞는 편이라는':'맞는 쪽에 가깝다는'} 거야. 영역별 점수가 고르게 나와서, 관계를 좌우하는 건 특정 영역보다 부딪힐 때 둘이 반응하는 순서야.`;
   return {
     high:`다시 묻는다면 답은 잘 맞는 편이라는 거야. 근거는 ${J(B,'이/가')} 관계를 받쳐 준다는 점이고, 조건은 ${W}에서 합의를 지키는 거야.`,
     good:`다시 묻는다면 답은 맞는 쪽에 가깝다는 거야. ${J(B,'이/가')} 관계를 끌고, ${J(W,'은/는')} 합의로 메워야 해.`,
@@ -3124,6 +3132,7 @@ function audit(rows,label){
 const API={
   version:'premium-evidence-v5.14',
   analyze,
+  STRESS,
   fullRows:c=>audit(personRows(c),'사주'),
   personalityRows:c=>{const r=personalityRows(c);return audit(r,'성격');},
   fieldRows:c=>audit(fieldRows(c),'분야'),
