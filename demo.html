@@ -13985,6 +13985,86 @@ h1.brandline.hv2H1{margin:0;line-height:inherit;font-family:inherit}
  #gHomeV2 .hv2Prod .art,#gHomeV2 .hv2Prod .art.cp{width:88px!important;height:116px!important;right:-7px!important}
  #gHomeV2 .hv2Btn{font-size:12px!important}
 }
+
+/* =========================================================
+   V2 FIXES — 2026-10-26
+   1) 궁합 카드 파란 외곽 제거
+   2) 궁합 그림과 7,900원 겹침 방지
+   3) 관계 테마 4칸 이미지 개별 지정
+   ========================================================= */
+@media (min-width:360px) and (max-width:430px){
+  /* 관계 테마 홈 카드별 이미지 강제 지정 — JS/클릭 로직은 그대로 */
+  #home.hv2On #gThemeHome .gtCard.cp .ph,
+  #home.hv2On #gThemeHome .gtCard.bk .ph,
+  #home.hv2On #gThemeHome .gtCard.cr .ph,
+  #home.hv2On #gThemeHome .gtCard.ru .ph{
+    background-repeat:no-repeat!important;
+    background-size:cover!important;
+    background-position:center!important;
+  }
+  #home.hv2On #gThemeHome .gtCard.cp .ph{background-image:url("banner-compat.webp")!important}
+  #home.hv2On #gThemeHome .gtCard.bk .ph{background-image:url("banner-breakup.webp")!important}
+  #home.hv2On #gThemeHome .gtCard.cr .ph{background-image:url("banner-crush.webp")!important}
+  #home.hv2On #gThemeHome .gtCard.ru .ph{background-image:url("banner-reunion.webp")!important}
+  #home.hv2On #gThemeHome .gtCard .ph img{opacity:0!important}
+
+  /* 궁합 가격 영역을 이미지가 침범하지 못하게 보호 */
+  #gHomeV2 .hv2Prod.comp .foot{
+    padding-right:64px!important;
+  }
+  #gHomeV2 .hv2Prod.comp .price{
+    position:relative!important;
+    z-index:6!important;
+    display:inline-block!important;
+    max-width:calc(100% - 4px)!important;
+    white-space:nowrap!important;
+  }
+
+  /* 궁합 이미지의 바깥 파란 테두리는 컨테이너에서 잘라냄 */
+  #gHomeV2 .hv2Prod.comp .art,
+  #gHomeV2 .hv2Prod.comp .art.cp{
+    right:-12px!important;
+    bottom:51px!important;
+    width:88px!important;
+    height:118px!important;
+    overflow:hidden!important;
+    border:0!important;
+    border-radius:18px!important;
+    box-shadow:none!important;
+    clip-path:inset(3px round 16px)!important;
+  }
+  #gHomeV2 .hv2Prod.comp .art img,
+  #gHomeV2 .hv2Prod.comp .art.cp img{
+    width:100%!important;
+    height:100%!important;
+    object-fit:cover!important;
+    object-position:center!important;
+    transform:scale(1.12)!important;
+    -webkit-mask-image:none!important;
+    mask-image:none!important;
+    mix-blend-mode:normal!important;
+  }
+}
+
+@media (min-width:360px) and (max-width:379px){
+  #gHomeV2 .hv2Prod.comp .foot{padding-right:56px!important}
+  #gHomeV2 .hv2Prod.comp .art,
+  #gHomeV2 .hv2Prod.comp .art.cp{
+    right:-10px!important;
+    width:80px!important;
+    height:108px!important;
+  }
+}
+
+@media (min-width:400px) and (max-width:430px){
+  #gHomeV2 .hv2Prod.comp .foot{padding-right:68px!important}
+  #gHomeV2 .hv2Prod.comp .art,
+  #gHomeV2 .hv2Prod.comp .art.cp{
+    right:-12px!important;
+    width:92px!important;
+    height:122px!important;
+  }
+}
 </style>
 <script id="GUIIN_HOME_V2">
 (function(){'use strict';
