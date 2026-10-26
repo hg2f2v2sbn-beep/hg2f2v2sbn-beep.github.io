@@ -126,7 +126,50 @@ function wrapPerson(fn){
 function install(){
   var X=root.GuiinExpert;if(!X||X.__readingCore)return false;
   if(typeof X.fullSections==='function')X.fullSections=wrapPerson(X.fullSections);
+  if(typeof X.premiumCompatibilitySections==='function')X.premiumCompatibilitySections=wrapPair(X.premiumCompatibilitySections);
   X.__readingCore=true;return true;
+}
+
+/* 궁합: 모든 쌍에 똑같이 들어가는 연결·안내 문장과 반복 면책 문구를 덜어낸다.
+   폭력·통제 안전 문구, 현실 점검 기준, 계산 근거는 그대로 둔다. */
+var TRIM=[
+'구체적인 방법은 아래 조건에서 풀어 줄게.',
+'끌림이 큰 것과 대화가 편한 것, 생활이 맞는 것, 오래 가는 것은 서로 다른 문제라서 이 글에서는 따로 읽을게.',
+'이 순서를 누가 끊느냐가 이 관계의 핵심이야.',
+'이제 장점과 부담을 양쪽 방향으로 나눠 볼게.',
+'이 숫자와 원국 관계는 어느 영역이 구조상 편하고 어느 영역에 의식적인 합의가 필요한지 보여 줘.',
+'관계가 잘될지, 끝날지, 서로의 속마음이 어떤지를 정하는 근거로 쓰지는 않았어.',
+'원하는 마음 놓임의 방식이 달라서 같은 날을 보내도 만족하는 지점이 다를 수 있어.',
+'각자 맡을 행동을 나눠 볼게.',
+'차이를 두 종류로 나눠서 풀어야 해.',
+'그래서 어느 한쪽 기분만으로 관계를 판단하면 놓치는 게 생겨.',
+'이 해도 같은 흐름이야.',
+'이 결론은 구조에서 읽은 경향이고, 이어 갈지는 두 사람의 실제 행동으로 정해져.'
+];
+var TRIM_SET={};TRIM.forEach(function(t){TRIM_SET[t]=1});
+function splitS(p){return String(p||'').match(/[^.!?…]+[.!?…]+[”"’']?\s*|[^.!?…]+$/g)||[];}
+function trimRow(r,hasLoop){
+  var paras=(r.paragraphs&&r.paragraphs.length?r.paragraphs:String(r.body||'').split(/\n\n+/)).map(function(p){
+    var kept=splitS(p).filter(function(s){var t=s.trim();if(!t)return false;if(TRIM_SET[t])return false;
+      if(hasLoop&&r.id==='pair-core'&&(/^계속 만나면 반복되기 쉬운 건 /.test(t)||/^부담은 .*(에서 와|때 생겨)\.$/.test(t)))return false;
+      return true;});
+    return kept.join('').trim();
+  }).filter(Boolean);
+  if(!paras.length)return r;
+  return Object.assign({},r,{paragraphs:paras,body:paras.join('\n\n')});
+}
+function wrapPair(fn){
+  return function(){
+    var rows=fn.apply(this,arguments);
+    if(!ON||!Array.isArray(rows))return rows;
+    try{
+      var core=rows.find(function(r){return r&&r.id==='pair-core'});
+      var hasLoop=!!(core&&/이 관계의 핵심 고리는/.test(String(core.body||(core.paragraphs||[]).join(' '))));
+      var out=rows.filter(function(r){return !(r&&r.id==='pair-pull'&&/끌림과 불편이 섞여 있는 관계/.test(String(r.title||'')))}).map(function(r){return r?trimRow(r,hasLoop):r});
+      if(out.some(function(r){return r&&/undefined|NaN|\[object /.test(String(r.body||''))}))return rows;
+      return out;
+    }catch(e){LOG.push({fn:'pair',reason:String(e&&e.message||e)});return rows;}
+  };
 }
 install();
 root.GuiinReadingCore={enabled:ON,version:'reading-core-v1',judge:judge,personSection:personSection,pairLoop:pairLoop,log:function(){return LOG.slice()}};
