@@ -601,7 +601,7 @@ var THEMES={
 };
 var HOME_POS={compat:'50% 50%',breakup:'50% 50%',crush:'50% 50%',reunion:'50% 50%'};
 var HOME_ORDER=['compat','breakup','crush','reunion'];
-var HOME_IMG={compat:'home-v3/theme-compat.webp',breakup:'home-v3/theme-breakup.webp',crush:'home-v3/theme-crush.webp',reunion:'home-v3/theme-reunion.webp'};
+var HOME_IMG={compat:'concept2/guiin-theme-compatibility.webp',breakup:'concept2/guiin-theme-breakup.webp',crush:'concept2/guiin-theme-crush.webp',reunion:'concept2/guiin-theme-reunion.webp'};
 var HOME_TXT={compat:['우리 궁합','두 사람의 끌림과 갈등, 함께하는 미래를 살펴봐.','궁합 알아보기'],breakup:['이별 고민','계속 만나야 할지, 관계를 다시 생각해야 할지 고민된다면.','관계 흐름 살펴보기'],crush:['짝사랑','좋아하는 사람과 어떤 관계를 만들어갈 수 있을까?','인연 가능성 살펴보기'],reunion:['재회운','헤어진 사람과 다시 이어질 가능성과 관계의 흐름을 살펴봐.','재회운 살펴보기']};
 
 /* ───────── 스타일 ───────── */
@@ -855,7 +855,7 @@ function mountHome(){
  if($('gThemeHome'))return;
  var w=$('gHomeV2');
  var sec=homeSection();
- if(w){var mini=w.querySelector('.hv2Mini');if(mini)w.insertBefore(sec,mini);else w.appendChild(sec)}
+ if(w){var duo=w.querySelector('.hv2Duo')||w.querySelector('.hv2Mini');if(duo)w.insertBefore(sec,duo);else w.appendChild(sec)}
  else{var h=$('home');if(!h)return;var pb=h.querySelector(':scope>.profilebar');if(pb&&pb.nextSibling)h.insertBefore(sec,pb.nextSibling.nextSibling||null);else h.appendChild(sec)}
 }
 function hookStars(){
