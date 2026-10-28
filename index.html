@@ -4654,8 +4654,25 @@ function guiinCompatHitSummaryV56(sig,kind){
   if(!rows.length)return kind==='combine'?'직접 확인되는 합 신호가 많지 않음':'강한 충·형·파·해 신호가 두드러지지 않음';
   return rows.slice(0,5).map(h=>`${labels[h.ak]||h.ak}↔${labels[h.bk]||h.bk} ${h.type}${Number(h.weight||0)>1?`(${h.weight})`:''}`).join(' · ');
 }
+/* 궁합 점수 해석 기준 하나로 통일 (2026-10-28). 점수 구간 + 결속·마찰 신호로 등급을 정하고, 모든 화면 문구가 이 등급을 따른다. */
+function guiinCompatBand(score,sig){
+  score=Number(score)||0;sig=sig||globalThis.__guiinCompatSig||{};
+  const c=Number(sig.combine||0),t=Number(sig.tension||0);
+  let i=score>=80?0:score>=70?1:score>=60?2:3;
+  const downgraded=t>=c+3&&i<3;if(downgraded)i++;
+  const key=['high','good','mid','hard'][i];
+  const T={
+   high:{title:'잘 맞는 궁합이야',short:'맞는 부분이 확실히 많은 편',headline:'서로 장점을 끌어내는 관계예요.',formal:'보완성과 결속 신호가 커서 장점이 먼저 드러나는 관계입니다. 익숙해질수록 표현을 아끼지 않는 것이 과제입니다.',verdict:'끌림도 크고 생활도 맞는 편이야. 이 정도면 잘 맞는 쪽이라고 말할 수 있어.'},
+   good:{title:'잘 맞는 편이고, 조율할 곳이 분명한 궁합이야',short:'맞는 부분이 더 많은 편',headline:'맞는 부분이 많고, 조율할 곳이 분명한 관계예요.',formal:'맞는 부분이 더 많지만 약한 영역 한두 곳의 합의가 관계의 질을 좌우합니다.',verdict:'잘 맞는 편이야. 다만 약한 한 곳만 제대로 다루면 오래 가.'},
+   mid:{title:'끌림과 마찰이 함께 있는 궁합이야',short:'좋은 점과 피곤한 점이 함께 있는 편',headline:'차이를 맞춰갈수록 좋아지는 관계예요.',formal:'장점과 차이가 함께 커서 구체적인 합의가 중요한 관계입니다.',verdict:'끌리는 건 이상하지 않아. 그런데 같이 지내면 피곤해지는 구간이 분명히 있어. 조율하는 두 사람만 오래 가는 관계야.'},
+   hard:{title:'차이가 커서 조율이 먼저인 궁합이야',short:'좋은 점보다 조율 과제가 더 크게 보이는 편',headline:'점수보다 생활 합의가 더 중요한 관계예요.',formal:'감정의 끌림보다 생활 규칙과 갈등 회복 능력을 먼저 확인하는 편이 좋습니다.',verdict:'솔직히 쉬운 관계는 아니야. 끌림이 있어도 생활 규칙과 회복 방식을 먼저 맞춰야 해.'}
+  };
+  return {key,i,score,combine:c,tension:t,downgraded,...T[key]};
+}
+globalThis.guiinCompatBand=guiinCompatBand;
 function guiinCompatMetricsV56(a,b){
   const pa=GuiinExpert.pct(a),pb=GuiinExpert.pct(b),q=guiinCompatSignalV5(a,b);
+  try{globalThis.__guiinCompatSig=q&&q.sig?{combine:Number(q.sig.combine||0),tension:Number(q.sig.tension||0)}:null}catch(_e){}
   const distance=['목','화','토','금','수'].reduce((s,e)=>s+Math.abs(Number(pa[e]||0)-Number(pb[e]||0)),0);
   const elementFit=Math.max(0,14-Math.round(distance/8));
   const combineBoost=Math.min(10,Math.round(Number(q.sig.combine||0)*1.5));
@@ -4670,7 +4687,7 @@ function guiinCompatMetricsV56(a,b){
   const money=guiinCompatClampV56(86-Math.round(moneyGap*.42)-Math.min(6,Math.round(Number(q.sig.tension||0)*.35)),55,94);
   const al=currentLuck(a),bl=currentLuck(b),sameLuck=!!(al&&bl&&al.ko===bl.ko&&al.god===bl.god);
   const future=guiinCompatClampV56((score+personality+money)/3-Math.min(5,Math.round(Number(q.sig.tension||0)*.4))+(sameLuck?2:0),55,94);
-  const band=score>=86?'보완성과 결속 신호가 큰 편이지만 갈등 관리도 함께 봐야 합니다.':score>=78?'서로 끌리고 보완되는 부분이 있으나 생활 조율이 관계의 질을 크게 좌우합니다.':score>=68?'장점과 차이가 함께 커서 구체적인 합의가 중요한 관계입니다.':'감정의 끌림보다 생활 규칙과 갈등 회복 능력을 먼저 확인하는 편이 좋습니다.';
+  const band=guiinCompatBand(score,q&&q.sig).formal;
   return {score,love,personality,money,future,band,distance,elementFit,combineBoost,tensionCost,dayAdjust,climateAdjust,sameStemAdjust,q};
 }
 function guiinPairYearRowsV56(a,b){
@@ -5810,7 +5827,7 @@ function submitMatch(){
   // Preserve the already computed relationship evidence for AI; no new score.
   const aiRelationship=JSON.parse(JSON.stringify({signals:compatMetrics.q?.sig||null,dayRelation:compatMetrics.q?.dayRel||null}));
   matchMeta={a,b,score,love,personality,money,future,good:score>=82?'기본적인 호감과 상호 보완 가능성이 큰 편입니다. 서로 다른 강점을 역할로 나누면 함께 있을 때 혼자보다 선택지가 넓어질 수 있습니다.':'차이가 분명한 만큼 서로에게 없는 방식을 배우게 되는 관계입니다. 맞는 부분만 찾기보다 각자의 강점을 역할로 나누는 것이 중요합니다.',watch:compatMetrics.q?.dayRel==='충'?'일지의 충 신호가 있어 감정의 속도나 생활 리듬이 다를 때 갈등이 크게 느껴질 수 있습니다. 다툼 자체보다 다툰 뒤 어떻게 회복하는지가 핵심입니다.':'감정이 좋을 때는 차이를 매력으로 느끼지만, 피곤할 때는 같은 차이가 답답함으로 느껴질 수 있습니다. 특히 책임과 돈 문제를 말없이 넘기지 않는 것이 중요합니다.',tip:'연락·돈·시간·집안일·가족·혼자 있는 시간에 대한 기준을 구체적으로 맞추세요. 좋은 궁합은 점수보다 반복되는 갈등을 두 사람이 실제로 조율할 수 있을 때 오래 갑니다.'};
-  const matchHeadline=score>=86?'보완성과 결속이 큰 관계예요.':score>=78?'끌림과 조율이 함께 필요한 관계예요.':score>=68?'차이를 맞춰갈수록 좋아지는 관계예요.':'점수보다 생활 합의가 더 중요한 관계예요.';
+  const matchHeadline=guiinCompatBand(score,compatMetrics.q&&compatMetrics.q.sig).headline;
   const pairNow=compatPairProfile(a.dayMaster?.el||a.pillars?.day?.stemEl||'토',b.dayMaster?.el||b.pillars?.day?.stemEl||'토');
   const pairStructure=guiinCompatSignalV5(a,b);
   const pairLead=pairStructure?.archetype?`${pairStructure.archetype}. ${pairStructure.oppositeTemp?'서로 다른 계절의 온도는 끌림이 될 수 있지만 실제 생활 조율을 함께 봐야 합니다.':'성격과 생활 리듬의 합을 함께 봐야 합니다.'}`:(pairNow?.fit||'두 사람의 생활 패턴을 함께 확인해 보세요.');
@@ -9731,15 +9748,19 @@ document.addEventListener('visibilitychange',()=>{
    return {...d,a,b,p};
   }catch(_e){return null;}
  }
- function axisState(n){n=Number(n||0);if(n>=76)return {label:'좋음',tone:'good',desc:'둘 사이에서 장점으로 쓰기 쉬운 축'};if(n>=68)return {label:'무난',tone:'ok',desc:'기본 흐름은 괜찮지만 생활 조율이 필요한 축'};return {label:'조율 필요',tone:'watch',desc:'좋고 나쁨보다 반복 관리가 중요한 축'};}
+ function axisState(n,name){n=Number(n||0);
+  const D={
+   '연애':['설렘과 표현이 자연스럽게 오가는 편','표현은 통하지만 연락·애정 표현 방식은 맞춰야 하는 편','표현 방식 차이로 서운함이 쌓이기 쉬운 편'],
+   '성격':['반응 속도와 생각 방식이 잘 맞물리는 편','큰 결은 맞지만 결정 속도 차이가 보이는 편','같은 일에도 반응이 달라 설명이 자주 필요한 편'],
+   '재물':['쓰고 모으는 기준이 비슷한 편','기준은 비슷하지만 새는 곳이 서로 다른 편','돈 쓰는 우선순위가 달라 규칙이 먼저 필요한 편'],
+   '미래':['앞으로 원하는 삶의 모양이 비슷한 편','큰 방향은 같지만 속도와 순서는 합의가 필요한 편','원하는 속도와 방향이 달라 자주 확인해야 하는 편']
+  };
+  const k=Object.keys(D).find(x=>String(name||'').includes(x));const idx=n>=76?0:n>=68?1:2;
+  const base=[{label:'좋음',tone:'good',desc:'둘 사이에서 장점으로 쓰기 쉬운 축'},{label:'무난',tone:'ok',desc:'기본 흐름은 괜찮지만 생활 조율이 필요한 축'},{label:'조율 필요',tone:'watch',desc:'좋고 나쁨보다 반복 관리가 중요한 축'}][idx];
+  return k?{...base,desc:D[k][idx]}:base;}
  function overall(d){
   const s=Number(d.p?.score||matchMeta?.scoreParts?.score||0),c=Number(d.q?.sig?.combine||d.p?.combine||0),t=Number(d.q?.sig?.tension||d.p?.tension||0);
-  let title,short;
-  if(s>=85){title='좋은 궁합 쪽이야';short='전반적으로 잘 맞는 편';}
-  else if(s>=76){title='좋은 편에 가까운 궁합이야';short='맞는 부분이 더 많은 편';}
-  else if(s>=68){title='무난하지만 조율이 필요한 궁합이야';short='좋은 점과 피곤한 점이 함께 있는 편';}
-  else if(s>=60){title='끌림은 있어도 조율 비중이 큰 궁합이야';short='생활에서는 주의가 필요한 편';}
-  else {title='마찰 관리가 중요한 궁합이야';short='좋은 점보다 조율 과제가 더 크게 보이는 편';}
+  const bd=guiinCompatBand(s,{combine:c,tension:t});const title=bd.title,short=bd.short;
   let balance='';
   if(c>=t+2)balance=`결속 신호 ${c}는 마찰 ${t}보다 강해서 서로 붙는 힘이 비교적 선명해.`;
   else if(t>=c+2)balance=`결속 신호 ${c}보다 마찰 ${t} 쪽 가중치가 더 커서, 좋아하는 마음이 있어도 가까워질수록 조율 비용이 생기기 쉬워.`;
@@ -9767,7 +9788,7 @@ document.addEventListener('visibilitychange',()=>{
   const good=hitList(d,'good'),bad=hitList(d,'bad');
   const elA=val(d.elA,'-'),elB=val(d.elB,'-');
   const fit=val(d.pair?.fit,'서로 다른 장점을 역할로 나눌수록 관계의 장점이 살아나.'),fr=val(d.pair?.friction,'피곤할 때는 같은 차이가 답답함으로 느껴질 수 있어.');
-  return `<section class="r27Verdict" data-r27-verdict="1"><div class="mini">명리식 궁합 판정 · 귀인사주 기준</div><h3>♥ ${o.s}점 · ${E(o.title)}</h3><p class="lead"><b>한마디로 말하면</b> ${E(o.short)}이야. ${E(o.balance)}</p><div class="r27BadgeRow"><span class="r27Badge good">결속 가중치 ${Number(d.q?.sig?.combine??p.combine??0)}</span><span class="r27Badge watch">마찰 가중치 ${Number(d.q?.sig?.tension??p.tension??0)}</span><span class="r27Badge neutral">일지 ${E(val(d.q?.dayRel||p.dayRel,'직접 관계 없음'))}</span><span class="r27Badge neutral">중심오행 ${E(elA)} ↔ ${E(elB)}</span></div><div class="r27AxisGrid">${axes.map(([name,n])=>{const st=axisState(n);return `<div class="r27Axis"><div class="top"><b>${name}</b><strong>${Number(n||0)}점</strong></div><span>${st.desc}</span><em class="state ${st.tone}">${st.label}</em></div>`}).join('')}</div><div class="r27Signals"><div class="r27Signal good"><b>좋게 작용하는 합</b>${E(good)}</div><div class="r27Signal watch"><b>조심해서 써야 하는 충·형·파·해</b>${E(bad)}</div><div class="r27Signal"><b>배우자궁·일지 해석</b>${E(dayText(d))}</div><div class="r27Signal"><b>오행으로 보는 보완과 피로</b><b>${E(elA)} ↔ ${E(elB)}</b>${E(fit)} ${E(fr)}</div></div><div class="r27Bottom"><b>그래서 좋은 궁합이냐고 묻는다면:</b> ${o.s>=76?'좋은 편에 더 가까워.':o.s>=68?'나쁘다고 볼 궁합은 아니고, 좋은 점과 조율할 점이 같이 있는 편이야.':'끌림만으로 편하게 굴러가는 궁합보다는 서로 기준을 맞춰야 체감이 좋아지는 편이야.'} ${Number(d.q?.sig?.combine??p.combine??0)>0?'확인된 결속 신호는 함께 맞추기 쉬운 부분의 참고점이야.':'직접 합 신호가 적다는 것은 실제 호감이나 협력이 없다는 뜻은 아니야.'} 마찰 신호는 실제로 반복되는 생활 문제인지 확인해봐.</div></section>`;
+  return `<section class="r27Verdict" data-r27-verdict="1"><div class="mini">명리식 궁합 판정 · 귀인사주 기준</div><h3>♥ ${o.s}점 · ${E(o.title)}</h3><p class="lead"><b>한마디로 말하면</b> ${E(o.short)}이야. ${E(o.balance)}</p><div class="r27BadgeRow"><span class="r27Badge good">결속 가중치 ${Number(d.q?.sig?.combine??p.combine??0)}</span><span class="r27Badge watch">마찰 가중치 ${Number(d.q?.sig?.tension??p.tension??0)}</span><span class="r27Badge neutral">일지 ${E(val(d.q?.dayRel||p.dayRel,'직접 관계 없음'))}</span><span class="r27Badge neutral">중심오행 ${E(elA)} ↔ ${E(elB)}</span></div><div class="r27AxisGrid">${axes.map(([name,n])=>{const st=axisState(n,name);return `<div class="r27Axis"><div class="top"><b>${name}</b><strong>${Number(n||0)}점</strong></div><span>${st.desc}</span><em class="state ${st.tone}">${st.label}</em></div>`}).join('')}</div><div class="r27Signals"><div class="r27Signal good"><b>좋게 작용하는 합</b>${E(good)}</div><div class="r27Signal watch"><b>조심해서 써야 하는 충·형·파·해</b>${E(bad)}</div><div class="r27Signal"><b>배우자궁·일지 해석</b>${E(dayText(d))}</div><div class="r27Signal"><b>오행으로 보는 보완과 피로</b><b>${E(elA)} ↔ ${E(elB)}</b>${E(fit)} ${E(fr)}</div></div><div class="r27Bottom"><b>그래서 좋은 궁합이냐고 묻는다면:</b> ${o.s>=76?'좋은 편에 더 가까워.':o.s>=68?'나쁘다고 볼 궁합은 아니고, 좋은 점과 조율할 점이 같이 있는 편이야.':'끌림만으로 편하게 굴러가는 궁합보다는 서로 기준을 맞춰야 체감이 좋아지는 편이야.'} ${Number(d.q?.sig?.combine??p.combine??0)>0?'확인된 결속 신호는 함께 맞추기 쉬운 부분의 참고점이야.':'직접 합 신호가 적다는 것은 실제 호감이나 협력이 없다는 뜻은 아니야.'} 마찰 신호는 실제로 반복되는 생활 문제인지 확인해봐.</div></section>`;
  }
  function post(){
   const root=document.getElementById('matchView'),d=data();if(!root||!d)return;
@@ -10568,7 +10589,7 @@ try{Object.assign(window,{guiinPaymentCenterStart});}catch(_e){}
    if(!root||!c)return;let a=null;try{a=c.engine2?.version==='2.1.0'?c.engine2:analyze21(c);c.engine2=a}catch(_e){}if(!a?.structure)return;
    const box=root.querySelector('.r30Engine2Box');if(!box||box.querySelector('.e21grid'))return;const st=a.structure;
    const exp=st.exposure.length?st.exposure.slice(0,4).map(x=>`${x.branch} ${x.stem}${x.god?`(${x.god})`:''}`).join(' · '):'두드러지는 투간 적음';
-   box.insertAdjacentHTML('beforeend',`<div class="e21grid"><div class="e21item"><b>득령</b>${E(st.season.label)} · ${E(st.season.score)}</div><div class="e21item"><b>득지</b>뿌리 지지력 ${E(st.root.score)} · ${E(st.root.hits.length)}곳</div><div class="e21item"><b>득세</b>천간 보조 ${E(st.force.score)}</div><div class="e21item"><b>투간</b>${E(exp)}</div><div class="e21item"><b>월령 구조</b>${E(st.pattern.candidate)} · ${E(st.pattern.confidence)}</div><div class="e21item"><b>통합 강약</b>${E(st.strength.label)} · ${E(st.strength.score)}</div></div>`);
+   box.insertAdjacentHTML('beforeend',`<details class="e21wrap" style="margin-top:8px"><summary style="font-size:11.5px;cursor:pointer;color:#736b60">명리 수치 자세히 보기 (득령·득지·득세·투간)</summary><div class="e21grid"><div class="e21item"><b>득령</b>${E(st.season.label)} · ${E(st.season.score)}</div><div class="e21item"><b>득지</b>뿌리 지지력 ${E(st.root.score)} · ${E(st.root.hits.length)}곳</div><div class="e21item"><b>득세</b>천간 보조 ${E(st.force.score)}</div><div class="e21item"><b>투간</b>${E(exp)}</div><div class="e21item"><b>월령 구조</b>${E(st.pattern.candidate)} · ${E(st.pattern.confidence)}</div><div class="e21item"><b>통합 강약</b>${E(st.strength.label)} · ${E(st.strength.score)}</div></div></details>`);
  }
  function refresh21(){try{let c=null;try{c=chart}catch(_e){};if(c){c.engine2=analyze21(c);enhanceBox(document.getElementById('resultView'),c)}}catch(_e){}}
  const prevRender=window.renderResult;if(typeof prevRender==='function'){
@@ -12907,7 +12928,7 @@ try{Object.assign(window,{guiinPaymentCenterStart});}catch(_e){}
 })();
 </script>
 <script id="GUIIN_PRODUCTION_FLAGS">/* 운영 스위치: true=켜기, false=끄기(기존 화면·기존 해석으로 즉시 복귀) */window.GUIIN_INTERP_STAGE3_ON=true;window.GUIIN_HOME_V2_ON=true;window.GUIIN_THEME_V1_ON=true;</script>
-<script src="guiin-interpretation-v4-b3.js?v=20261026-core3"></script>
+<script src="guiin-interpretation-v4-b3.js?v=20261028-p1"></script>
 <script src="guiin-reading-core-v1.js?v=20261026-core3"></script>
 <script id="GUIIN_RELEASE_INTEGRATION">
 /* Release QA integration: calculation, permission and navigation functions stay authoritative. */
@@ -13054,7 +13075,7 @@ try{Object.assign(window,{guiinPaymentCenterStart});}catch(_e){}
 <script src="guiin-home-polish.js?v=20261011-home-polish-demo"></script>
 <script src="guiin-scene-art.js?v=20261011-scene-art"></script>
 <script src="guiin-deep-voice-b3.js?v=20261020-b9"></script>
-<script src="guiin-deep-compat-b3.js?v=20261020-b9"></script>
+<script src="guiin-deep-compat-b3.js?v=20261028-p1"></script>
 <script src="guiin-deep-ai.js?v=20261026-core3"></script>
 
 
@@ -14146,6 +14167,7 @@ window.addEventListener('pageshow',function(){setTimeout(refresh,300)});
 </script>
 
 <script src="guiin-theme-v1.js?v=20261026-fix1"></script>
+<script src="guiin-reading-polish-v1.js?v=20261028-p1"></script>
 <style id="GUIIN_BOTTOM_NAV_PIN">
 /* 아이폰 앱 속 브라우저에서 스크롤 중 하단 바가 화면 가운데로 떠오르는 현상 방지: 바를 별도 레이어로 고정 */
 .bottom{-webkit-transform:translate3d(0,var(--gNavShift,0px),0);transform:translate3d(0,var(--gNavShift,0px),0);-webkit-backface-visibility:hidden;backface-visibility:hidden;will-change:transform}

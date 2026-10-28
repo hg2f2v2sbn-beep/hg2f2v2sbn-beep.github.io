@@ -2589,7 +2589,7 @@ const SEES={
 편인:{short:'생각이 독특해서 대화가 깊어지는 사람',kw:'깊어지는 대화',pull:'다른 관점으로 설명해 주는 모습에 호기심이 오래 가'}
 };
 /* 총점대 */
-function toneOf(score){return score>=80?'high':score>=70?'good':score>=60?'mid':'hard';}
+function toneOf(score){try{if(typeof globalThis.guiinCompatBand==='function')return globalThis.guiinCompatBand(score).key;}catch(_e){}return score>=80?'high':score>=70?'good':score>=60?'mid':'hard';}
 const TONE_TXT={
 high:'전체 결이 잘 맞는 편이라, 차이가 있어도 서로를 이해하는 속도가 빠른 관계로 읽혀.',
 good:'장점이 뚜렷하게 크고 그에 맞는 차이도 있어서, 어떻게 합의하느냐에 따라 편안함이 더 커지는 관계로 읽혀.',
@@ -2791,7 +2791,7 @@ function pairAttraction(C){
     ps.push(S2_ON&&PA.top===PB.top?`두 사람 모두 ${GRP[PA.top].mode} 힘이 중심이라 서로에게 분명한 도움이 돼. ${GRP[PA.top].relief}`:P_(eff(PA,PB,a,b),eff(PB,PA,b,a)));
     if(tone==='high')ps.push(`두 사람은 서로의 약점을 크게 건드리지 않고 장점을 끌어내는 쪽으로 맞물려 있는 것으로 읽혀. 이 편안함은 구조에서 읽히는 장점이라 처음에는 노력 없이도 느껴질 수 있어. 다만 편안함이 생활 합의와 표현을 대신해 주지는 않아서, 다음 영역별 무게에서 약한 쪽을 같이 봐야 해.`);
   }
-  const title=sa&&sb?`끌리는 이유 — ${J(a,'은/는')} ${SEES[cross.aSeesB].kw}에, ${J(b,'은/는')} ${SEES[cross.bSeesA].kw}에 마음이 가`:'끌리는 이유';
+  const title=sa&&sb?(SEES[cross.aSeesB].kw===SEES[cross.bSeesA].kw?`끌리는 이유 — 둘 다 ${SEES[cross.aSeesB].kw}에 마음이 가`:`끌리는 이유 — ${J(a,'은/는')} ${SEES[cross.aSeesB].kw}에, ${J(b,'은/는')} ${SEES[cross.bSeesA].kw}에 마음이 가`):'끌리는 이유';
   return PR_('pair-attraction',title,ps,C,`${a}님과 ${b}님이 서로의 매력을 더 편하게 표현하려면 어떤 말과 행동이 좋을지 알려 줘`);
 }
 function pairConflict(C){
@@ -2947,7 +2947,7 @@ function weightLine(C,st){
   const {strong:S,weak:W,spread,arr}=st;
   if(!S||!W)return '';
   if(spread<8){
-    return arr.every(x=>x.v>=70)?`모든 영역이 높은 편이라 한 영역에만 기대는 관계는 아니야. 이런 조합은 문제가 없어서가 아니라 문제가 생겼을 때 다른 영역이 받쳐 줄 여지가 크다는 뜻이야.`:arr.every(x=>x.v<60)?`모든 영역이 낮은 편이라 어느 한 영역이 다른 영역의 부담을 덜어 주기 어려워. 그래서 이 관계는 영역마다 합의를 따로 만들어야 하는 구조야.`:`영역 사이의 점수 차가 크지 않아서 어느 한 영역이 관계를 끌고 가는 구조는 아니야. 뚜렷하게 좋은 곳도 약한 곳도 없는 대신, 어느 영역이든 소홀해지면 바로 눈에 띄는 조합이야.`;
+    return arr.every(x=>x.v>=78)?`모든 영역이 높은 편이라 한 영역에만 기대는 관계는 아니야. 이런 조합은 문제가 없어서가 아니라 문제가 생겼을 때 다른 영역이 받쳐 줄 여지가 크다는 뜻이야.`:arr.every(x=>x.v<60)?`모든 영역이 낮은 편이라 어느 한 영역이 다른 영역의 부담을 덜어 주기 어려워. 그래서 이 관계는 영역마다 합의를 따로 만들어야 하는 구조야.`:`영역 사이의 점수 차가 크지 않아서 어느 한 영역이 관계를 끌고 가는 구조는 아니야. 뚜렷하게 좋은 곳도 약한 곳도 없는 대신, 어느 영역이든 소홀해지면 바로 눈에 띄는 조합이야.`;
   }
   return `가장 힘이 실린 쪽은 ${J(S.n,'이야/야')}(${S.v}), 가장 약한 쪽은 ${J(W.n,'이야/야')}(${W.v}). ${WEIGHT_X[S.k+'>'+W.k]||''} ${S.n}의 장점은 ${W.n}의 부담을 덜어 주지 못해서, 한 영역이 좋다는 이유로 관계 전체를 괜찮다고 판단하면 안 돼.`;
 }
