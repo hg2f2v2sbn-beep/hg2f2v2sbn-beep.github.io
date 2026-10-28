@@ -1,0 +1,103 @@
+name: Guiin Saju - Static QA
+
+'on':
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static-qa:
+    name: Verify public website without deploying
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out public website
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Check JavaScript syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          files=(*.js)
+          if (( ${#files[@]} == 0 )); then
+            echo '::error::No JavaScript files found'
+            exit 1
+          fi
+          for f in "${files[@]}"; do
+            echo "Syntax check: $f"
+            node --input-type=module --check < "$f"
+          done
+
+      - name: Check sitemap, robots and essential site files
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          from urllib.parse import urlparse, unquote
+          import xml.etree.ElementTree as ET
+
+          essential = [
+              'index.html', 'demo.html', 'saju-engine.js',
+              'guiin-runtime-config.js', 'toss-payment.js',
+              'robots.txt', 'sitemap.xml',
+          ]
+          missing = [p for p in essential if not Path(p).is_file()]
+          if missing:
+              raise SystemExit('Missing essential files: ' + ', '.join(missing))
+
+          root = ET.parse('sitemap.xml').getroot()
+          entries = [node.text for node in root.iter() if node.tag.endswith('}loc') or node.tag == 'loc']
+          if not entries:
+              raise SystemExit('Sitemap contains no URLs')
+          for raw_url in entries:
+              url = urlparse(raw_url or '')
+              if url.scheme != 'https' or url.netloc != 'gwiinsaju.com':
+                  raise SystemExit('Unexpected sitemap domain or protocol')
+              path = unquote(url.path).lstrip('/') or 'index.html'
+              if not Path(path).is_file():
+                  raise SystemExit('Sitemap references missing file: ' + path)
+              if path in {'demo.html', 'auth.html'}:
+                  raise SystemExit('Private/demo page appears in sitemap: ' + path)
+          robots = Path('robots.txt').read_text(encoding='utf-8')
+          if 'Sitemap: https://gwiinsaju.com/sitemap.xml' not in robots:
+              raise SystemExit('robots.txt sitemap URL missing')
+          if 'Disallow: /demo.html' not in robots:
+              raise SystemExit('Demo is not disallowed in robots.txt')
+          print(f'Sitemap valid: {len(entries)} URLs; required site files present.')
+          PY
+
+      - name: Reject server secrets in public text files
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          checks = {
+              'OpenAI API key': re.compile(r'sk-proj-[A-Za-z0-9_-]{12,}'),
+              'GitHub token': re.compile(r'gh[pousr]_[A-Za-z0-9_]{24,}'),
+              'Toss server secret key': re.compile(r'(?:live|test)_sk_[A-Za-z0-9_-]{12,}'),
+              'PEM private key': re.compile(r'-----BEGIN (?:[A-Z]+ )?PRIVATE KEY-----'),
+          }
+          findings = []
+          for path in Path('.').iterdir():
+              if not path.is_file() or path.suffix.lower() not in {'.html', '.js', '.css', '.txt', '.json', '.xml'}:
+                  continue
+              text = path.read_text(encoding='utf-8', errors='replace')
+              for label, pattern in checks.items():
+                  if pattern.search(text):
+                      findings.append((path.name, label))
+          for filename, label in findings:
+              print(f'::error::{filename}: potential {label} exposed (value hidden)')
+          if findings:
+              raise SystemExit(1)
+          print('No known server secret patterns detected in current root text files.')
+          PY
