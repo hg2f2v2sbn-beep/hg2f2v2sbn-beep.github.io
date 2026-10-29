@@ -123,6 +123,7 @@ function ensureCss(){if(root.document.getElementById('gtyCss'))return;var s=root
 function currentChart(){try{return typeof chart!=='undefined'?chart:null;}catch(_e){return null;}}
 function tabNow(){try{return typeof currentTab!=='undefined'?currentTab:'';}catch(_e){return '';}}
 function keyOf(c){var I=c.input||{};return [I.year,I.month,I.day,I.hour,I.minute,I.gender,paid()?'p':'f'].join('-');}
+function matchOrder(el,ref){try{var o=root.getComputedStyle(ref).order;if(o&&o!=='0')el.style.order=o;}catch(_e){}}
 function enhance(){
   if(root.GUIIN_TEN_YEAR_OFF||!root.document)return;
   var view=root.document.getElementById('resultView');if(!view)return;
@@ -135,7 +136,7 @@ function enhance(){
   if(!R||!R.rows.length)return;
   if(old)old.remove();ensureCss();
   var holder=root.document.createElement('div');holder.innerHTML=cardHTML(R,(c.input&&c.input.name)||'너');
-  var card=holder.firstChild;card.setAttribute('data-k',k);anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  var card=holder.firstChild;card.setAttribute('data-k',k);anchor.parentNode.insertBefore(card,anchor.nextSibling);matchOrder(card,anchor);
 }
 function onClick(e){var t=e.target&&e.target.closest?e.target.closest('[data-gty-buy]'):null;if(!t)return;try{if(typeof root.guiinPaymentCenterStart==='function')root.guiinPaymentCenterStart('LIFETIME_SAJU');}catch(_e){}}
 if(root.document&&root.MutationObserver){

@@ -145,7 +145,7 @@ function cardHTML(R,name){
     +rows+curLine
     +'<div class="gpdAct"><button type="button" data-gpd-ask="1">지나온 시기 얘기로 상담 이어가기</button></div></section>';
 }
-var CSS='#resultView .gpdCard{margin:14px 0;padding:18px 16px;border-radius:18px;background:#fbf8f2;border:1px solid #ece3d3}#resultView .gpdCard .mini{font-size:12px;color:#8a7a5c;font-weight:700;margin-bottom:6px}#resultView .gpdCard h3.gpdT,#resultView .gpdCard h3{font-size:18px;margin:0 0 8px}#resultView .gpdCard p.lead{font-size:13.5px;color:#5f5a52;line-height:1.6}'
+var CSS='#resultView.gR1 > .gpdCard{order:4}#resultView .gpdCard{margin:14px 0;padding:18px 16px;border-radius:18px;background:#fbf8f2;border:1px solid #ece3d3}#resultView .gpdCard .mini{font-size:12px;color:#8a7a5c;font-weight:700;margin-bottom:6px}#resultView .gpdCard h3.gpdT,#resultView .gpdCard h3{font-size:18px;margin:0 0 8px}#resultView .gpdCard p.lead{font-size:13.5px;color:#5f5a52;line-height:1.6}'
  +'#resultView .gpdItem{margin-top:12px;padding:13px 13px 10px;border-radius:14px;background:#fff;border:1px solid #efe7da}#resultView .gpdItem.recent{border-color:#d9c79f}#resultView .gpdHead{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 10px;align-items:baseline}#resultView .gpdHead b{font-size:14.5px;line-height:1.45}#resultView .gpdHead span{font-size:12px;color:#9a8f7d}'
  +'#resultView .gpdItem ul{margin:8px 0 0;padding-left:18px}#resultView .gpdCard .gpdItem li{font-size:14px;line-height:1.65;margin:3px 0}#resultView .gpdCard p.gpdBal{font-size:13.5px;line-height:1.6;margin:8px 0 0;color:#6b5a3a}#resultView .gpdCard p.gpdQ{margin:9px 0 0;font-size:13.5px;font-weight:700;color:#2f5d46;line-height:1.55}'
  +'#resultView .gpdEv summary{font-size:12px;color:#8a7a5c;cursor:pointer;margin-top:6px}#resultView .gpdCard .gpdEv p{font-size:12px;color:#7d7466;margin:4px 0 0}#resultView .gpdCard p.gpdNow{font-size:13.5px;line-height:1.6;margin:12px 0 0}#resultView .gpdAct{margin-top:12px}#resultView .gpdAct button{width:100%;padding:11px;border-radius:12px;border:1px solid #cfe0d5;background:#eef6f0;color:#245b40;font-weight:700;font-size:14px}';
@@ -155,6 +155,7 @@ function anchor(view){
   var hs=view.querySelectorAll('h3,h4');for(var i=0;i<hs.length;i++){var t=(hs[i].textContent||'').trim();if(/^7\.\s*지금 시기/.test(t)){return hs[i].closest('article,section')||hs[i];}}
   return null;
 }
+function matchOrder(el,ref){try{var o=root.getComputedStyle(ref).order;if(o&&o!=='0')el.style.order=o;}catch(_e){}}
 function enhance(){
   if(root.GUIIN_PAST_DAEUN_OFF||!root.document)return;
   var view=root.document.getElementById('resultView');if(!view||view.querySelector('[data-gpd]'))return;
@@ -164,7 +165,7 @@ function enhance(){
   ensureCss();
   var name=(c.input&&c.input.name)||'너';
   var holder=root.document.createElement('div');holder.innerHTML=cardHTML(R,name);
-  var card=holder.firstChild;card.__gpd=R;a.parentNode.insertBefore(card,a);
+  var card=holder.firstChild;card.__gpd=R;a.parentNode.insertBefore(card,a);matchOrder(card,a);
 }
 function onClick(e){
   var t=e.target&&e.target.closest?e.target.closest('[data-gpd-ask]'):null;if(!t)return;
