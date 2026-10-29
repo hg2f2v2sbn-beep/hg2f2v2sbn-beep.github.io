@@ -49,10 +49,16 @@ jobs:
           guiin-home-polish.js
           guiin-interpretation-v4-b3.js
           guiin-mobile-hardening-v6.27.css
+          guiin-love-deep-v1.js
+          guiin-pair-timing-v1.js
+          guiin-past-daeun-v1.js
           guiin-production-guard-v6.27.js
+          guiin-reading-core-v1.js
+          guiin-reading-polish-v1.js
           guiin-runtime-config.js
           guiin-scene-art.js
           guiin-star-art.js
+          guiin-ten-year-v1.js
           guiin-theme-v1.js
           guiin-theme.css
           hero-breakup.webp
