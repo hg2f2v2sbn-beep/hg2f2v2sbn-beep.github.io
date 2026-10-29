@@ -74,7 +74,7 @@ function groupPct(c){
 }
 function branchGod(c,l){
   var S=G(),hs=S.HIDDEN_STEMS&&S.HIDDEN_STEMS[l.branchIndex];if(!hs||!hs.length)return null;
-  var h=hs[0];var si=typeof h==='object'?(h.stemIndex!=null?h.stemIndex:S.STEMS.indexOf(h.stem)):(typeof h==='number'?h:S.STEMS.indexOf(h));
+  var h=hs[0];var si=Array.isArray(h)?Number(h[0]):typeof h==='number'?h:(h&&h.stemIndex!=null?h.stemIndex:S.STEMS.indexOf(h&&h.stem||h));
   return si>=0?S.tenGod(c.pillars.day.stemIndex,si):null;
 }
 function relsWith(c,l){
