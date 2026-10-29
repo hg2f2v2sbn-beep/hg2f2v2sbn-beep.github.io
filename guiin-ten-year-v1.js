@@ -109,7 +109,7 @@ function cardHTML(R,name){
   var summary=isPaid?('<div class="gtyPicks">'+pickLine(R.push,'힘을 싣기 좋은 해')+pickLine(R.check,'한 번 더 확인할 해')+pickLine(R.turns,'큰 흐름이 바뀌는 해',true)+'</div>'):'';
   var ev=isPaid?'<details class="gtyEv"><summary>명리 근거 보기</summary><p>'+esc(R.rows.map(function(r){return r.evidence.join(', ');}).filter(Boolean).join(' / ')||'원국·대운과 크게 걸리는 해가 적어.')+'</p></details>':'';
   var cta=isPaid?'':'<div class="gtyCta"><button type="button" data-gty-buy="1">나머지 7년과 해별 근거 보기 ›</button></div>';
-  return '<section class="gtyCard" data-gty="1"><div class="mini">앞으로 10년 · 해마다 한 줄</div><h3>'+esc(name)+'님의 '+R.rows[0].year+'~'+R.rows[R.rows.length-1].year+'년</h3>'
+  return '<section class="gtyCard" data-gty="1" data-polish-skip="1"><div class="mini">앞으로 10년 · 해마다 한 줄</div><h3>'+esc(name)+'님의 '+R.rows[0].year+'~'+R.rows[R.rows.length-1].year+'년</h3>'
     +'<p class="gtyLead">해마다 들어오는 글자를 원국·지금 대운과 맞대어 봤어. 좋은 해·나쁜 해가 아니라, 어디에 힘을 싣고 어디서 한 번 더 확인할지로 읽어 줘.</p>'
     +summary+'<ol class="gtyList">'+rows+'</ol>'+ev+cta+'</section>';
 }

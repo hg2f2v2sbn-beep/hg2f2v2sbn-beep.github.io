@@ -95,7 +95,7 @@ function read(c,fromYear){
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];});}
 function cardHTML(R,name){
   var yrs=R.years.length?'<div class="gldBox"><b>관계 이야기가 진지해지기 쉬운 해</b><p>'+R.years.map(function(x){return x.year+'('+esc(x.why)+')';}).join(' · ')+'</p><p class="gldS">이 해에 인연이 “생긴다”는 뜻이 아니라, 만남·결혼·정리 같은 관계 결정이 자주 화제가 되는 해야.</p></div>':'';
-  return '<section class="gldCard" data-gld="1"><div class="mini">연애·결혼 깊게 보기</div><h3>'+esc(name)+'님의 사랑 방식과 맞는 사람</h3>'
+  return '<section class="gldCard" data-gld="1" data-polish-skip="1"><div class="mini">연애·결혼 깊게 보기</div><h3>'+esc(name)+'님의 사랑 방식과 맞는 사람</h3>'
     +R.lines.map(function(x){return '<p>'+esc(x)+'</p>';}).join('')
     +'<div class="gldPair"><div><b>끌리는 사람</b><p>'+esc(R.pull)+'</p></div><div><b>오래 편한 사람</b><p>'+esc(R.fit)+'</p></div></div>'
     +(R.pull&&R.fit?'<p class="gldS">끌리는 사람과 오래 편한 사람이 다를 수 있어. 처음엔 끌림으로 시작해도, 고를 땐 오른쪽 기준을 한 번 더 봐.</p>':'')

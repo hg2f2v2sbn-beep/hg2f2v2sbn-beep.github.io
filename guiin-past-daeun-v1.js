@@ -139,7 +139,7 @@ function cardHTML(R,name){
       +'<details class="gpdEv"><summary>명리 근거 보기</summary><p>'+esc(x.evidence.join(' · '))+'</p></details></div>';
   }).join('');
   var curLine=R.current?'<p class="gpdNow">그리고 지금은 '+esc(R.current.fromAge)+'~'+esc(R.current.toAge)+'세, '+esc(R.current.stem+R.current.branch)+' 대운이야. 지나온 시기에 반복된 주제가 지금 어떻게 이어지는지는 바로 아래 “지금 시기”에서 볼 수 있어.</p>':'';
-  return '<section class="gpdCard" data-gpd="1"><div class="mini">지나온 시기 · 기억과 맞춰 보기</div>'
+  return '<section class="gpdCard" data-gpd="1" data-polish-skip="1"><div class="mini">지나온 시기 · 기억과 맞춰 보기</div>'
     +'<h3>'+esc(name)+'님이 지나온 10년 단위 흐름</h3>'
     +'<p class="lead">대운은 10년 동안 자주 들어오는 과제야. 사건을 맞히는 표가 아니라, 그 시기에 어떤 고민이 반복됐을지 원국과 맞대어 읽은 거야. 기억과 다르면 다른 대로 알려 줘.</p>'
     +rows+curLine
