@@ -78,6 +78,7 @@ jobs:
           privacy.html
           refund.html
           robots.txt
+          rss.xml
           saju-compatibility-guide.html
           saju-engine.js
           saju-words.html
