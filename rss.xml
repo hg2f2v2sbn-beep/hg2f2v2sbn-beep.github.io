@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+ <channel>
+  <title>귀인사주</title>
+  <link>https://gwiinsaju.com/</link>
+  <atom:link href="https://gwiinsaju.com/rss.xml" rel="self" type="application/rss+xml"/>
+  <description>무료 만세력·사주, 평생사주·궁합 풀이와 사주 용어 안내</description>
+  <language>ko</language>
+  <lastBuildDate>Sat, 31 Oct 2026 12:00:00 +0900</lastBuildDate>
+  <item>
+   <title>무료 만세력 보는 법 · 오행·십신·대운 | 귀인사주</title>
+   <link>https://gwiinsaju.com/manse.html</link>
+   <guid isPermaLink="true">https://gwiinsaju.com/manse.html</guid>
+   <description>내 사주 명식에서 무엇부터 볼까요? 일간과 원국부터 오행·십신·12운성·신살, 대운과 세운까지 만세력을 읽는 순서를 안내합니다.</description>
+   <pubDate>Sat, 31 Oct 2026 12:00:00 +0900</pubDate>
+  </item>
+  <item>
+   <title>오늘의 운세 보는 법 · 내 사주와 일진 | 귀인사주</title>
+   <link>https://gwiinsaju.com/today.html</link>
+   <guid isPermaLink="true">https://gwiinsaju.com/today.html</guid>
+   <description>같은 날에도 사람마다 운세가 다른 이유를 알아보세요. 오늘의 일진을 내 사주 원국과 비교하고 십신과 합충을 읽는 방법을 안내합니다.</description>
+   <pubDate>Fri, 30 Oct 2026 12:00:00 +0900</pubDate>
+  </item>
+  <item>
+   <title>사주 궁합 · 두 사람의 관계를 읽는 기준 | 귀인사주</title>
+   <link>https://gwiinsaju.com/compatibility.html</link>
+   <guid isPermaLink="true">https://gwiinsaju.com/compatibility.html</guid>
+   <description>사주 궁합은 점수 하나로 끝나지 않습니다. 두 사람의 일간·일지·오행과 합충, 운의 흐름을 함께 살펴 관계를 이해하는 기준을 확인하세요.</description>
+   <pubDate>Thu, 29 Oct 2026 12:00:00 +0900</pubDate>
+  </item>
+  <item>
+   <title>2026년 하반기 운세 · 병오년 사주 읽기 | 귀인사주</title>
+   <link>https://gwiinsaju.com/2026-fortune.html</link>
+   <guid isPermaLink="true">https://gwiinsaju.com/2026-fortune.html</guid>
+   <description>2026년 병오년 하반기 운세를 내 사주에 맞춰 읽는 방법. 띠만으로 판단하지 않고 원국·현재 대운·세운·월운을 함께 확인하는 순서를 안내합니다.</description>
+   <pubDate>Wed, 28 Oct 2026 12:00:00 +0900</pubDate>
+  </item>
+  <item>
+   <title>2027년 운세 · 정미년 사주 읽기 | 귀인사주</title>
+   <link>https://gwiinsaju.com/2027-fortune.html</link>
+   <guid isPermaLink="true">https://gwiinsaju.com/2027-fortune.html</guid>
+   <description>2027년 정미년, 내 사주에서는 어떤 흐름으로 읽힐까요? 정화·미토의 십신과 원국 관계, 현재 대운을 함께 살피는 방법을 안내합니다.</description>
+   <pubDate>Tue, 27 Oct 2026 12:00:00 +0900</pubDate>
+  </item>
+  <item>
+   <title>천을귀인 뜻 · 성립 기준과 해석 | 귀인사주</title>
+   <link>https://gwiinsaju.com/cheon-eul-gwiin.html</link>
+   <guid isPermaLink="true">https://gwiinsaju.com/cheon-eul-gwiin.html</guid>
+   <description>내 사주의 천을귀인은 무엇을 뜻할까요? 도움과 조력의 상징으로 읽는 천을귀인의 의미와 성립 기준을 확인할 때 주의할 점을 안내합니다.</description>
+   <pubDate>Mon, 26 Oct 2026 12:00:00 +0900</pubDate>
+  </item>
+  <item>
+   <title>사주 궁합 보는 순서 · 원국·합충·대운 | 귀인사주</title>
+   <link>https://gwiinsaju.com/saju-compatibility-guide.html</link>
+   <guid isPermaLink="true">https://gwiinsaju.com/saju-compatibility-guide.html</guid>
+   <description>각자의 성향부터 두 명식의 합충형파해, 함께 지나가는 운의 흐름까지. 궁합을 한 요소로 단정하지 않고 단계별로 읽는 방법을 안내합니다.</description>
+   <pubDate>Sun, 25 Oct 2026 12:00:00 +0900</pubDate>
+  </item>
+  <item>
+   <title>사주 용어 쉽게 보기 · 일간·오행·신살 | 귀인사주</title>
+   <link>https://gwiinsaju.com/saju-words.html</link>
+   <guid isPermaLink="true">https://gwiinsaju.com/saju-words.html</guid>
+   <description>일간·일주·원국은 무엇이 다를까요? 오행과 십신, 합충형파해, 대운·세운, 신살·귀인 등 귀인사주 화면의 명리 용어를 쉬운 말로 설명합니다.</description>
+   <pubDate>Sat, 24 Oct 2026 12:00:00 +0900</pubDate>
+  </item>
+ </channel>
+</rss>
