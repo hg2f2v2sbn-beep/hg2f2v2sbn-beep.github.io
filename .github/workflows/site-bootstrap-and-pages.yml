@@ -51,6 +51,9 @@ jobs:
           guiin-mobile-hardening-v6.27.css
           guiin-love-deep-v1.js
           guiin-pair-timing-v1.js
+          guiin-chat-extras-v1.js
+          guiin-longform-v1.js
+          guiin-home-daily-v1.js
           guiin-past-daeun-v1.js
           guiin-production-guard-v6.27.js
           guiin-reading-core-v1.js
