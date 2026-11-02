@@ -55,6 +55,7 @@ jobs:
           guiin-longform-v1.js
           guiin-home-daily-v1.js
           guiin-past-daeun-v1.js
+          guiin-portrait-v1.js
           guiin-production-guard-v6.27.js
           guiin-reading-core-v1.js
           guiin-reading-polish-v1.js
