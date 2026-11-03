@@ -803,6 +803,7 @@ function run(){
   }
   if(T.pair&&x.kw&&x.kw.length&&out&&out.cards){out.cards=out.cards.concat([{t:'고민 키워드로 본 포인트',b:x.kw.map(function(v){return KW_NOTE[v]}).filter(Boolean)}])}
   out=clean(out,k);
+  try{if(window.GuiinThemeVoice&&typeof window.GuiinThemeVoice.apply==='function')out=window.GuiinThemeVoice.apply(k,out,typeof f!=='undefined'?f:null,a,b,x)||out}catch(_e){LOG.push({theme:k,reason:'voice:'+(_e&&_e.message)})}
   state.data={a:a,b:b,A:A.inp,B:B&&B.inp,metrics:metrics,x:x,aiReading:T.pair?aiThemeSnapshot(k,out,ev,x,f):null};
   var html='<div class="gtSum"><small>핵심 요약</small><h3>'+esc(out.head)+'</h3>'+out.sum.map(function(s){return '<p>'+esc(s)+'</p>'}).join('')+'</div>';
   if(metrics&&isFinite(metrics.score)){html+='<div class="gtD"><div class="in" style="padding-top:14px">'+[['연애·끌림',metrics.love],['성격·대화',metrics.personality],['돈·생활',metrics.money],['장기조율',metrics.future]].filter(function(r){return isFinite(r[1])}).map(function(r){return '<p style="margin:0 0 6px;display:flex;justify-content:space-between"><span>'+r[0]+'</span><b>'+r[1]+'</b></p>'}).join('')+'<p class="gtNote" style="margin:4px 0 0">기존 궁합 화면과 같은 계산값이야.</p></div></div>'}
