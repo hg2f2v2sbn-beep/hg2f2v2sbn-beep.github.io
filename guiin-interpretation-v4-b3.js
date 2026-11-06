@@ -2402,7 +2402,8 @@ function secWork(P){
   const p2=P_(`반대로 ${mgd.drain}에서는 능력과 상관없이 소진이 빨라져.`,tierW);
   const sw=P.pct[P.second]>=20?`${P.second}도 ${P.pct[P.second]}%로 커서 ${GRP[P.second].work}.`:'';
   const p3=P_(sw,`일을 맡을 때 먼저 이렇게 말해 보면 좋아. “${mgd.ask}.” 시작 전에 이 한 문장을 확인하면 나중에 수습하는 시간이 줄어.`);
-  return R('work','5. 일에서 힘이 나는 자리와 지치는 자리',[p1,p2,p3],P,['MG','VEC','STR'],`${mgd.drain}에서 “${mgd.ask}”라고 말하려면 어떤 순서로 이야기하면 좋을지 알려 줘`);
+  let cx=[];try{const GC=(typeof window!=='undefined'?window:globalThis).GuiinCareer;if(GC&&GC.build)cx=GC.build({top:P.top,second:P.second,low:P.hasLow?P.low:'',pct:P.pct,stem:P.stem,tier:P.tier,stars:(P.stars||[]).map(x=>x.name),luckGod:P.transit&&P.transit.luck&&P.transit.luck.god,seed:P.seed,name:P.name})||[];}catch(_e){cx=[];}
+  return R('work','5. 맞는 직업과, 일에서 힘이 나는 자리',[p1,...cx,p2,p3],P,['MG','VEC','STR'],`${mgd.drain}에서 “${mgd.ask}”라고 말하려면 어떤 순서로 이야기하면 좋을지 알려 줘`);
 }
 function secMoney(P){
   const mgd=MG[P.mg],g=GRP[P.top];
