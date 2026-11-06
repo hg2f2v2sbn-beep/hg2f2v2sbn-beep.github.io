@@ -2767,8 +2767,8 @@ function pairAttraction(C){
   const sa=SEES[cross.aSeesB],sb=SEES[cross.bSeesA];
   const ps=[];
   if(sa&&sb){
-    ps.push(P_(`${J(a,'은/는')} ${J(b,'을/를')} ${J(sa.short,'으로/로')} 느껴. ${sa.pull}.`,`${J(b,'이/가')} 평소 건네는 ${J(CUR[PB.give].give,'이/가')} 그 인상을 만들어.`));
-    ps.push(P_(`${b} 쪽에서는 ${J(a,'이/가')} ${J(sb.short,'으로/로')} 보여. ${S2_ON&&cross.aSeesB===cross.bSeesA?'이 느낌은 서로 똑같아서, 둘 다 같은 이유로 편안함을 느껴':sb.pull}.`,`${J(a,'이/가')} 건네는 ${J(CUR[PA.give].give,'이/가')} ${b}에게 닿는 부분이야.`));
+    ps.push(P_(`${J(a,'은/는')} ${J(b,'을/를')} ${J(sa.short,'으로/로')} 느껴. ${sa.pull}.`,`${J(b,'이/가')} ${CUR[PB.give].give.replace(/ 것$/,'')} 순간마다 그 인상이 굳어져.`));
+    ps.push(P_(`${b} 쪽에서는 ${J(a,'이/가')} ${J(sb.short,'으로/로')} 보여. ${S2_ON&&cross.aSeesB===cross.bSeesA?'이 느낌은 서로 똑같아서, 둘 다 같은 이유로 편안함을 느껴':sb.pull}.`,`${b}한테 제일 크게 닿는 건 ${J(a,'이/가')} ${CUR[PA.give].give.replace(/ 것$/,'')} 순간이야.`));
   }else{
     ps.push(`${J(a,'은/는')} ${b}가 건네는 ${CUR[PB.give].give}에 끌려.`);
     ps.push(`${J(b,'은/는')} ${a}가 건네는 ${CUR[PA.give].give}에 마음이 가.`);
