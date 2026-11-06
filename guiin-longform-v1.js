@@ -22,6 +22,7 @@ var CSS='.glfCard{margin:14px 0;padding:18px 16px;border-radius:18px;background:
 '.glfCard .glfSec{border-top:1px solid #f0e6d6;padding:16px 0 4px}'+
 '.glfCard .glfSec .glfLabel{display:inline-block;font-size:12px;font-weight:700;color:#fff;background:#b0874d;border-radius:999px;padding:2px 10px;margin-bottom:8px}'+
 '.glfCard .glfSec h4{font-size:17px;line-height:1.45;margin:0 0 10px;font-weight:800;color:#2b2318}'+
+'.glfCard .glfSec .glfEv{font-size:12.5px;line-height:1.5;color:#8a6a3c;background:#faf3e6;border-radius:8px;padding:6px 10px;margin:0 0 12px}'+
 '.glfCard .glfSec p{font-size:15px;line-height:1.8;margin:0 0 12px;color:#3a3127;word-break:keep-all}'+
 '.glfCard .glfFoot{font-size:12px;color:#9b8f80;margin-top:6px;line-height:1.5}'+
 '.glfCard .glfErr{font-size:13.5px;color:#a8432f;margin:8px 0}';
@@ -82,7 +83,7 @@ function readingHTML(rd){
   var secs=(rd&&rd.sections)||[];
   return secs.map(function(s){
     var paras=String(s.body||'').split(/\n{2,}|\n/).map(function(x){return x.trim();}).filter(Boolean);
-    return '<div class="glfSec"><span class="glfLabel">'+esc(s.label||'')+'</span><h4>'+esc(s.title||s.label||'')+'</h4>'+paras.map(function(p){return '<p>'+esc(p)+'</p>';}).join('')+'</div>';
+    return '<div class="glfSec"><span class="glfLabel">'+esc(s.label||'')+'</span><h4>'+esc(s.title||s.label||'')+'</h4>'+(s.evidence?'<div class="glfEv">근거 · '+esc(s.evidence)+'</div>':'')+paras.map(function(p){return '<p>'+esc(p)+'</p>';}).join('')+'</div>';
   }).join('');
 }
 function cardHTML(kind,paid,st,name){
