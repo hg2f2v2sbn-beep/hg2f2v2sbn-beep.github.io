@@ -76,8 +76,8 @@ function html(){
     +item('today','오늘의 운세','오늘 하루의 흐름과 조심할 점','무료',true)
     +item('ask','AI 사주상담',daily?'내 사주로 묻고 답하기 · 매일 무료 1회':'내 사주로 묻고 답하기 · 처음 3회 무료','무료로 시작',true)
     +item('wallet','AI 질문 3회','궁금한 것만 콕 집어서','1,100원',false)
-    +item('lifetime','평생사주','14개 항목 장문 해설 · 대운 · 10년 세운','5,900원',false)
-    +item('compat','프리미엄 궁합','두 사람 장문 해설 · 시기 겹쳐 보기','7,900원',false)
+    +item('lifetime','평생사주','14개 항목 장문 해설 · 대운 · 10년 세운','990원',false)
+    +item('compat','프리미엄 궁합','두 사람 장문 해설 · 시기 겹쳐 보기','990원',false)
     +item('fortune','2027년 운세 가이드','띠·일간별 내년 흐름','무료',true)
     +'</div></div>';
   if(STATS&&Number(STATS.readings)>=1000){

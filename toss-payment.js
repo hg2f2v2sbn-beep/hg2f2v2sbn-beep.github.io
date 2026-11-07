@@ -104,8 +104,8 @@
     const w=el("walletPayBtn"),p=el("premiumPayBtn"),c=el("compatPayBtn");
     const prefix=isTestReady(state)?"토스 테스트":"토스페이먼츠";
     if(w)w.textContent=prefix+" 결제하기";
-    if(p)p.textContent=prefix+" 5,900원 결제하기";
-    if(c)c.textContent=prefix+" 7,900원 결제하기";
+    if(p)p.textContent=prefix+" 990원 결제하기";
+    if(c)c.textContent=prefix+" 990원 결제하기";
   }
   function setPaymentReadinessUI(){
     setButtonLabels();
