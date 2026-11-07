@@ -14051,7 +14051,7 @@ h1.brandline.hv2H1{margin:0;line-height:inherit;font-family:inherit}
 #gHomeV2 .hv2TBan b{font-size:15px!important}
 #gHomeV2 .hv2TBan small{font-size:11px!important;margin-top:3px!important}
 #gHomeV2 .hv2TBan i{width:26px!important;height:26px!important;right:6px!important;bottom:6px!important;font-size:15px!important}
-#gHomeV2{padding-bottom:calc(112px + env(safe-area-inset-bottom))!important}
+#gHomeV2{padding-bottom:4px!important}
 
 /* HOME V5 — 3장 시안 기준 구성 (review) */
 #gHomeV2 .hv5Row{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:10px!important}
@@ -14115,7 +14115,10 @@ var STAR_PICK=['천을귀인','문창귀인','태극귀인','월덕귀인','천�
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function chartNow(){try{return typeof chart!=='undefined'&&chart&&chart.pillars?chart:null}catch(_e){return null}}
 function starsHTML(){var c=chartNow(),A=window.GUIIN_STAR_ART,map=A&&Object.assign({},A.map||{},A.more||{});
-  if(!c||!c.stars||!map)return '<div class="empty">생년월일을 입력하면 내 명식에 실제로 성립한 귀인만 골라 보여 줄게.</div>';
+  if(!map)return '<div class="empty">생년월일을 입력하면 내 명식에 실제로 성립한 귀인만 골라 보여 줄게.</div>';
+  if(!c||!c.stars){var demo=STAR_PICK.filter(function(n){return map[n]&&map[n].f}).slice(0,4);
+   if(!demo.length)return '<div class="empty">생년월일을 입력하면 내 명식에 실제로 성립한 귀인만 골라 보여 줄게.</div>';
+   return demo.map(function(n){return '<button type="button" data-hv2="stars" aria-label="'+esc(n)+' 자세히 보기"><img src="'+esc(map[n].f)+'.webp" alt="'+esc(map[n].alt||n)+'" loading="lazy" decoding="async"><span>'+esc(n)+'</span></button>'}).join('');}
   var have={};(c.stars.hits||[]).forEach(function(h){if(h&&h.name)have[h.name]=1});
   var list=STAR_PICK.filter(function(n){return have[n]&&map[n]&&map[n].f}).slice(0,4);
   if(!list.length)return '<div class="empty">이 명식에는 대표 귀인이 따로 잡히지 않았어. 다른 신살은 자세히 보기에서 확인해.</div>';
