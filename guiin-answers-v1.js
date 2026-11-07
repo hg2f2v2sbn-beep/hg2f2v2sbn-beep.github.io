@@ -143,7 +143,8 @@ function secMoney(c,C,tier){
  months.sort(function(a,b){return b.s-a.s||a.y-b.y||a.m-b.m});
  if(months.length){var mm=months.slice(0,3).sort(function(a,b){return a.y-b.y||a.m-b.m});ps.push('가까운 달로 좁히면 '+mm.map(function(x){return x.y+'년 '+x.m+'월('+x.ko+'월)'}).join(', ')+'에 돈의 별이 들어와. 이 달엔 견적을 내고, 제안을 하고, 미뤄 둔 정산을 받아 내.')}
  var pc=C.pct.재성;
- ps.push(pc<=8?'참고로 네 원국엔 재성이 얇아. 돈 욕심이 없는 게 아니라, 돈을 "쫓는" 방식이 안 맞는 거야. 잘하는 걸 키우면 돈이 따라오는 순서로 가.':pc>=30?'네 원국엔 재성이 두꺼워. 돈 감각은 타고났는데, 그만큼 돈 때문에 마음이 흔들리기도 쉬워. 수입보다 "지키는 규칙"이 먼저야.':'네 원국의 재성은 중간 정도야. 들어오는 해에 크게 벌고, 나머지 해엔 지키는 리듬으로 가면 돼.');
+ if(C.low==='재성'||pc<=8)ps.push('참고로 네 원국엔 재성이 얇아. 돈 욕심이 없는 게 아니라, 돈을 "쫓는" 방식이 안 맞는 거야. 잘하는 걸 키우면 돈이 따라오는 순서로 가.');
+ else if(C.top==='재성'||pc>=30)ps.push('네 원국엔 재성이 두꺼워. 돈 감각은 타고났는데, 그만큼 돈 때문에 마음이 흔들리기도 쉬워. 수입보다 "지키는 규칙"이 먼저야.');
  return {id:'ans-money',title:'그래서 돈은 언제 버는데?',answer:ans,paragraphs:ps,evidence:'앞으로 10년 세운 대조 · 재성·식상·겁재'};
 }
 
