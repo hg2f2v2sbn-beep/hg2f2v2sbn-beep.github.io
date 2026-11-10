@@ -93,24 +93,75 @@ function topGroup(c){
  return Object.keys(cnt).sort(function(a,b){return cnt[b]-cnt[a]})[0];
 }
 var MAP={self:'self',inside:'inside',people:'people',love:'love',work:'work',money:'money'};
+/* 1,000명 분석에서 모든 사주에 똑같이 나온 안내·연결 문장: 지우거나 사주마다 바꿔 쓴다 */
+var DROP=[/^실제로 어떤 일을 하고 어떤 관계 속에 있는지는/,/^분포 %는 같은 글자에서/,/^문제가 커지는 건 이 흐름이 반복될 때야/,/^대운은 몇 년 단위의 배경이라/,/^띠나 일간은 참고 신호일 뿐이야/,/^사주는 기울기를 보여 줄 뿐이야/,/^이 흐름은 미래 사건을 정해 주는 게 아니라/,/^원인을 알면 빠져나오는 길도 보여/,/^어떻게 골랐는지 말해 줄게/,/^이건 강점이 있다는 사실과 별개로 고쳐야 하는 행동이야/,/^장점이랑 같은 자리에서 나오는 거라/,/^깊어질수록 이 필요는 더 커져/,/^그건 마음이 모자라서가 아니라 서로 쓰는 표현이 달라서야/,/^좋은 달\/나쁜 달로 자르지 않고/,/월운은 사건을 확정하는 날짜가 아니라/];
+var SWAP={
+ '일에서는 이렇게 나와.':['일할 때 딱 이 모습이 나와.','회사에서는 이게 그대로 보여.','일하는 장면으로 보면 이래.'],
+ '가까운 사이에서는 이렇게 나와.':['친한 사람 앞에서는 이렇게 바뀌어.','가까워지면 이 얼굴이 나와.','편한 사람한테는 이래.'],
+ '말로 하면 이 정도면 충분해.':['딱 이 한마디면 돼.','이렇게만 말해.','한 줄이면 충분해.'],
+ '이런 상태가 이어지면 주변에는 이렇게 보일 수 있어.':['이게 이어지면 주변은 이렇게 느껴.','이 상태가 길어지면 주변에서는 이렇게 봐.'],
+ '이럴 땐 이렇게 해 봐.':['처방은 이거야.','이럴 땐 딱 이것만 해.','빠져나오는 방법은 이거야.'],
+ '가까운 사람에게 미리 알려 두면 좋은 게 하나 있어.':['가까운 사람한테 꼭 말해 둘 게 하나 있어.','네 사람한테 미리 알려 줘야 할 게 있어.'],
+ '직업으로 딱 짚으면 이 쪽이야.':['직업으로 콕 집으면 이거야.','일로 보면 답은 이쪽이야.'],
+ '이번 주에 해 볼 한 가지는 이거야.':['이번 주 숙제는 하나야.','이번 주엔 딱 이것만 해.'],
+ '일을 맡을 때 먼저 이렇게 말해 보면 좋아.':['일 맡을 때 첫마디는 이거야.','새 일을 받으면 먼저 이렇게 말해.'],
+ '네 탓이 아니라 타고난 구조가 그쪽으로 기울어 있는 거야.':['네가 약해서가 아니야. 원래 그렇게 기울어 태어난 거야.','이건 성격 탓이 아니라 타고난 배치 탓이야.','의지가 약한 게 아니라, 사주가 원래 그쪽으로 쏠려 있어.'],
+ '그게 제일 용기 있는 선택이야.':['그건 지는 게 아니라 나를 지키는 거야.','도움을 청하는 것도 실력이야.','그게 제일 똑똑한 선택이야.'],
+ '그래서 너랑 잘 맞는 사람은 딱 이래.':['너랑 맞는 사람, 딱 정리해 줄게.','네 짝이 될 사람은 이런 사람이야.','너한테 맞는 사람은 이래.'],
+ '나쁜 인연이란 뜻은 아니고, 둘 다 한 발씩 물러나는 규칙이 꼭 필요한 조합이야.':['나쁜 인연은 아닌데, 싸움 규칙 없이 가면 둘 다 다쳐.','끝내라는 게 아니라, 부딪힐 때 물러서는 순서를 정해 두라는 거야.'],
+ '만나 보면 "이 사람 옆에선 내가 편하다"는 느낌으로 알게 돼.':['만나 보면 알아. 이 사람 옆에서 어깨 힘이 빠지면 그 사람이야.','결국 옆에 있을 때 숨이 편한 사람이 네 사람이야.'],
+ '한 가지 힘만 쓰는 사람보다 두 힘을 섞어 쓰는 자리에서 경쟁력이 확 올라가.':['두 힘을 같이 쓰는 자리에 가면 남들이 못 따라와.','한쪽만 쓰면 평범하고, 둘을 섞으면 대체 불가가 돼.'],
+ '같은 회사에 있어도 그런 역할을 맡아야 오래 버티고 인정받아.':['같은 회사라도 이 역할을 맡아야 네 값이 올라가.','직함보다 이 역할을 맡는 게 더 중요해.'],
+ '이 달엔 견적을 내고, 제안을 하고, 미뤄 둔 정산을 받아 내.':['이 달엔 가격을 부르고, 받을 돈을 받아 내.','이 달엔 돈 얘기를 미루지 마. 견적, 정산, 협상 다 이때 해.','이 달엔 먼저 제안해. 기다리면 남이 가져가.'],
+ '이 해엔 연봉 협상, 이직, 부업 시작, 가격 올리기처럼 수입 구조를 바꾸는 결정을 미루지 마.':['이 해엔 연봉 협상이든 이직이든, 수입 구조를 바꾸는 결정을 해.','이 해에 움직여. 부업, 이직, 가격 인상 중 하나는 꼭 해.','이 해엔 지금 받는 돈의 판을 바꿔.'],
+ '피하면 좋은 일도 분명해.':['반대로 이런 일은 피해.','안 맞는 일도 딱 정해져 있어.']
+};
+var RSTEM={알:1,살:1,만들:1,열:1,들:1,놀:1,팔:1,풀:1,늘:1,벌:1,걸:1,울:1,덜:1,빌:1,밀:1,끌:1,졸:1,돌:1};
+function dropL(w){var ch=w.charCodeAt(w.length-1)-44032;if(ch<0||ch>11171)return null;if(ch%28!==8)return null;return w.slice(0,-1)+String.fromCharCode(44032+ch-8)}
+function assertive(t){
+ t=t.replace(/모를 수 있어/g,'몰라').replace(/있을 수 있어/g,'있어').replace(/(\S+)될 수 있어/g,'$1돼').replace(/(^|\s)될 수 있어/g,'$1돼');
+ t=t.replace(/([가-힣]+) 수 있어(?=[.,\s]|$)/g,function(all,w,off,str){if(/자세히\s*$/.test(str.slice(Math.max(0,off-6),off)))return all;
+  if(/(^|[^가-힣])(잘|도)$/.test(w))return all;
+  if(w.slice(-1)==='을'||w.slice(-1)==='를'&&false){return w.slice(0,-1)+'게 돼'}
+  var last2=w.slice(-2),last1=w.slice(-1);
+  if(RSTEM[last2]||RSTEM[last1]&&w.length===1)return w+'게 돼';
+  if(last1==='을')return w.slice(0,-1)+'게 돼';
+  var st=dropL(w);if(!st)return all;return st+'게 돼';
+ });
+ t=t.replace(/([가-힣]+)되기 쉬워/g,'$1돼').replace(/([가-힣]+)기 쉬워/g,'$1게 돼');
+ t=t.replace(/([가-힣]+)하는 편이야/g,'$1해');
+ t=t.replace(/([가-힣]+?)(으로|로) 읽혀/g,function(a,w){var c=w.charCodeAt(w.length-1)-44032;return w+(c>=0&&c<=11171&&c%28?'이야':'야')});
+ return t;
+}
+function cleanPara(p,seed){
+ var ss=String(p).split(/(?<=[.!?])\s+/),out=[];
+ ss.forEach(function(x){var y=x.trim();if(!y)return;if(DROP.some(function(r){return r.test(y)}))return;
+  if(SWAP[y]){var arr=SWAP[y];y=arr[seed%arr.length]}
+  out.push(assertive(y))});
+ return out.join(' ');
+}
 function apply(rows,c){
  if(!Array.isArray(rows)||!c||!c.pillars)return rows;
  var tg='';try{var blob=rows.map(function(r){return String(r.evidence||'')+' '+String(r.body||'')}).join(' ');var m=blob.match(/중심\s*(비겁|식상|재성|관성|인성)\s*\(?\d+%/);if(m)tg=m[1];}catch(_e){}
  var st=ST[c.pillars.day.stem],gr=GR[tg||topGroup(c)];if(!st)return rows;
+ var seed=((c.pillars.day.stemIndex||0)*12+(c.pillars.day.branchIndex||0)+(c.pillars.month&&c.pillars.month.branchIndex||0)*7)|0;
  return rows.map(function(r){
-  var k=MAP[r.id];if(!k)return r;
-  var r2=Object.assign({},r),ps=(r.paragraphs||[]).map(function(p){return String(p).split(/(?<=[.!?])\s+/).filter(function(s){return !DRY.some(function(x){return x.test(s)})}).join(' ')}).filter(function(p){return p.trim()});
+  var k=MAP[r.id];
+  if(!k){var r3=Object.assign({},r);r3.paragraphs=(r.paragraphs||[]).map(function(p){return cleanPara(p,seed)}).filter(function(p){return p.trim()});r3.body=r3.paragraphs.join('\n\n');return r3;}
+  var r2=Object.assign({},r),ps=(r.paragraphs||[]).map(function(p){return cleanPara(String(p).split(/(?<=[.!?])\s+/).filter(function(s){return !DRY.some(function(x){return x.test(s)})}).join(' '),seed)}).filter(function(p){return p.trim()});
   var lead='쉽게 말하면, '+st[k]+(gr&&gr[k]?' '+gr[k]:'');
-  r2.paragraphs=[lead].concat(ps);r2.body=r2.paragraphs.join('\n\n');
+  r2.paragraphs=(ps[0]&&/^쉽게 말하면, /.test(ps[0]))?ps:[lead].concat(ps);r2.body=r2.paragraphs.join('\n\n');
   return r2;
  });
 }
 function install(){
- var E=root.GuiinExpert;if(!E||typeof E.fullSections!=='function'||E.__sharp)return false;
+ var E=root.GuiinExpert;if(!E||typeof E.fullSections!=='function')return false;
+ if(E.fullSections.__sharp)return true;
  var orig=E.fullSections;
- E.fullSections=function(c){var base=orig.apply(this,arguments);try{return apply(base,c)}catch(_e){return base}};
- E.__sharp=V;return true;
+ var w=function(c){var base=orig.apply(this,arguments);try{return apply(base,c)}catch(_e){return base}};
+ w.__sharp=V;E.fullSections=w;E.__sharp=V;return true;
 }
-if(!install()){var n=0,t=setInterval(function(){if(install()||++n>60)clearInterval(t)},150)}
+/* 다른 모듈(reading-core 등)이 나중에 fullSections를 또 감싸도 맨 바깥에서 한 번 더 다듬도록, 몇 초간 계속 확인한다 */
+(function keep(){var n=0,t=setInterval(function(){install();if(++n>80)clearInterval(t)},200)})();
 root.GuiinSharpVoice={version:V,apply:apply};
 })(typeof globalThis!=='undefined'?globalThis:this);
