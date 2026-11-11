@@ -461,7 +461,7 @@
     }
     const signed=!!authSession()?.token;
     container.innerHTML=
-      `<p class="utilityHint">${signed?"카카오 계정에 저장되어 다른 기기에서도 불러올 수 있어요.":"로그인하면 이 프로필을 카카오 계정으로 안전하게 옮길 수 있어요."}</p>`+
+      `<p class="utilityHint">${signed?"귀인사주 계정에 저장되어 다른 기기에서도 불러올 수 있어요.":"로그인하면 이 프로필을 귀인사주 계정으로 안전하게 옮길 수 있어요."}</p>`+
       rows.map(r=>{
         const t=r.hour_unknown?"출생시간 모름":`${String(r.birth_hour??0).padStart(2,"0")}:${String(r.birth_minute??0).padStart(2,"0")}`;
         return `<div class="trustBox" style="margin-top:8px">
