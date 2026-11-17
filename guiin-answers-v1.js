@@ -149,7 +149,7 @@ function secMoney(c,C,tier){
 }
 
 /* ---------- 4. 연애 시기 ---------- */
-function secLove(c,C){
+function loveArr(c){
  var d=c.pillars.day.stem,db=c.pillars.day.branch,yb=c.pillars.year.branch,g=(c.input&&c.input.gender)||'';
  var want=g==='남'?['재성']:g==='여'?['관성']:['재성','관성'];
  var th=[TAOHUA[db],TAOHUA[yb]].filter(Boolean);
@@ -165,6 +165,13 @@ function secLove(c,C){
   var ch=CHONG[db]===yp.branch;if(ch){s+=0.6;why.push('일지 충')}
   arr.push({y:y,yp:yp,s:s,why:why,ch:ch});
  }
+ return arr;
+}
+function secLove(c,C){
+ var d=c.pillars.day.stem,db=c.pillars.day.branch,yb=c.pillars.year.branch,g=(c.input&&c.input.gender)||'';
+ var want=g==='남'?['재성']:g==='여'?['관성']:['재성','관성'];
+ var th=[TAOHUA[db],TAOHUA[yb]].filter(Boolean);
+ var arr=loveArr(c);
  var best=arr.slice().sort(function(a,b){return b.s-a.s}).slice(0,3).sort(function(a,b){return a.y-b.y});
  var top=arr.slice().sort(function(a,b){return b.s-a.s})[0];
  var ans='연애운이 제일 세게 들어오는 해는 '+top.y+'년('+top.yp.ko+'), 그다음은 '+best.filter(function(x){return x.y!==top.y}).map(function(x){return x.y+'년'}).join('·')+'이야.';
@@ -277,5 +284,17 @@ function install(){
  E.__answers=V;return true;
 }
 if(!install()){var n=0,t=setInterval(function(){if(install()||++n>60)clearInterval(t)},150)}
-root.GuiinAnswers={version:V,build:build,teaser:teaser,_census:census};
+/* 다른 화면(대운·세운 탭, 프리미엄 미리보기)이 같은 '돈 들어오는 해'를 쓰도록 순위만 내보낸다 */
+function moneyYears(c){
+ try{if(!c||!c.pillars||!c.pillars.day||!S())return [];
+  var C=census(c),tier=strengthTier(c),y0=nowYear(),arr=[];for(var y=y0;y<y0+10;y++)arr.push(yearScoreMoney(c,C,y,tier));
+  return arr.sort(function(a,b){return b.s-a.s||a.y-b.y}).map(function(x){return x.y});
+ }catch(_e){return []}
+}
+function loveYears(c){
+ try{if(!c||!c.pillars||!c.pillars.day||!S())return [];
+  return loveArr(c).sort(function(a,b){return b.s-a.s||a.y-b.y}).map(function(x){return x.y});
+ }catch(_e){return []}
+}
+root.GuiinAnswers={version:V,build:build,teaser:teaser,moneyYears:moneyYears,loveYears:loveYears,_census:census};
 })(typeof globalThis!=='undefined'?globalThis:this);
