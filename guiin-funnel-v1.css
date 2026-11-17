@@ -49,3 +49,48 @@ html body #home.gjNew #guiinPersonalHome{display:none!important}
 .gfFold.gfShut{max-height:520px;overflow:hidden}
 .gfFold.gfShut::after{content:"";position:absolute;left:0;right:0;bottom:0;height:140px;background:linear-gradient(rgba(255,251,240,0),#fffbf0 85%);pointer-events:none}
 .gfMore{display:block;width:100%;min-height:48px;margin:8px 0 16px;border:1.5px solid #d9cfb2;border-radius:14px;background:#fff;color:#3d4a40;font-size:14.5px;font-weight:800;cursor:pointer}
+
+/* ── v2: 히어로 상품 2종 + 예시 먼저 보기 ── */
+html body #home.gjNew #gHomeV2 .hv2Duo{display:none!important}   /* 히어로에 상품이 올라가서 중복 */
+#guiinJourney.gjHero .gjProds{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;margin:0 0 12px}
+html body #guiinJourney.gjHero .gjProd{min-width:0;width:auto;white-space:normal;display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;padding:12px 12px 10px;border-radius:16px;border:1.5px solid #e6dcc0;background:#fffdf6;cursor:pointer;min-height:96px}
+#guiinJourney.gjHero .gjProd.compat{border-color:#f2cfdb;background:#fff7fa}
+#guiinJourney.gjHero .gjProd b{font-size:16px;font-weight:900;color:#1f2a22}
+#guiinJourney.gjHero .gjProd.saju b{color:#9a6a00}
+#guiinJourney.gjHero .gjProd.compat b{color:#c23562}
+#guiinJourney.gjHero .gjProd span{white-space:normal;font-size:12.5px;line-height:1.45;color:#5b625c;word-break:keep-all}
+#guiinJourney.gjHero .gjProd em{font-style:normal;margin-top:auto;padding-top:4px;font-size:13px;font-weight:800;color:#1a6e48}
+#guiinJourney.gjHero .gjLinks{position:relative;z-index:1;display:flex;justify-content:center;gap:18px;margin-top:12px}
+#guiinJourney.gjHero .gjLinks a{font-size:13.5px;font-weight:700;color:#1a6e48;text-decoration:none;padding:6px 2px}
+
+#gfSample{position:fixed;inset:0;z-index:200;background:rgba(20,28,22,.45);display:none;align-items:flex-end;justify-content:center}
+#gfSample.on{display:flex}
+#gfSample .sh{width:100%;max-width:480px;max-height:90vh;display:flex;flex-direction:column;background:#fffbf0;border-radius:24px 24px 0 0;overflow:hidden}
+#gfSample .hd{padding:14px 16px 0;position:relative}
+#gfSample .hd .x{position:absolute;right:8px;top:6px;width:44px;height:44px;border:0;background:none;font-size:20px;color:#6b6f68;cursor:pointer}
+#gfSample .hd h2{margin:4px 0 4px;font-size:19px;font-weight:900;color:#1f2a22}
+#gfSample .hd p{margin:0 0 10px;font-size:12.5px;color:#7a7d76}
+#gfSample .tb{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:0 16px 10px;border-bottom:1px solid #eee3c8}
+#gfSample .tb button{min-height:42px;border-radius:12px;border:1.5px solid #e6dcc0;background:#fff;font-size:14.5px;font-weight:800;color:#5b625c;cursor:pointer}
+#gfSample .tb button.on{background:#1d2b23;border-color:#1d2b23;color:#fff}
+#gfSample .bd{overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 16px 8px}
+#gfSample .pn[hidden]{display:none}
+#gfSample .who{font-size:12.5px;color:#6b6f68;background:#f3eedf;border-radius:10px;padding:8px 10px;margin-bottom:12px}
+#gfSample .it{padding:12px 0;border-bottom:1px solid #efe6cf}
+#gfSample .it small{display:block;font-size:12px;font-weight:800;color:#b08a3a;margin-bottom:4px}
+#gfSample .it b{display:block;font-size:15.5px;line-height:1.5;color:#1f2a22;font-weight:800;word-break:keep-all}
+#gfSample .it p{margin:5px 0 0;font-size:13.5px;line-height:1.6;color:#4f574f;word-break:keep-all}
+#gfSample .it i{display:block;font-style:normal;margin-top:5px;font-size:11.5px;color:#9a9c94}
+#gfSample .lk{padding:11px 0;border-bottom:1px solid #efe6cf;display:flex;justify-content:space-between;font-size:14px;font-weight:800;color:#a39f92}
+#gfSample .lk span:last-child{font-weight:700}
+#gfSample .score{display:flex;align-items:baseline;gap:8px;margin:2px 0 6px}
+#gfSample .score b{font-size:30px;font-weight:900;color:#c23562}
+#gfSample .bars{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0 4px}
+#gfSample .bars div{background:#fff;border:1px solid #f0e2e8;border-radius:10px;padding:7px 10px;font-size:12.5px;color:#5b625c;display:flex;justify-content:space-between}
+#gfSample .bars b{color:#c23562}
+#gfSample .paid{margin:14px 0 4px;padding:12px 14px;border-radius:14px;background:#fff;border:1.5px dashed #d9cfb2;font-size:13px;line-height:1.6;color:#4f574f}
+#gfSample .paid b{color:#1f2a22}
+#gfSample .ft{padding:10px 16px calc(12px + env(safe-area-inset-bottom));border-top:1px solid #eee3c8;background:#fffbf0}
+#gfSample .ft button{display:block;width:100%;min-height:54px;border:0;border-radius:16px;background:linear-gradient(180deg,#24885a,#1a6e48);color:#fff;font-size:16.5px;font-weight:900;cursor:pointer}
+#gfSample .ft small{display:block;text-align:center;margin-top:7px;font-size:12px;color:#7a7d76}
+#guiinJourney.gjHero .gjProd b small{font-size:12px;font-weight:700;color:#7a7d76;margin-left:2px}
