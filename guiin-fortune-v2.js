@@ -441,7 +441,19 @@
       if(x)years.push(x);
     }
     const by=(key,n=3)=>years.slice().sort((a,b)=>Number(b?.scores?.[key]||0)-Number(a?.scores?.[key]||0)||a.year-b.year).slice(0,n);
-    return {startYear:Number(startYear),count:limit,years,money:by("money"),relationship:by("relationship"),support:by("support"),noble:years.filter(x=>x.noble).slice(0,4),career:by("career"),speech:by("speech"),caution:by("caution")};
+    let money=by("money");
+    try{
+      const rank=(globalThis.GuiinAnswers&&typeof GuiinAnswers.moneyYears==="function")?GuiinAnswers.moneyYears(chart):[];
+      const picked=rank.map(y=>years.find(x=>x.year===y)).filter(Boolean).slice(0,3);
+      if(picked.length)money=picked;
+    }catch(_e){}
+    let relationship=by("relationship");
+    try{
+      const rank=(globalThis.GuiinAnswers&&typeof GuiinAnswers.loveYears==="function")?GuiinAnswers.loveYears(chart):[];
+      const picked=rank.map(y=>years.find(x=>x.year===y)).filter(Boolean).slice(0,3);
+      if(picked.length)relationship=picked;
+    }catch(_e){}
+    return {startYear:Number(startYear),count:limit,years,money,relationship,support:by("support"),noble:years.filter(x=>x.noble).slice(0,4),career:by("career"),speech:by("speech"),caution:by("caution")};
   }
   function compactTiming(chart,year=nowKst().getUTCFullYear()){
     const h=timingHighlights(chart,year), long=longRangeHighlights(chart,year,10),now=nowKst();
