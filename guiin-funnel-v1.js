@@ -89,43 +89,84 @@
   if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })(typeof window!=='undefined'?window:this);
 
-/* v2: 생년월일 입력 전에 '풀이 예시'를 먼저 보여 주는 시트
- * 예시 내용은 예시 인물(지연 1995.3.14 09:30 여 / 민준 1993.8.2 21:10 남)을
- * 귀인사주 엔진으로 실제 계산한 무료 결과에서 가져왔다. */
+/* v3: 생년월일 입력 전에 '풀이 예시'를 먼저 보여 주는 시트
+ * 무료 결과 몇 줄 + 유료 장문 해설 예시(3장 전체 + 1장 미리보기) → 결제로 연결.
+ * 예시 인물: 지연 1995.3.14 09:30 여 / 민준 1993.8.2 21:10 남.
+ * 근거 수치(일주·오행·십성·대운·세운·신살)는 귀인사주 엔진의 실제 계산값. */
 (function(root){
   'use strict';
   var doc=root.document;if(!doc)return;
   function it(t,b,p,g){return '<div class="it"><small>'+t+'</small><b>'+b+'</b>'+(p?'<p>'+p+'</p>':'')+(g?'<i>근거 · '+g+'</i>':'')+'</div>';}
-  function lk(t,m){return '<div class="lk"><span>🔒 '+t+'</span><span>'+m+'에서 열려</span></div>';}
-  var SAJU='<div class="who">예시 인물 <b>지연</b> · 1995년 3월 14일 오전 9:30 · 여성<br>귀인사주로 실제 계산한 무료 결과에서 뽑았어요.</div>'
-    +it('넌 이런 사람이야','봄에 태어난 갑목이라, 방향을 먼저 세우고 그걸 현실적인 성과로 바꾸는 사람이야.','곧게 뻗어 올라가는 큰 나무 같은 기운이야. 원국에서 재성이 43%로 가장 커서 생각이 늘 "그래서 실제로 뭐가 남는데?" 쪽으로 향해.','갑목 일간 · 봄(묘월) · 재성 43%')
-    +it('성격','뭘 하든 "그래서 남는 게 뭔데?"가 먼저 계산돼. 감보다 손익이 빠른 사람이야.','가까운 사람한테는 말보다 현실적으로 챙겨 주는 걸로 마음을 표현해.','일간 · 일지 재성')
-    +it('장점','망설이는 사람들 앞에서 먼저 방향을 잡아 주는 추진력이 네 무기야.','한번 시작한 건 남 눈치 안 보고 끝까지 가는 뚝심까지 있어.','비겁 29% · 재성 43%')
+  function ch(n,t,paras,g){return '<article class="lf"><h4><span>'+n+'</span>'+t+'</h4>'+paras.map(function(x){return '<p>'+x+'</p>';}).join('')+(g?'<i>근거 · '+g+'</i>':'')+'</article>';}
+  function teaser(n,t,paras,unlock){return '<article class="lf cut"><h4><span>'+n+'</span>'+t+'</h4>'+paras.map(function(x){return '<p>'+x+'</p>';}).join('')+'<div class="cutLock">🔒 여기부터는 '+unlock+'에서 이어져요</div></article>';}
+  function locks(list,total){return '<div class="lfLocks"><b>아직 '+list.length+'개 이야기가 더 있어요</b><ul>'+list.map(function(x){return '<li>🔒 '+x+'</li>';}).join('')+'</ul><small>예시는 '+total+'개 이야기 중 일부만 보여 드려요.</small></div>';}
+  function sec(title,sub){return '<div class="lfHead"><small>'+sub+'</small><h3>'+title+'</h3></div>';}
+
+  var SAJU='<div class="who">예시 인물 <b>지연</b> · 1995년 3월 14일 오전 9:30 · 여성<br>갑진 일주 · 목 45% · 토 34% · 금 4% · 지금 임오 대운</div>'
+    +sec('무료로 바로 나오는 풀이','무료')
+    +it('넌 이런 사람이야','봄에 태어난 갑목이라, 방향을 먼저 세우고 그걸 현실적인 성과로 바꾸는 사람이야.','','갑목 일간 · 봄(묘월) · 재성 43%')
     +it('쓴소리 한 줄','손해 안 보려다가 사람을 잃는 장면이 반복돼. 한번 정한 방향은 틀려도 안 꺾어.','','가장 큰 힘 재성 43%')
-    +it('돈과 연애가 들어오는 해','돈이 제일 크게 붙는 해는 2027년, 연애운이 제일 세게 들어오는 해는 2029년. 일은 영업·세일즈 쪽이 맞아.','','앞으로 10년 세운 · 일지 · 재성·관성')
-    +lk('잘 맞는 일','평생사주')+lk('지금 대운','평생사주')+lk('잘 맞는 사람','평생사주')+lk('감정 패턴','평생사주')
-    +'<div class="paid"><b>평생사주 5,900원</b>에서는 일주와 십성, 나에게 맞는 일, 재물운, 연애·결혼운, 가족, 지금 대운과 앞으로까지 <b>14개 장문 해설</b>로 이어져요.</div>';
-  var COMPAT='<div class="who">예시 커플 <b>지연</b>(1995.3.14 여) · <b>민준</b>(1993.8.2 남)<br>귀인사주로 실제 계산한 무료 결과에서 뽑았어요.</div>'
-    +'<div class="it"><small>두 사람 궁합</small><div class="score"><b>♥ 69점</b></div><b>차이를 맞춰갈수록 좋아지는 관계야.</b>'
-    +'<div class="bars"><div>연애·끌림<b>70</b></div><div>성격·대화<b>74</b></div><div>돈·생활<b>74</b></div><div>장기 조율<b>70</b></div></div></div>'
-    +it('잘 맞는 부분','둘 다 변화와 성장을 중요하게 보는 편이라, 목표가 맞으면 같이 움직이는 속도가 빨라.','처음에는 서로 다른 강점이 오히려 매력으로 느껴질 수 있어.','두 사람 모두 목 기운이 가장 큼')
-    +it('부딪히는 부분','둘 다 자기 방향이 분명해졌을 때가 문제야. 양보가 늦어지면 작은 의견 차이도 고집 대 고집으로 번져.','','갑목 · 을목 일간')
-    +it('2026년 두 사람','민준은 바꾸고 표현하고 싶은 해라 새 계획을 자주 꺼내. 지연은 다 받아 주기보다 하나씩 골라 같이 해 봐.','','2026 병오 · 지연 식신 · 민준 상관')
-    +lk('연락·거리감','프리미엄 궁합')+lk('권태·친밀감','프리미엄 궁합')+lk('돈·결혼 생활','프리미엄 궁합')+lk('2028~2035년 시기','프리미엄 궁합')
-    +'<div class="paid"><b>프리미엄 궁합 7,900원</b>에서는 연락·질투·권태·친밀감·돈·결혼·가족 역할과 두 사람의 10년 시기까지 <b>12개 영역</b>으로 이어져요.</div>';
-  var CTA={saju:['내 생년월일로 무료 풀이 보기 ›','saju'],compat:['우리 둘 궁합 무료로 보기 ›','match']};
+    +sec('평생사주 장문 해설은 이렇게 와요','유료 · 평생사주 5,900원')
+    +ch('01','한마디로',[
+      '지연은 봄 숲 한가운데서 제일 먼저 하늘로 치고 올라가는 큰 나무야. 그런데 그냥 나무가 아니라, 발밑에 기름진 땅을 잔뜩 깔고 태어난 나무야.',
+      '갑목 일간이 목 기운이 가장 센 묘월에 태어나서 뿌리부터 단단해(목 45%). 그리고 그 나무가 딛고 선 땅, 토가 34%나 돼. 갑목에게 토는 재성이야. 사주에서 재성은 돈, 결과, 내가 움직여서 손에 쥐는 것. 그러니까 넌 꿈만 꾸는 나무가 아니라 땅을 차지해서 열매로 바꾸는 나무야.',
+      '문제는 반대쪽이 텅 비었다는 거야. 금이 4%, 관성은 3%뿐이야. 관성은 나를 다듬고 눌러 주는 힘, 그러니까 규칙·상사·평가야. 이게 얇은 사람은 남이 정해 준 틀 안에서 숨이 막혀. 지연의 인생은 "누가 시켜서"가 아니라 "내가 정해서" 굴러갈 때만 제대로 커.'
+    ],'갑목 일간 · 묘월 · 목 45% · 토(재성) 34% · 관성 3%')
+    +ch('07','나에게 맞는 일',[
+      '재성이 제일 크고 비겁이 그걸 받치는 구조는 명리에서 대표적인 "내가 직접 뛰어서 버는" 구조야. 정해진 자리에서 같은 일을 반복하면 3년 안에 지겨워서 못 버텨.',
+      '성과가 숫자로 바로 찍히는 일이 네 자리야. 영업, 세일즈, 매장·지점 운영, 부동산·분양 상담, 커머스 운영. 여기서 남보다 빠른 네 계산 속도가 그대로 돈이 돼. 역마살이 두 개라 한자리에 붙어 있는 일보다 사람 만나고 돌아다니는 일이 맞아.',
+      '그리고 문창귀인·학당귀인이 있어서 말로 풀어 설명하고 가르치는 재주도 있어. 그래서 "파는 사람"에서 끝나지 말고 "파는 법을 가르치는 사람"(영업 교육, 강사, 컨설팅)으로 넘어가면 몸값이 한 번 더 뛰어.',
+      '피해야 할 자리도 분명해. 위에서 평가하고 규칙으로 누르는 조직, 공무원이나 대기업 관리직 같은 곳. 관성 3%인 사람이 거기 들어가면 실력보다 "태도 문제"로 먼저 찍혀.'
+    ],'재성 43% · 비겁 29% · 역마살×2 · 문창귀인 · 학당귀인')
+    +ch('08','재물운',[
+      '버는 힘은 상위권이야. 원국에서 재성이 제일 크니까. 그런데 모으는 힘은 완전히 다른 얘기야.',
+      '비겁, 그러니까 나와 같은 기운인 동료·경쟁자·친구가 같이 크면 들어온 돈을 사람이 나눠 가져가. 동업, 친구한테 돈 빌려주기, 지인 사업에 넣는 돈. 지연한테 돈이 새는 구멍은 사치가 아니라 사람이야.',
+      '시기로 보면 지금 임오 대운(27~36세)은 편인 대운이라 돈보다 공부와 전문성이 쌓이는 10년이야. 그 안에서 2028년 무신년에 편재, 그러니까 판이 커지는 돈이 들어오고, 2029년 기유년에 정재, 실속 있게 묶어 두는 돈이 들어와.',
+      '그러니까 순서가 중요해. 28년에 판을 벌리고, 29년에 거둬서 묶어 둬. 이 순서를 뒤집으면 28년에 번 걸 29년에 다 써.'
+    ],'재성·비겁 · 임오 대운(편인) · 2028 무신(편재) · 2029 기유(정재)')
+    +teaser('09','연애·결혼운',[
+      '연애 얘기는 좀 세게 할게. 지연은 연애에서도 계산이 먼저 돌아가. 여자 사주에서 남자는 관성인데, 관성이 3%뿐이라 "설레서 정신 못 차리는" 연애가 잘 안 돼.',
+      '대신 그 빈자리가 운에서 채워지는 해가 있어. 2029년 기유년부터 2031년 신해년까지 금 기운, 그러니까 관성이 3년 연달아 들어와. 이 3년이 지연한테'
+    ],'평생사주')
+    +locks(['일주와 십성','쓴소리 좀 할게요','나만의 매력','나라는 사람','가족과 인연','곁에 두면 좋은 사람','지금 대운과 앞으로','나를 살리는 습관','마지막 한마디'],14);
+
+  var COMPAT='<div class="who">예시 커플 <b>지연</b>(갑진 일주, 1995.3.14 여) · <b>민준</b>(을묘 일주, 1993.8.2 남)<br>궁합 지수 69점 · 연애·끌림 70 · 성격·대화 74 · 돈·생활 74</div>'
+    +sec('무료로 바로 나오는 풀이','무료')
+    +it('두 사람 궁합','♥ 69점 · 차이를 맞춰갈수록 좋아지는 관계야.','둘 다 변화와 성장을 중요하게 보는 편이라, 목표가 맞으면 같이 움직이는 속도가 빨라.','두 사람 모두 목 기운이 가장 큼')
+    +sec('궁합 장문 해설은 이렇게 와요','유료 · 프리미엄 궁합 7,900원')
+    +ch('01','한마디로',[
+      '둘은 같은 숲에 사는 나무야. 지연은 갑목, 하늘로 곧게 뻗는 큰 나무. 민준은 을목, 그 옆을 휘감고 올라가는 덩굴. 같은 목 기운이라 처음 만났을 때 제일 크게 오는 느낌은 "얘랑은 말이 통한다"야.',
+      '그런데 갑목과 을목은 명리에서 겁재 관계야. 같은 햇빛을 두고 다투는 사이. 연애 초반엔 같은 걸 좋아하는 사이였다가, 오래 갈수록 같은 걸 갖고 싶어 하는 사이가 돼. 이 커플의 숙제는 "누가 더 크게 자라냐"를 경쟁으로 만들지 않는 거야.'
+    ],'지연 갑목 · 민준 을목 · 겁재 관계 · 두 사람 모두 목 최고 비중')
+    +ch('04','부딪히는 부분',[
+      '싸우는 모양이 정해져 있어. 지연은 방향이 정해지면 안 꺾이는 갑목이고, 민준은 부드러워 보이지만 일주가 을묘라 자기 자리(일지)까지 나무로 꽉 찬 사람이야. 겉으로 맞춰 주는 척해도 중요한 기준은 절대 안 놓아.',
+      '그래서 둘은 큰소리로 싸우는 커플이 아니라 냉전이 긴 커플이야. 둘 다 "내가 맞다"를 소리 없이 끝까지 들고 가거든.',
+      '특히 2026년 병오년은 오화가 지연의 월주(묘)와 민준의 일주(묘)를 동시에 파(破)로 건드려. 큰 사건보다 사소한 약속이 깨지는 일로 서운함이 쌓이는 해야. 이 해엔 서운한 게 생기면 그 주 안에 꺼내. 묵히면 둘 다 안 꺼내.'
+    ],'지연 갑진 · 민준 을묘 · 2026 병오 · 오-묘 파')
+    +teaser('07','돈 궁합',[
+      '돈 얘기는 의외로 잘 맞아(돈·생활 74). 둘 다 목 기운이 강해서 돈을 "불리는 것"보다 "키우는 것"으로 봐.',
+      '그리고 2028년 무신년에 지연한테는 편재가, 민준한테는 정재가 같이 들어와. 둘 다 돈 얘기를 꺼내기 좋은 해인데, 여기서 누가 판을 벌리고 누가'
+    ],'프리미엄 궁합')
+    +locks(['잘 맞는 부분','연애 궁합','결혼·생활 궁합','서로가 보는 나','앞으로의 시기','관계를 위한 한 줄'],10);
+
+  var CTA={
+    saju:{buy:'평생사주 5,900원 · 내 장문 해설 받기 ›',code:'LIFETIME_SAJU',free:'무료 풀이 먼저 볼래요',screen:'saju'},
+    compat:{buy:'프리미엄 궁합 7,900원 · 우리 장문 해설 받기 ›',code:'PREMIUM_COMPAT',free:'무료 궁합 먼저 볼래요',screen:'match'}
+  };
   var el=null,cur='saju';
   function build(){
     if(el)return el;
     el=doc.createElement('div');el.id='gfSample';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-label','풀이 예시');
-    el.innerHTML='<div class="sh"><div class="hd"><button type="button" class="x" aria-label="닫기">✕</button><h2>이런 풀이를 받아요</h2><p>무료 결과 예시예요. 잠긴 부분은 유료 풀이에서 열려요.</p></div>'
+    el.innerHTML='<div class="sh"><div class="hd"><button type="button" class="x" aria-label="닫기">✕</button><h2>이런 풀이를 받아요</h2><p>예시 인물로 미리 보여 드려요. 결제하면 내 생년월일로 똑같이 길게 풀어 드려요.</p></div>'
       +'<div class="tb"><button type="button" data-t="saju">평생사주 예시</button><button type="button" data-t="compat">궁합 예시</button></div>'
       +'<div class="bd"><div class="pn" data-p="saju">'+SAJU+'</div><div class="pn" data-p="compat" hidden>'+COMPAT+'</div></div>'
-      +'<div class="ft"><button type="button" class="go"></button><small>무료 결과를 먼저 보고, 원할 때만 결제해요.</small></div></div>';
+      +'<div class="ft"><button type="button" class="go"></button><button type="button" class="fr"></button><small>생년월일을 넣고 나면 결제창으로 이어져요 · 결제 전 무료 결과 먼저 확인 가능</small></div></div>';
     el.addEventListener('click',function(e){
       if(e.target===el||e.target.closest('.x')){close();return;}
       var t=e.target.closest('[data-t]');if(t){show(t.getAttribute('data-t'));return;}
-      if(e.target.closest('.go')){close();try{root.go(CTA[cur][1]);root.scrollTo(0,0);}catch(_e){}}
+      var c=CTA[cur];
+      if(e.target.closest('.go')){close();try{root.guiinPaymentCenterStart(c.code);root.scrollTo(0,0);}catch(_e){try{root.go(c.screen);}catch(_x){}}return;}
+      if(e.target.closest('.fr')){close();try{root.go(c.screen);root.scrollTo(0,0);}catch(_e){}}
     });
     doc.body.appendChild(el);return el;
   }
@@ -133,7 +174,8 @@
     cur=CTA[t]?t:'saju';
     el.querySelectorAll('[data-t]').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-t')===cur);});
     el.querySelectorAll('[data-p]').forEach(function(p){p.hidden=p.getAttribute('data-p')!==cur;});
-    el.querySelector('.go').textContent=CTA[cur][0];
+    el.querySelector('.go').textContent=CTA[cur].buy;
+    el.querySelector('.fr').textContent=CTA[cur].free;
     el.querySelector('.bd').scrollTop=0;
   }
   function close(){if(el)el.classList.remove('on');doc.documentElement.style.overflow='';}

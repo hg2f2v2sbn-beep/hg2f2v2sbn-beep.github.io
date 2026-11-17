@@ -94,3 +94,23 @@ html body #guiinJourney.gjHero .gjProd{min-width:0;width:auto;white-space:normal
 #gfSample .ft button{display:block;width:100%;min-height:54px;border:0;border-radius:16px;background:linear-gradient(180deg,#24885a,#1a6e48);color:#fff;font-size:16.5px;font-weight:900;cursor:pointer}
 #gfSample .ft small{display:block;text-align:center;margin-top:7px;font-size:12px;color:#7a7d76}
 #guiinJourney.gjHero .gjProd b small{font-size:12px;font-weight:700;color:#7a7d76;margin-left:2px}
+
+/* ── v3: 예시 시트 장문 해설 ── */
+#gfSample .lfHead{margin:18px 0 4px}
+#gfSample .lfHead small{display:inline-block;font-size:11.5px;font-weight:800;color:#fff;background:#b08a3a;border-radius:999px;padding:2px 9px}
+#gfSample .lfHead h3{margin:8px 0 0;font-size:17px;font-weight:900;color:#1f2a22}
+#gfSample .lf{margin:12px 0;padding:16px 15px 14px;border-radius:16px;background:#fff;border:1px solid #ece2c6}
+#gfSample .lf h4{display:flex;align-items:center;gap:8px;margin:0 0 10px;font-size:16.5px;font-weight:900;color:#1f2a22}
+#gfSample .lf h4 span{font-size:11.5px;font-weight:900;color:#9a6a00;background:#fff3cf;border-radius:8px;padding:3px 7px}
+#gfSample .lf p{margin:0 0 10px;font-size:14.5px;line-height:1.78;color:#2f3a32;word-break:keep-all}
+#gfSample .lf i{display:block;font-style:normal;font-size:11.5px;color:#9a9c94;margin-top:2px}
+#gfSample .lf.cut{position:relative;padding-bottom:58px;overflow:hidden}
+#gfSample .lf.cut p:last-of-type{-webkit-mask-image:linear-gradient(#000 30%,transparent);mask-image:linear-gradient(#000 30%,transparent)}
+#gfSample .cutLock{position:absolute;left:12px;right:12px;bottom:12px;text-align:center;padding:10px;border-radius:12px;background:#1d2b23;color:#fff;font-size:13.5px;font-weight:800}
+#gfSample .lfLocks{margin:12px 0 6px;padding:14px 15px;border-radius:16px;background:#f6f1e3}
+#gfSample .lfLocks b{display:block;font-size:15px;color:#1f2a22;margin-bottom:8px}
+#gfSample .lfLocks ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+#gfSample .lfLocks li{font-size:12.5px;font-weight:700;color:#7a7568;background:#fff;border-radius:999px;padding:5px 10px}
+#gfSample .lfLocks small{display:block;margin-top:10px;font-size:12px;color:#8a877c}
+#gfSample .ft .go{background:linear-gradient(180deg,#ffd65c,#f2bd2c)!important;color:#2a2410!important}
+#gfSample .ft .fr{min-height:44px!important;margin-top:6px;background:none!important;color:#1a6e48!important;font-size:14.5px!important;font-weight:800!important;box-shadow:none}
