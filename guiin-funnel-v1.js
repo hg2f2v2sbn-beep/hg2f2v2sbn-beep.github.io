@@ -183,3 +183,26 @@
   root.gfOpenSample=function(t){build();show(t);el.classList.add('on');doc.documentElement.style.overflow='hidden';};
   doc.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
 })(typeof window!=='undefined'?window:this);
+
+/* v4: 생년월일을 안 넣은 사람에게 오늘의 운세가 '공통 운세'임을 알리고 입력으로 연결 */
+(function(root){
+  'use strict';
+  var doc=root.document;if(!doc)return;
+  function hasMyChart(){try{return typeof chart!=='undefined'&&!!chart;}catch(_e){return false;}}
+  function sync(){
+    var tabs=doc.getElementById('fortuneTabs');if(!tabs)return;
+    var b=doc.getElementById('gfTodayAsk'),need=!hasMyChart();
+    if(need&&!b){
+      b=doc.createElement('button');b.type='button';b.id='gfTodayAsk';
+      b.innerHTML='<span><b>지금은 모두 같은 운세예요</b><small>내 사주 기준으로 바꿔 줘요</small></span><em>내 운세로 보기 ›</em>';
+      b.addEventListener('click',function(){try{root.go('saju');root.scrollTo(0,0);}catch(_e){}});
+      tabs.parentNode.insertBefore(b,tabs.nextSibling);
+    }else if(!need&&b){b.remove();}
+  }
+  function start(){
+    sync();
+    var t=doc.getElementById('today');
+    if(t&&root.MutationObserver)new MutationObserver(sync).observe(t,{attributes:true,attributeFilter:['class']});
+  }
+  if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',start,{once:true});else start();
+})(typeof window!=='undefined'?window:this);

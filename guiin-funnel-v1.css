@@ -114,3 +114,16 @@ html body #guiinJourney.gjHero .gjProd{min-width:0;width:auto;white-space:normal
 #gfSample .lfLocks small{display:block;margin-top:10px;font-size:12px;color:#8a877c}
 #gfSample .ft .go{background:linear-gradient(180deg,#ffd65c,#f2bd2c)!important;color:#2a2410!important}
 #gfSample .ft .fr{min-height:44px!important;margin-top:6px;background:none!important;color:#1a6e48!important;font-size:14.5px!important;font-weight:800!important;box-shadow:none}
+
+/* ── v4: 입력 화면은 입력 칸부터 (2026-11-19) ── */
+html body #saju>.screenTitle{min-height:0!important;height:auto!important;padding:14px 18px!important;margin:8px 0 10px!important;display:flex!important;align-items:center;gap:12px}
+html body #saju>.screenTitle .sideArt{display:block!important;flex:none;width:64px!important;height:64px!important;margin:0!important;order:-1;border-radius:16px;overflow:hidden}
+html body #saju>.screenTitle .sideArt img{width:64px!important;height:64px!important;object-fit:cover;object-position:center 35%}
+html body #saju>.screenTitle>div:not(.sideArt){padding:0!important;margin:0!important;min-height:0!important}
+html body #saju>.screenTitle p{margin:0!important;font-size:15px!important;line-height:1.5!important}
+html body #match>.screenTitle{min-height:0!important;height:auto!important;padding-bottom:10px!important}
+#gfTodayAsk{display:flex;align-items:center;gap:10px;width:calc(100% - 32px);margin:8px 16px 4px;padding:13px 14px;border:0;border-radius:16px;background:#1d2b23;color:#fff;text-align:left;cursor:pointer}
+#gfTodayAsk span{flex:1;min-width:0}
+#gfTodayAsk b{display:block;font-size:14.5px;font-weight:900}
+#gfTodayAsk small{display:block;margin-top:2px;font-size:12px;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#c9d8cf}
+#gfTodayAsk em{flex:none;font-style:normal;font-size:13.5px;font-weight:900;color:#2a2410;background:linear-gradient(180deg,#ffd65c,#f6c43b);border-radius:10px;padding:9px 11px}
