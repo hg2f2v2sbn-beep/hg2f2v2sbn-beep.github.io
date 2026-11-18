@@ -127,3 +127,8 @@ html body #match>.screenTitle{min-height:0!important;height:auto!important;paddi
 #gfTodayAsk b{display:block;font-size:14.5px;font-weight:900}
 #gfTodayAsk small{display:block;margin-top:2px;font-size:12px;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#c9d8cf}
 #gfTodayAsk em{flex:none;font-style:normal;font-size:13.5px;font-weight:900;color:#2a2410;background:linear-gradient(180deg,#ffd65c,#f6c43b);border-radius:10px;padding:9px 11px}
+
+/* ── v5: 마이페이지 로그인 카드 여백, 빈 이용내역 안내 ── */
+html body #mypage #guiinDash.guiinDash{padding:16px 16px 14px!important}
+html body #mypage #guiinDash.guiinDash p{margin-bottom:0}
+.gfEmptyGo{display:block;width:100%;min-height:50px;margin-top:14px;border:0;border-radius:14px;background:linear-gradient(180deg,#24885a,#1a6e48);color:#fff;font-size:15.5px;font-weight:900;cursor:pointer}
