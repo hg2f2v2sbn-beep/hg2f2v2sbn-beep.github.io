@@ -60,6 +60,7 @@ input:focus,select:focus{outline:none;border-color:#7b61c9}
 .row2 button{border:0;border-radius:16px;padding:14px 0;font-size:15px;font-weight:800;background:#efe9ff;color:#3b2f63}
 .foot{text-align:center;font-size:12px;color:#9a94ad;margin-top:22px;line-height:1.6}
 .foot a{color:#8e86a8}
+.ilju{text-align:center;padding:20px 18px!important}.ilju .k{font-size:14px;font-weight:800;color:#8e86a8}.ilju .ij{margin:4px 0 6px;font-size:40px;font-weight:900;letter-spacing:-.03em;color:#2b2140}.ilju p{margin:0;font-size:14px;line-height:1.5;color:#6b6480}.ilju p b{color:#2b2140}
 </style>
 </head>
 <body>
@@ -90,7 +91,8 @@ input:focus,select:focus{outline:none;border-color:#7b61c9}
   </div>
 
   <div id="result">
-    <div class="card type" id="typeCard"></div>
+    <div class="card ilju" id="iljuCard"></div>
+    <div class="card type" id="typeCard" style="margin-top:14px"></div>
     <div class="card" style="margin-top:14px">
       <div style="font-size:16px;font-weight:800">내 사주 속 오행 비율</div>
       <div class="bars" id="bars"></div>
@@ -209,6 +211,7 @@ const friendSVG=(t,x,y,s=1,face='happy')=>`<g transform="translate(${x} ${y}) sc
     let low=ORDER.slice().sort((a,b)=>c[a]-c[b])[0];
     const E=EL[top];
     last={top,E,y,m,d,h,g:val('gSeg'),cal:val('cSeg'),leap:$('leap').checked,day:r.pillars?.day?.ko};
+    $('iljuCard').innerHTML=last.day?`<div class="k">내 일주는</div><div class="ij">${last.day}일주</div><p>[일주별] 게시글에서 <b>${last.day}</b>${((last.day.charCodeAt(last.day.length-1)-0xAC00)%28)?'을':'를'} 찾아보세요.</p>`:'';$('iljuCard').style.display=last.day?'block':'none';
     $('typeCard').innerHTML=`<div class="k">당신은</div><h2 style="color:${E.color}">${E.name} 많은 사람</h2><div class="one">${E.one}</div><svg viewBox="-170 -230 340 480">${FR[E.key]('happy')}<g transform="translate(0 200)"><rect x="-95" y="-34" width="190" height="68" rx="34" fill="#fff" stroke="${E.color}" stroke-width="5"/><text y="13" font-size="36" font-weight="800" fill="${E.color}" text-anchor="middle" font-family="-apple-system,Apple SD Gothic Neo,Noto Sans KR,sans-serif">${E.friend} 타입</text></g></svg>`;
     $('bars').innerHTML=ORDER.map(k=>{const p=Math.round((+c[k]||0)/total*100);return `<div class="bar"><span class="n" style="color:${EL[k].color}">${EL[k].name}</span><span class="t"><i style="width:${Math.max(p,3)}%;background:${EL[k].bar}"></i></span><span class="v">${p}%</span></div>`}).join('');
     $('lack').innerHTML=`<b>부족한 기운: ${EL[low].name}</b><br>${LACK[low]}`;
