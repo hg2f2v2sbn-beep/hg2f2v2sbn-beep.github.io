@@ -142,3 +142,4 @@ html body #matchView .premiumIncluded .premiumGrid{gap:6px!important}
 html body #matchView .premiumIncluded .premiumItem{padding:10px 12px!important;min-height:0!important}
 /* 예전 sticky 결제 카드는 본문을 가려서 일반 카드로 (하단 결제바가 대신함) */
 html body #resultView .premiumLock,html body #matchView .premiumLock{position:relative!important;bottom:auto!important;box-shadow:none!important}
+#gfClockNote{margin:8px 0 10px;padding:11px 13px;border-radius:14px;background:#fff7e0;border:1px solid #f0dca0;font-size:13px;line-height:1.55;color:#5a4a1c;word-break:keep-all}

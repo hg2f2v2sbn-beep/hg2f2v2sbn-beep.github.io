@@ -243,3 +243,26 @@
   }
   if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })(typeof window!=='undefined'?window:this);
+
+/* v7: 서머타임·옛 표준시 보정이 들어간 사주는 결과 맨 위에 한 줄로 알림 */
+(function(root){
+  'use strict';
+  var doc=root.document;if(!doc)return;
+  function note(){
+    var v=doc.getElementById('resultView');if(!v||!v.firstElementChild)return;
+    var c=null;try{c=typeof chart!=='undefined'?chart:null;}catch(_e){}
+    var cc=c&&c.input&&c.input.clockCorrection;
+    var el=doc.getElementById('gfClockNote');
+    if(!cc){if(el)el.remove();return;}
+    var mins=Math.abs(cc.shiftMinutes),dir=cc.shiftMinutes<0?'빼서':'더해서';
+    var t=cc.corrected,hm=String(t.hour).padStart(2,'0')+':'+String(t.minute).padStart(2,'0');
+    var txt='🕰 태어난 때가 '+cc.label+' 기간이라, 시계 시간에서 '+(mins===60?'1시간':mins+'분')+'을 '+dir+' 실제 시각 '+hm+' 기준으로 계산했어요.';
+    if(el&&el.parentNode===v&&el.textContent===txt)return;
+    if(!el){el=doc.createElement('div');el.id='gfClockNote';}
+    el.textContent=txt;
+    if(el.parentNode!==v||v.firstElementChild!==el)v.insertBefore(el,v.firstElementChild);
+  }
+  var p=false;function sched(){if(p)return;p=true;setTimeout(function(){p=false;note();},150);}
+  function start(){var v=doc.getElementById('resultView');if(v&&root.MutationObserver)new MutationObserver(sched).observe(v,{childList:true});sched();}
+  if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',start,{once:true});else start();
+})(typeof window!=='undefined'?window:this);
