@@ -113,7 +113,7 @@ input:focus,select:focus{outline:none;border-color:#7b61c9}
   <p class="foot">사주는 타고난 기질과 흐름을 읽는 참고 자료예요.<br><a href="/">귀인사주 홈으로</a> · <a href="/privacy.html">개인정보처리방침</a></p>
 </div>
 
-<script src="saju-engine.js"></script>
+<script src="saju-engine.js?v=20261119-clock-vsop"></script>
 <script>
 const INK='#2a2d3e', SKIN='#ffe2cc', BLUSH='#ffadb5';
 const PK='#4b4855', PINK='#ffb7c0', LAV='#b9a3e6', LAV2='#9a82d6';
@@ -170,7 +170,7 @@ const friendSVG=(t,x,y,s=1,face='happy')=>`<g transform="translate(${x} ${y}) sc
 
 (function(){
   const $=id=>document.getElementById(id);
-  const HOURS=[["23","자시 (23:30~01:29)"],["1","축시 (01:30~03:29)"],["3","인시 (03:30~05:29)"],["5","묘시 (05:30~07:29)"],["7","진시 (07:30~09:29)"],["9","사시 (09:30~11:29)"],["11","오시 (11:30~13:29)"],["13","미시 (13:30~15:29)"],["15","신시 (15:30~17:29)"],["17","유시 (17:30~19:29)"],["19","술시 (19:30~21:29)"],["21","해시 (21:30~23:29)"]];
+  const HOURS=[["23","자시 · 밤 11시~자정 (23:00~23:59)"],["0","자시 · 자정~새벽 1시 (00:00~00:59)"],["1","축시 (01:00~02:59)"],["3","인시 (03:00~04:59)"],["5","묘시 (05:00~06:59)"],["7","진시 (07:00~08:59)"],["9","사시 (09:00~10:59)"],["11","오시 (11:00~12:59)"],["13","미시 (13:00~14:59)"],["15","신시 (15:00~16:59)"],["17","유시 (17:00~18:59)"],["19","술시 (19:00~20:59)"],["21","해시 (21:00~22:59)"]];
   HOURS.forEach(([v,t])=>{const o=document.createElement('option');o.value=v;o.textContent=t;$('h').appendChild(o)});
   $('hero').innerHTML=`<svg viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg">${penguin({x:500,y:240,s:.72,eyes:'happy'})}${['water','fire','wood','metal','earth'].map((t,i)=>friendSVG(t,[110,300,500,700,890][i],520,.42,'happy')).join('')}</svg>`;
   function seg(id){const el=$(id);el.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;el.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));if(id==='cSeg')$('leapWrap').style.display=b.dataset.v==='음력'?'flex':'none';});}

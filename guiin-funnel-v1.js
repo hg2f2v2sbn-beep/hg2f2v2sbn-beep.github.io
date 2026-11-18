@@ -1,24 +1,34 @@
-/* 귀인사주 전환 개선 v1 (2026-11-17)
- * - 무료 결과의 긴 인물 해석을 접어서, 잠긴 풀이·결제 안내가 더 빨리 보이게
- * - 결제 버튼 문구를 하나로 통일 (평생사주)
+/* 귀인사주 전환 개선 v1~v6
+ * - 사주·궁합 결과: 긴 무료 해석 접기, 결제 버튼 문구 통일, 중복 비교 박스 숨김
  * - 결과 화면에서 하단 고정 결제바 (미결제일 때만)
  */
 (function(root){
   'use strict';
   var doc=root.document;if(!doc)return;
-  var LABEL='잠긴 풀이 전부 열기 · 5,900원 ›';
   var DISMISS_KEY='gf_paybar_closed';
+  var KIND={
+    saju:{screen:'result',view:'resultView',code:'LIFETIME_SAJU',fallback:'openPremiumPay',
+      label:'잠긴 풀이 전부 열기 · 5,900원 ›',btns:'[data-gptr-buy],[data-glf-buy="saju"],.premiumLock button',
+      unpaid:'[data-gptr-buy],.premiumPreview,[data-glf-buy="saju"]',
+      title:'평생사주 전체 풀이',sub:'잘 맞는 일·돈 들어오는 해·연애 시기까지',price:'5,900원 열기 ›'},
+    compat:{screen:'matchResult',view:'matchView',code:'PREMIUM_COMPAT',fallback:'openCompatPay',
+      label:'잠긴 궁합 전부 열기 · 7,900원 ›',btns:'[data-glf-buy="compat"],.premiumLock button',
+      unpaid:'.premiumPreview,[data-glf-buy="compat"]',
+      title:'프리미엄 궁합 전체 풀이',sub:'연락·권태·돈·결혼·두 사람의 10년까지',price:'7,900원 열기 ›'}
+  };
 
-  function buyLifetime(){
+  function screenOn(id){var r=doc.getElementById(id);return !!(r&&r.classList.contains('active')&&r.offsetParent!==null);}
+  function activeKind(){for(var k in KIND){if(screenOn(KIND[k].screen))return k;}return null;}
+  function viewOf(k){return doc.getElementById(KIND[k].view);}
+  function unpaid(k){var v=viewOf(k);return !!(v&&v.querySelector(KIND[k].unpaid));}
+
+  function buy(k){
+    var K=KIND[k];
     try{
-      if(typeof root.guiinPaymentCenterStart==='function'){root.guiinPaymentCenterStart('LIFETIME_SAJU');return;}
-      if(typeof root.openPremiumPay==='function')root.openPremiumPay();
+      if(typeof root.guiinPaymentCenterStart==='function'){root.guiinPaymentCenterStart(K.code);return;}
+      if(typeof root[K.fallback]==='function')root[K.fallback]();
     }catch(_e){}
   }
-
-  function view(){return doc.getElementById('resultView');}
-  function resultActive(){var r=doc.getElementById('result');return !!(r&&r.classList.contains('active')&&r.offsetParent!==null);}
-  function unpaid(v){return !!(v&&(v.querySelector('[data-gptr-buy]')||v.querySelector('.premiumPreview')||v.querySelector('[data-glf-buy="saju"]')));}
 
   function fold(v){
     var el=v.querySelector('.r29SajuPortrait');
@@ -35,53 +45,58 @@
     el.parentNode.insertBefore(b,el.nextSibling);
   }
 
-  function unify(v){
-    var list=v.querySelectorAll('[data-gptr-buy],[data-glf-buy="saju"],.premiumLock button');
-    for(var i=0;i<list.length;i++){if(list[i].textContent!==LABEL)list[i].textContent=LABEL;}
+  function unify(k){
+    var v=viewOf(k);if(!v||!v.children.length)return;
+    var K=KIND[k],list=v.querySelectorAll(K.btns);
+    for(var i=0;i<list.length;i++){if(list[i].textContent!==K.label)list[i].textContent=K.label;}
     // '무료와 프리미엄' 비교 박스가 두 번 나오므로 아래쪽 하나는 숨김
     if(v.querySelector('.premiumCompare')){var fp=v.querySelector('.guiinFreePaid');if(fp)fp.style.display='none';}
+    if(k==='saju')fold(v);
   }
 
-  var bar=null;
-  function ensureBar(){
-    if(bar)return bar;
-    bar=doc.createElement('div');bar.id='gfPayBar';bar.setAttribute('role','region');bar.setAttribute('aria-label','평생사주 결제');
-    bar.innerHTML='<div class="t"><b>평생사주 전체 풀이</b><span>잘 맞는 일·돈 들어오는 해·연애 시기까지</span></div>'
-      +'<button type="button" class="go">5,900원 열기 ›</button><button type="button" class="x" aria-label="닫기">✕</button>';
-    bar.querySelector('.go').addEventListener('click',buyLifetime);
-    bar.querySelector('.x').addEventListener('click',function(){try{sessionStorage.setItem(DISMISS_KEY,'1');}catch(_e){}bar.classList.remove('on');});
-    doc.body.appendChild(bar);
+  var bar=null,barKind=null;
+  function ensureBar(k){
+    if(!bar){
+      bar=doc.createElement('div');bar.id='gfPayBar';bar.setAttribute('role','region');
+      bar.innerHTML='<div class="t"><b></b><span></span></div><button type="button" class="go"></button><button type="button" class="x" aria-label="닫기">✕</button>';
+      bar.querySelector('.go').addEventListener('click',function(){if(barKind)buy(barKind);});
+      bar.querySelector('.x').addEventListener('click',function(){try{sessionStorage.setItem(DISMISS_KEY+'_'+barKind,'1');}catch(_e){}bar.classList.remove('on');});
+      doc.body.appendChild(bar);
+    }
+    if(barKind!==k){
+      var K=KIND[k];barKind=k;
+      bar.setAttribute('aria-label',K.title+' 결제');
+      bar.querySelector('.t b').textContent=K.title;
+      bar.querySelector('.t span').textContent=K.sub;
+      bar.querySelector('.go').textContent=K.price;
+    }
     return bar;
   }
-  function dismissed(){try{return sessionStorage.getItem(DISMISS_KEY)==='1';}catch(_e){return false;}}
+  function dismissed(k){try{return sessionStorage.getItem(DISMISS_KEY+'_'+k)==='1'||(k==='saju'&&sessionStorage.getItem(DISMISS_KEY)==='1');}catch(_e){return false;}}
+  function sheetOpen(){var ids=['premiumSheet','compatSheet','guiinPaySheet'];for(var i=0;i<ids.length;i++){var s=doc.getElementById(ids[i]);if(s&&s.classList.contains('on'))return true;}return false;}
 
   function updateBar(){
-    var v=view();
-    var show=resultActive()&&unpaid(v)&&!dismissed()&&(root.scrollY||0)>600;
-    if(show){
-      // 결제 시트가 열려 있으면 감춤
-      var sheet=doc.getElementById('premiumSheet');
-      if(sheet&&sheet.classList.contains('on'))show=false;
-    }
-    if(show)ensureBar().classList.add('on');else if(bar)bar.classList.remove('on');
+    var k=activeKind();
+    var show=!!k&&unpaid(k)&&!dismissed(k)&&(root.scrollY||0)>600&&!sheetOpen();
+    if(show)ensureBar(k).classList.add('on');else if(bar)bar.classList.remove('on');
   }
 
   var pending=false;
   function apply(){
     pending=false;
-    var v=view();
-    if(v&&v.children.length){try{fold(v);unify(v);}catch(_e){}}
+    for(var k in KIND){try{unify(k);}catch(_e){}}
     updateBar();
   }
   function schedule(){if(pending)return;pending=true;setTimeout(apply,120);}
 
   function start(){
-    var v=view();
-    if(v&&root.MutationObserver)new MutationObserver(schedule).observe(v,{childList:true,subtree:true});
-    var r=doc.getElementById('result');
-    if(r&&root.MutationObserver)new MutationObserver(schedule).observe(r,{attributes:true,attributeFilter:['class']});
-    var s=doc.getElementById('premiumSheet');
-    if(s&&root.MutationObserver)new MutationObserver(updateBar).observe(s,{attributes:true,attributeFilter:['class']});
+    if(root.MutationObserver){
+      for(var k in KIND){
+        var v=viewOf(k);if(v)new MutationObserver(schedule).observe(v,{childList:true,subtree:true});
+        var r=doc.getElementById(KIND[k].screen);if(r)new MutationObserver(schedule).observe(r,{attributes:true,attributeFilter:['class']});
+      }
+      ['premiumSheet','compatSheet','guiinPaySheet'].forEach(function(id){var s=doc.getElementById(id);if(s)new MutationObserver(updateBar).observe(s,{attributes:true,attributeFilter:['class']});});
+    }
     root.addEventListener('scroll',function(){if(!pending)updateBar();},{passive:true});
     root.addEventListener('hashchange',schedule);
     schedule();
