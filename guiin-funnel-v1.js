@@ -206,3 +206,25 @@
   }
   if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })(typeof window!=='undefined'?window:this);
+
+/* v5: 이용 내역이 비어 있으면 막다른 화면 대신 무료 사주로 연결 */
+(function(root){
+  'use strict';
+  var doc=root.document;if(!doc)return;
+  function sync(){
+    var v=doc.getElementById('usageHistoryView');if(!v)return;
+    var empty=/아직 이용 내역이 없습니다/.test(v.textContent||'');
+    var b=doc.getElementById('gfHistoryGo');
+    if(empty&&!b){
+      b=doc.createElement('button');b.type='button';b.id='gfHistoryGo';b.className='gfEmptyGo';b.textContent='무료로 내 사주 보기 ›';
+      b.addEventListener('click',function(){try{root.go('saju');root.scrollTo(0,0);}catch(_e){}});
+      v.parentNode.appendChild(b);
+    }else if(!empty&&b){b.remove();}
+  }
+  function start(){
+    sync();
+    var v=doc.getElementById('usageHistoryView');
+    if(v&&root.MutationObserver)new MutationObserver(sync).observe(v,{childList:true,subtree:true,characterData:true});
+  }
+  if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',start,{once:true});else start();
+})(typeof window!=='undefined'?window:this);
