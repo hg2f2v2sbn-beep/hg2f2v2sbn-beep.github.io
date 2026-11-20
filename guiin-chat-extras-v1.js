@@ -47,21 +47,33 @@
     try{if(typeof go==='function')go('result');}catch(_){}
     setTimeout(function(){var t=document.getElementById('gxLongformCard');if(t)t.scrollIntoView({behavior:'smooth',block:'start'});},450);
   }
+  /* v6.40: 대화에 적힌 상대 생년월일을 궁합 입력칸(상대)에 채워 줌. 음력이면 양력 변환 안내 */
+  function fillPartner(bd){
+    try{
+      var set=function(id,v){var x=document.getElementById(id);if(x){x.value=v;x.dispatchEvent(new Event('input',{bubbles:true}));}};
+      set('bYear',bd.year);set('bMonth',bd.month);set('bDay',bd.day);
+      if(bd.gender){var g=document.querySelector('#bGender button[data-v="'+bd.gender+'"]');if(g)g.click();}
+      var msg=bd.lunar?'음력 생일이라 양력으로 바꿔서 다시 넣어 줘. 궁합은 양력 기준이야.':'상대 생년월일을 채워 뒀어. 시간을 알면 시·분도 넣어 줘.';
+      if(typeof guiinMiniToast==='function')guiinMiniToast(msg);
+      var y=document.getElementById('bYear');if(y)y.scrollIntoView({behavior:'smooth',block:'center'});
+    }catch(_){}
+  }
   function after(data){
     var b=box();if(!b||!data||!data.recommend||!data.recommend.code)return;
     var r=data.recommend,code=String(r.code);
     b.querySelectorAll('.gxRec').forEach(function(x){x.remove();});
-    var owned=entitled(code);
-    if(owned&&code==='PREMIUM_COMPAT')return;
+    var owned=entitled(code),birth=r.birth&&r.birth.year?r.birth:null;
+    if(owned&&code==='PREMIUM_COMPAT'&&!birth)return;
+    if(birth)owned=false;
     css();
     var card=el('div','gxRec');card.setAttribute('data-polish-skip','1');
     card.appendChild(el('div','gxRecT',owned?'📖 평생사주 장문 해설에서 이어 보기':'🍀 '+String(r.label||'더 깊게 보기')));
     card.appendChild(el('div','gxRecR',String(r.reason||'')));
-    var btn=el('button','',owned?'장문 해설 열기':(code==='PREMIUM_COMPAT'?'궁합 보러 가기':'자세히 보기'));btn.type='button';
+    var btn=el('button','',birth?'이 생년월일로 궁합 보기':(owned?'장문 해설 열기':(code==='PREMIUM_COMPAT'?'궁합 보러 가기':'자세히 보기')));btn.type='button';
     btn.onclick=function(){
       try{window.guiinSaveConsultReturn&&window.guiinSaveConsultReturn();}catch(_){}
       if(owned){openLongform();return;}
-      if(code==='PREMIUM_COMPAT'){try{go('match');}catch(_){}return;}
+      if(code==='PREMIUM_COMPAT'){try{go('match');}catch(_){}if(birth)setTimeout(function(){fillPartner(birth);},250);return;}
       try{if(typeof window.guiinPaymentCenterStart==='function'){window.guiinPaymentCenterStart(code);return;}}catch(_){}
       try{go('result');}catch(_){}
     };
