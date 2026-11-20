@@ -215,6 +215,44 @@
     ["tossPayment","tossMode","paymentKey","orderId","amount","paymentType","code","message"].forEach(k=>u.searchParams.delete(k));
     try{history.replaceState({},"",u.pathname+(u.searchParams.toString()?"?"+u.searchParams.toString():"")+u.hash);}catch(_e){}
   }
+  /* 2026-11-20: 취소·실패 복구 — 이유 안내, 한 번에 다시 결제, 이탈 단계 기록 */
+  const VALUE_LINE={
+    LIFETIME_SAJU:"평생사주 장문 해설 14개 항목은 결제가 끝나면 바로 열려요.",
+    PREMIUM_COMPAT:"두 사람 궁합 장문 해설 10개 항목은 결제가 끝나면 바로 열려요.",
+    AI_CHAT:"이용권은 결제가 끝나면 바로 들어오고, 하던 상담 그대로 이어서 물어볼 수 있어요."
+  };
+  function valueLine(code){return String(code||"").startsWith("AI_CHAT_")?VALUE_LINE.AI_CHAT:(VALUE_LINE[code]||"");}
+  function failReason(code,msg){
+    const c=String(code||"").toUpperCase();
+    if(!c)return "";
+    if(c==="PAY_PROCESS_ABORTED")return "결제 진행 중에 창이 닫히거나 연결이 끊겼어요.";
+    if(/LIMIT|EXCEED/.test(c))return "결제 한도를 넘었다고 나왔어요. 다른 카드나 간편결제로 해 보세요.";
+    if(/EXPIR/.test(c))return "카드 유효기간이 맞지 않다고 나왔어요. 카드 정보를 확인하거나 다른 결제수단을 써 보세요.";
+    if(/CARD|ISSUER|REJECT/.test(c))return "카드사에서 승인이 안 됐어요. 다른 카드나 간편결제로 하면 대부분 바로 돼요.";
+    if(/BALANCE|ACCOUNT/.test(c))return "계좌·잔액 문제로 승인이 안 됐어요. 다른 결제수단을 써 보세요.";
+    if(/TIMEOUT|NETWORK|FAILED_INTERNAL|PROVIDER/.test(c))return "결제사 연결이 잠깐 불안정했어요. 잠시 후 다시 누르면 대부분 해결돼요.";
+    return msg?String(msg).slice(0,120):"";
+  }
+  function logPayEvent(orderId,stage,code){
+    try{
+      if(!orderId)return;
+      api("/api/pay/event",{method:"POST",keepalive:true,cache:"no-store",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({orderId:String(orderId),stage:String(stage||""),code:String(code||"").slice(0,60)})}).catch(function(){});
+    }catch(_e){}
+  }
+  function ensureBackButton(productCode){
+    const wrap=el("paymentResultPrimary")?.parentNode;if(!wrap)return null;
+    let b=el("paymentResultBack");
+    if(!b){b=document.createElement("button");b.id="paymentResultBack";b.type="button";b.className="ghost";b.style.cssText="margin-top:4px;font-size:13px;opacity:.8";wrap.appendChild(b);}
+    b.textContent="결제 없이 돌아가기";
+    b.onclick=function(){
+      if(String(productCode).startsWith("AI_CHAT_")&&root.guiinRestoreConsultReturn?.())return;
+      if(productCode==="PREMIUM_COMPAT"&&typeof root.go==="function")return root.go("matchResult");
+      if(productCode==="LIFETIME_SAJU"&&typeof root.go==="function")return root.go("result");
+      if(typeof root.go==="function")root.go("home");
+    };
+    b.style.display="";
+    return b;
+  }
   function renderResult(kind,opts){
     opts=opts||{};
     const icon=el("paymentResultIcon"),title=el("paymentResultTitle"),copy=el("paymentResultCopy"),
@@ -233,17 +271,29 @@
       copy.textContent="토스페이먼츠 승인과 귀인사주 서버 검증이 완료되어 구매한 이용권이 반영됐어요.";
       primary.textContent="구매한 서비스 보기";
     }else if(kind==="cancel"){
-      title.textContent="결제를 취소했어요";
-      copy.textContent="결제 승인은 이루어지지 않았어요. 원할 때 다시 결제할 수 있습니다.";
-      primary.textContent="다시 확인하기";
+      title.textContent="아직 결제되지 않았어요";
+      copy.textContent=["돈은 빠져나가지 않았어요.",valueLine(opts.productCode||lastProduct()),"다른 카드나 간편결제로도 할 수 있어요."].filter(Boolean).join(" ");
+      primary.textContent="다시 결제하기";
+    }else if(opts.retryable){
+      const reason=failReason(opts.code,opts.message);
+      title.textContent="결제가 승인되지 않았어요";
+      copy.textContent=[reason||"결제 처리 중 문제가 있었어요.","돈은 빠져나가지 않았어요.",valueLine(opts.productCode||lastProduct())].filter(Boolean).join(" ");
+      primary.textContent="다시 결제하기";
     }else{
       title.textContent="결제를 완료하지 못했어요";
       copy.textContent=opts.message?"결제 처리 중 오류가 발생했어요. "+String(opts.message).slice(0,140):"결제 처리 중 오류가 발생했어요. 결제 내역을 확인한 뒤 다시 시도해 주세요.";
       primary.textContent="다시 시도하기";
     }
     const productCode=opts.productCode||lastProduct();
+    const back=el("paymentResultBack");if(back)back.style.display="none";
     const rows=[productLabel(productCode),testMode?"테스트 결제":"",opts.orderId?"주문번호: "+opts.orderId:"",opts.code?"응답코드: "+opts.code:""].filter(Boolean);
     if(meta){meta.textContent=rows.join(" · ");meta.style.display=rows.length?"block":"none";}
+    if(!testMode&&(kind==="cancel"||opts.retryable)&&productCode){
+      ensureBackButton(productCode);
+      primary.onclick=function(){start(productCode,"paymentResultCopy","paymentResultPrimary");};
+      if(typeof root.go==="function")root.go("paymentResult");
+      return;
+    }
     primary.onclick=function(){
       if(String(productCode).startsWith("AI_CHAT_")&&root.guiinRestoreConsultReturn?.())return;
       if(testMode&&typeof root.go==="function")root.go("paymentInfo");
@@ -284,7 +334,8 @@
       paymentWindow.on("cancel",function(){
         try{paymentWindow.destroy();}catch(_e){}
         if(activePaymentWindow===paymentWindow)activePaymentWindow=null;
-        keepBusy=false;setBusy(false);message(messageId,"결제를 취소했어요.");
+        keepBusy=false;setBusy(false);if(btn)btn.disabled=false;message(messageId,"결제창을 닫았어요. 버튼을 다시 누르면 바로 이어서 결제할 수 있어요.");
+        logPayEvent(order.id,"widget_closed","");
       });
       paymentWindow.on("paymentRequest",async function(){
         try{
@@ -351,7 +402,8 @@
       const orderId=String(u.searchParams.get("orderId")||"");
       const kind=code==="PAY_PROCESS_CANCELED"?"cancel":"fail";
       cleanupReturnUrl(u);
-      setTimeout(()=>renderResult(kind,{mode:safeMode,productCode:productCode,orderId:orderId,code:code,message:msg}),80);
+      if(safeMode==="live")logPayEvent(orderId,kind==="cancel"?"method_cancel":"pay_failed",code);
+      setTimeout(()=>renderResult(kind,{mode:safeMode,productCode:productCode,orderId:orderId,code:code,message:msg,retryable:true}),80);
       return;
     }
     if(paymentMode==="success"){
