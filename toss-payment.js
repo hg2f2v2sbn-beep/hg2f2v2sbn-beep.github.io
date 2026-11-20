@@ -313,6 +313,7 @@
       const current=await refreshPaymentReadiness();
       if(!isCheckoutReady(current)){message(messageId,"토스페이먼츠 결제 연결이 아직 열리지 않았어요.");return;}
       if(!productCode){message(messageId,"상품 정보를 확인하지 못했어요.");return;}
+      try{root.__guiinTrack&&root.__guiinTrack.send("pay_start",String(productCode))}catch(_e){}
       if(typeof root.TossPayments!=="function")throw new Error("toss_sdk_missing");
       setBusy(true);
       if(btn)btn.disabled=true;

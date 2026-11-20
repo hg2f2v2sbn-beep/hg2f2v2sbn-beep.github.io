@@ -41,4 +41,5 @@ async function loadMyInquiries(){const box=document.getElementById('myInqBox'),l
   list.innerHTML=rows.map(q=>{const st=q.status==='ANSWERED'?'답변 완료':q.status==='CLOSED'?'처리 종료':'접수 완료';return `<div class="myInq"><div class="small">${esc(st)} · ${esc(q.category||'')} · ${esc(kst(q.createdAt))}</div><b>${esc(q.title||'')}</b>${q.reply?`<div class="reply"><b>귀인사주 답변</b><br>${esc(q.reply)}</div>`:'<div class="reply">아직 답변이 등록되지 않았습니다.</div>'}</div>`}).join('')}
  catch(_){list.textContent='내 문의를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.'}}
 loadMyInquiries();
-</script></body></html>
+</script><script src="guiin-track-v1.js?v=20261120-t1" defer></script>
+</body></html>
