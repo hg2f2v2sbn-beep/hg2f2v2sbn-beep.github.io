@@ -25,7 +25,15 @@ var CSS='.glfCard{margin:14px 0;padding:18px 16px;border-radius:18px;background:
 '.glfCard .glfSec .glfEv{font-size:12.5px;line-height:1.5;color:#8a6a3c;background:#faf3e6;border-radius:8px;padding:6px 10px;margin:0 0 12px}'+
 '.glfCard .glfSec p{font-size:15px;line-height:1.8;margin:0 0 12px;color:#3a3127;word-break:keep-all}'+
 '.glfCard .glfFoot{font-size:12px;color:#9b8f80;margin-top:6px;line-height:1.5}'+
-'.glfCard .glfErr{font-size:13.5px;color:#a8432f;margin:8px 0}';
+'.glfCard .glfErr{font-size:13.5px;color:#a8432f;margin:8px 0}'+
+'.glfCard .glfNav{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;margin:4px -16px 6px;padding:4px 16px 10px;scrollbar-width:none}'+
+'.glfCard .glfNav::-webkit-scrollbar{display:none}'+
+'.glfCard .glfNav button{flex:0 0 auto;border:1px solid #ead9bd;background:#fff;color:#6b5434;border-radius:999px;padding:6px 11px;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap}'+
+'.glfCard .glfNav button b{color:#b0874d;margin-right:3px}'+
+'.glfCard .glfSec{scroll-margin-top:72px}'+
+'.glfCard .glfRest[hidden]{display:none}'+
+'.glfCard button.glfMoreBtn{display:block;width:100%;margin:2px 0 10px;padding:10px;border-radius:10px;border:1px dashed #d9c39f;background:#fffaf0;color:#8a6a3c;font-weight:700;font-size:13.5px;cursor:pointer}'+
+'.glfCard .glfNum{font-size:12px;color:#b0874d;font-weight:800;margin-right:6px}';
 function ensureCss(){var d=root.document;if(d.getElementById('glfCss'))return;var s=d.createElement('style');s.id='glfCss';s.textContent=CSS;d.head.appendChild(s);}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function ent(){try{return typeof GUIIN_VERIFIED_ENTITLEMENTS!=='undefined'?GUIIN_VERIFIED_ENTITLEMENTS:(root.GUIIN_VERIFIED_ENTITLEMENTS||{});}catch(_){return {};}}
@@ -79,11 +87,15 @@ async function load(kind,key,generate){
     if(!/not_ready|paid_resource_input_required/.test(m))st.error=m==='entitlement_required'?'결제 확인이 아직 안 끝났어요. 잠시 후 다시 눌러 주세요.':'해설을 불러오지 못했어요. 잠시 후 다시 시도해 주세요.';
   }finally{st.busy=false;rerender();}
 }
-function readingHTML(rd){
-  var secs=(rd&&rd.sections)||[];
-  return secs.map(function(s){
+/* v1.1: 목차 바로가기 + 긴 섹션은 앞 3문단만 보이고 '계속 읽기'로 펼침 */
+function readingHTML(rd,kind){
+  var secs=(rd&&rd.sections)||[],k=kind||'x',SHOW=3;
+  var nav=secs.length>3?'<div class="glfNav" role="navigation" aria-label="해설 목차">'+secs.map(function(s,i){return '<button type="button" data-glf-jump="glf-'+k+'-'+i+'"><b>'+(i+1)+'</b>'+esc(s.label||s.title||'')+'</button>';}).join('')+'</div>':'';
+  return nav+secs.map(function(s,i){
     var paras=String(s.body||'').split(/\n{2,}|\n/).map(function(x){return x.trim();}).filter(Boolean);
-    return '<div class="glfSec"><span class="glfLabel">'+esc(s.label||'')+'</span><h4>'+esc(s.title||s.label||'')+'</h4>'+(s.evidence?'<div class="glfEv">근거 · '+esc(s.evidence)+'</div>':'')+paras.map(function(p){return '<p>'+esc(p)+'</p>';}).join('')+'</div>';
+    var head=paras.slice(0,SHOW),rest=paras.slice(SHOW);
+    var restHTML=rest.length?'<div class="glfRest" hidden>'+rest.map(function(p){return '<p>'+esc(p)+'</p>';}).join('')+'</div><button type="button" class="glfMoreBtn" data-glf-more="1">계속 읽기 ▾ ('+rest.length+'문단 더)</button>':'';
+    return '<div class="glfSec" id="glf-'+k+'-'+i+'"><span class="glfLabel">'+esc(s.label||'')+'</span><h4><span class="glfNum">'+(i+1)+'/'+secs.length+'</span>'+esc(s.title||s.label||'')+'</h4>'+(s.evidence?'<div class="glfEv">근거 · '+esc(s.evidence)+'</div>':'')+head.map(function(p){return '<p>'+esc(p)+'</p>';}).join('')+restHTML+'</div>';
   }).join('');
 }
 function cardHTML(kind,paid,st,name){
@@ -97,7 +109,7 @@ function cardHTML(kind,paid,st,name){
   }
   var head='<div class="glfMini">'+mini+'</div>';
   if(st.status==='done'&&st.reading){
-    return head+'<h3 class="glfH">'+esc(st.reading.headline||mini)+'</h3>'+readingHTML(st.reading)
+    return head+'<h3 class="glfH">'+esc(st.reading.headline||mini)+'</h3>'+readingHTML(st.reading,kind)
       +'<p class="glfFoot">사주는 타고난 경향과 시기의 흐름을 읽는 도구예요. 중요한 결정은 지금의 상황과 함께 판단해 주세요.</p>';
   }
   if(st.status==='making'){
@@ -152,6 +164,11 @@ function one(kind,force){
 }
 function enhance(force){if(root.GUIIN_LONGFORM_OFF||!root.document)return;one('saju',force);one('compat',force);}
 function onClick(ev){
+  var j=ev.target&&ev.target.closest?ev.target.closest('[data-glf-jump],[data-glf-more]'):null;
+  if(j){
+    if(j.hasAttribute('data-glf-more')){var sec=j.closest('.glfSec'),r=sec&&sec.querySelector('.glfRest');if(r){r.hidden=false;j.remove();}return;}
+    var el=root.document.getElementById(j.getAttribute('data-glf-jump'));if(el){try{el.scrollIntoView({behavior:'smooth',block:'start'});}catch(_){el.scrollIntoView();}}return;
+  }
   var t=ev.target&&ev.target.closest?ev.target.closest('[data-glf-make],[data-glf-buy]'):null;if(!t)return;
   var buy=t.getAttribute('data-glf-buy');
   if(buy){try{root.guiinPaymentCenterStart&&root.guiinPaymentCenterStart(buy==='saju'?'LIFETIME_SAJU':'PREMIUM_COMPAT');}catch(_){}return;}
@@ -164,5 +181,5 @@ if(root.document&&root.MutationObserver){
   var start=function(){try{mo.observe(root.document.body,{childList:true,subtree:true});root.document.addEventListener('click',onClick);enhance(false);}catch(_){}};
   if(root.document.body)start();else root.document.addEventListener('DOMContentLoaded',start);
 }
-root.GuiinLongform={version:'longform-v1',refresh:function(){enhance(true);}};
+root.GuiinLongform={version:'longform-v1.1',readingHTML:readingHTML,refresh:function(){enhance(true);}};
 })(typeof globalThis!=='undefined'?globalThis:this);
