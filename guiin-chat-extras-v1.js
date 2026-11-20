@@ -13,7 +13,13 @@
   '.gxRec{margin:8px 0 4px;max-width:92%;border-radius:16px;background:linear-gradient(135deg,#f3fbf4,#fffaf0);border:1px solid #d7ecd9;padding:12px 14px;font-size:14px;color:#2f3a2f}'+
   '.gxRec .gxRecT{font-weight:800;margin-bottom:4px}'+
   '.gxRec .gxRecR{font-size:13px;color:#4b5a4b;line-height:1.5;margin-bottom:8px}'+
-  '.gxRec button{border:0;border-radius:999px;padding:8px 14px;font-weight:700;font-size:13px;background:#2f7a43;color:#fff;cursor:pointer}';
+  '.gxRec button{border:0;border-radius:999px;padding:8px 14px;font-weight:700;font-size:13px;background:#2f7a43;color:#fff;cursor:pointer}'+
+  '.gxWhy{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:4px 0 8px;max-width:92%}'+
+  '.gxWhy em{font-style:normal;font-size:11.5px;color:#8b7b66;margin-right:2px}'+
+  '.gxWhy span{font-size:12px;line-height:1;padding:6px 9px;border-radius:999px;background:#f6f0ff;border:1px solid #e3d8fb;color:#5b45a8;font-weight:700}'+
+  '.gxUp{margin:8px 0 4px;max-width:92%;border-radius:16px;background:linear-gradient(135deg,#f6f0ff,#fffaf0);border:1px solid #e3d8fb;padding:12px 14px;font-size:14px;color:#2f2a3a}'+
+  '.gxUp .gxRecT{font-weight:800;margin-bottom:4px}.gxUp .gxRecR{font-size:13px;color:#5a5068;line-height:1.5;margin-bottom:8px}'+
+  '.gxUp button{border:0;border-radius:999px;padding:8px 14px;font-weight:700;font-size:13px;background:#6b4fc4;color:#fff;cursor:pointer}';
   function css(){if(document.getElementById('gxChatExtrasCss'))return;var s=document.createElement('style');s.id='gxChatExtrasCss';s.textContent=CSS;document.head.appendChild(s);}
   function el(tag,cls,txt){var d=document.createElement(tag);if(cls)d.className=cls;if(txt!=null)d.textContent=txt;return d;}
   function box(){return document.getElementById('msgs');}
@@ -58,8 +64,40 @@
       var y=document.getElementById('bYear');if(y)y.scrollIntoView({behavior:'smooth',block:'center'});
     }catch(_){}
   }
+  /* v6.41: 답변 근거 칩 + 마지막 무료 답변 이어하기 카드 */
+  function lastFollowup(b){var fb=b.querySelectorAll('.followupBox');return fb.length?fb[fb.length-1]:null;}
+  function chips(b,data){
+    var list=Array.isArray(data.evidence)?data.evidence.filter(function(x){return typeof x==='string'&&x.trim();}).slice(0,4):[];
+    if(list.length<2)return;
+    var bots=b.querySelectorAll('.bubble.bot'),bot=bots.length?bots[bots.length-1]:null;
+    var row=el('div','gxWhy');row.setAttribute('data-polish-skip','1');
+    row.appendChild(el('em','','이렇게 본 근거'));
+    list.forEach(function(t){row.appendChild(el('span','',t));});
+    if(bot&&bot.parentNode===b)b.insertBefore(row,bot.nextSibling);else{var l=lastFollowup(b);if(l)b.insertBefore(row,l);else b.appendChild(row);}
+  }
+  function upsell(b,data){
+    var u=data.upsell;if(!u||!u.code)return;
+    b.querySelectorAll('.gxUp').forEach(function(x){x.remove();});
+    var card=el('div','gxUp');card.setAttribute('data-polish-skip','1');
+    card.appendChild(el('div','gxRecT','💬 '+String(u.label||'이어서 물어보기')));
+    card.appendChild(el('div','gxRecR',String(u.reason||'')));
+    var btn=el('button','','이용권 보기');btn.type='button';
+    btn.onclick=function(){
+      try{window.guiinSaveConsultReturn&&window.guiinSaveConsultReturn();}catch(_){}
+      try{sessionStorage.setItem('guiin_payinfo_pick','AI_CHAT_6');}catch(_){}
+      try{go('paymentInfo');if(typeof guiinPayInfoPick==='function')setTimeout(function(){guiinPayInfoPick('AI_CHAT_6',true);},200);return;}catch(_){}
+      try{go('wallet');}catch(_){}
+    };
+    card.appendChild(btn);
+    var l=lastFollowup(b);if(l)b.insertBefore(card,l);else b.appendChild(card);
+  }
   function after(data){
-    var b=box();if(!b||!data||!data.recommend||!data.recommend.code)return;
+    var b=box();if(!b||!data)return;
+    css();
+    try{chips(b,data);}catch(_){}
+    try{upsell(b,data);}catch(_){}
+    if(!data.recommend||!data.recommend.code)return;
+    if(data.upsell&&data.upsell.code&&!(data.recommend.birth&&data.recommend.birth.year))return;
     var r=data.recommend,code=String(r.code);
     b.querySelectorAll('.gxRec').forEach(function(x){x.remove();});
     var owned=entitled(code),birth=r.birth&&r.birth.year?r.birth:null;
