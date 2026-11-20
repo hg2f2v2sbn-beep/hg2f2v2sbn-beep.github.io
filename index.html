@@ -11455,16 +11455,18 @@ try{Object.assign(window,{guiinPaymentCenterStart});}catch(_e){}
    const c=hasChart();home.classList.toggle('gjNew',!c);home.classList.toggle('gjBack',c);
    box.classList.add('gjHero');
    if(!c&&box.querySelector('.gjQuick'))return;
-   box.innerHTML=c?`<div class="gjTx"><span class="gjKick">다시 왔네요</span><h3>${escg(currentName())}님 사주, 이어서 볼까요?</h3><p>계산해 둔 명식으로 바로 이어서 읽을 수 있어요.</p></div><button class="gjMain" onclick="openResultTab('summary')">내 사주 이어보기 ›</button><a class="gjSub" href="#" onclick="go('saju');return false">다른 사람 사주 보기 ›</a>`:`<div class="gjTx"><span class="gjKick">무료 · 30초면 끝</span><h3>생년월일만 넣으면<br>내 사주 풀이가 바로 나와요</h3></div><div class="gjQuick"><input id="gjqName" autocomplete="off" maxlength="12" placeholder="이름 (안 써도 돼요)"><input id="gjqBirth" inputmode="numeric" autocomplete="bday" maxlength="10" placeholder="생년월일 8자리  예) 19980315" onkeydown="if(event.key==='Enter')gjQuickStart()"><div class="gjqSeg" id="gjqGender"><button type="button" class="on" data-v="여" onclick="gjqPick(this)">여성</button><button type="button" data-v="남" onclick="gjqPick(this)">남성</button></div><div id="gjqMsg" class="gjqMsg" role="alert" aria-live="polite"></div><button type="button" class="gjMain" onclick="gjQuickStart()">내 사주 무료로 보기 ›</button><div class="gjqNote">양력 기준 · 태어난 시간은 몰라도 돼요 <a href="#" onclick="go('saju');return false">음력·시간까지 넣기 ›</a></div></div><div class="gjLinks"><a href="#" onclick="gfOpenSample('saju');return false">유료 풀이 예시 보기 ›</a><a href="oheng.html">🍀 오행 1초 확인 ›</a></div>`;
+   box.innerHTML=c?`<div class="gjTx"><span class="gjKick">다시 왔네요</span><h3>${escg(currentName())}님 사주, 이어서 볼까요?</h3><p>계산해 둔 명식으로 바로 이어서 읽을 수 있어요.</p></div><button class="gjMain" onclick="openResultTab('summary')">내 사주 이어보기 ›</button><a class="gjSub" href="#" onclick="go('saju');return false">다른 사람 사주 보기 ›</a>`:`<div class="gjTx"><span class="gjKick">무료 · 30초면 끝</span><h3>이름과 생년월일만 넣으면<br>내 사주 풀이가 바로 나와요</h3></div><div class="gjQuick"><input id="gjqName" autocomplete="off" maxlength="12" placeholder="이름"><input id="gjqBirth" inputmode="numeric" autocomplete="bday" maxlength="10" placeholder="생년월일 8자리  예) 19980315" onkeydown="if(event.key==='Enter')gjQuickStart()"><div class="gjqSeg" id="gjqGender"><button type="button" class="on" data-v="여" onclick="gjqPick(this)">여성</button><button type="button" data-v="남" onclick="gjqPick(this)">남성</button></div><div id="gjqMsg" class="gjqMsg" role="alert" aria-live="polite"></div><button type="button" class="gjMain" onclick="gjQuickStart()">내 사주 무료로 보기 ›</button><div class="gjqNote">양력 기준 · 태어난 시간은 몰라도 돼요 <a href="#" onclick="go('saju');return false">음력·시간까지 넣기 ›</a></div></div><div class="gjProds gjProdsQ"><button type="button" class="gjProd saju" onclick="gjqFocus()"><b>평생사주</b><span>성격·돈·연애 시기까지</span><em>내 사주 보기 ›</em></button><button type="button" class="gjProd compat" onclick="go('match')"><b>궁합</b><span>끌림·갈등·함께할 해</span><em>궁합 보기 ›</em></button></div><div class="gjLinks"><a href="#" onclick="gfOpenSample('saju');return false">평생사주 예시 보기 ›</a><a href="#" onclick="gfOpenSample('compat');return false">궁합 예시 보기 ›</a></div><a class="gjOheng" href="oheng.html"><span class="gjOhI">🍀</span><span class="gjOhT"><b>내 오행 1초 확인</b><small>나무·불·흙·쇠·물 중 나는 뭐가 많을까?</small></span><span class="gjOhA">›</span></a>`;
  }
 
  window.gjqPick=function(b){try{b.parentNode.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b))}catch(_e){}};
+ window.gjqFocus=function(){const e=$g('gjqName');if(!e)return;try{e.scrollIntoView({behavior:'smooth',block:'center'})}catch(_e){}setTimeout(()=>{try{($g('gjqName').value.trim()?$g('gjqBirth'):$g('gjqName')).focus()}catch(_e){}},250)};
  window.gjQuickStart=function(){
    const msg=$g('gjqMsg'),say=t=>{if(msg)msg.textContent=t||''};say('');
    const raw=String($g('gjqBirth')?.value||'').trim();let y=0,m=0,d=0;
    const parts=raw.split(/[^0-9]+/).filter(Boolean);
    if(parts.length===3){y=+parts[0];m=+parts[1];d=+parts[2];if(y<100)y+=y>(new Date().getFullYear()%100)?1900:2000;}
    else{const n=raw.replace(/\D/g,'');if(n.length===8){y=+n.slice(0,4);m=+n.slice(4,6);d=+n.slice(6,8);}else if(n.length===6){y=+n.slice(0,2);m=+n.slice(2,4);d=+n.slice(4,6);y+=y>(new Date().getFullYear()%100)?1900:2000;}}
+   const nm=String($g('gjqName')?.value||'').trim();if(!nm){say('이름을 넣어 주세요.');$g('gjqName')?.focus();return;}
    if(!y||!m||!d){say('생년월일 8자리를 넣어 주세요. 예) 19980315');$g('gjqBirth')?.focus();return;}
    const nowY=new Date().getFullYear();
    if(y<1900||y>nowY||m<1||m>12||d<1||d>31||new Date(y,m-1,d).getDate()!==d){say(`${y}년 ${m}월 ${d}일은 없는 날짜예요. 다시 확인해 주세요.`);$g('gjqBirth')?.focus();return;}
@@ -14276,7 +14278,7 @@ window.addEventListener('pageshow',function(){setTimeout(refresh,300)});
   }catch(_e){}
 })();
 </script>
-<link rel="stylesheet" href="guiin-funnel-v1.css?v=20261120-q1">
+<link rel="stylesheet" href="guiin-funnel-v1.css?v=20261120-q4">
 <script src="guiin-funnel-v1.js?v=20261119-f8" defer></script>
 <script src="guiin-track-v1.js?v=20261120-t1" defer></script>
 </body>
