@@ -174,3 +174,11 @@ html body #guiinJourney.gjHero .gjOheng{position:relative;z-index:1;display:flex
 #guiinJourney.gjHero .gjOhT b{font-size:16px;font-weight:900;color:#5a4300}
 #guiinJourney.gjHero .gjOhT small{font-size:12.5px;color:#7a6a3a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #guiinJourney.gjHero .gjOhA{font-size:24px;font-weight:900;color:#9a6a00}
+/* 결과 화면: 시간 모름 안내를 한 줄로 접기 */
+html body .guiinTimeNotice.gtnCompact{padding:10px 14px!important;margin-bottom:10px!important;background:#f7f8f4!important;border:1px solid #e3e8dd!important;box-shadow:none!important}
+.guiinTimeNotice.gtnCompact details>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:8px;cursor:pointer;font-size:13.5px;font-weight:800;color:#41564a}
+.guiinTimeNotice.gtnCompact details>summary::-webkit-details-marker{display:none}
+.guiinTimeNotice.gtnCompact .gtnMore{font-size:12.5px;font-weight:700;color:#1a6e48;white-space:nowrap}
+.guiinTimeNotice.gtnCompact details[open] .gtnMore{opacity:.5}
+.guiinTimeNotice.gtnCompact details p{font-size:13px;line-height:1.6;color:#4d5a52;margin:8px 0 0}
+html body .guiinTimeNotice.gtnCompact .gtnBtn{margin-top:10px;width:100%;height:42px;border-radius:12px;border:1.5px solid #1a6e48;background:#fff;color:#1a6e48;font-weight:900;font-size:14px;cursor:pointer}
