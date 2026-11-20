@@ -54,6 +54,7 @@ jobs:
           guiin-chat-extras-v1.js
           guiin-longform-v1.js
           guiin-track-v1.js
+          guiin-invite-v1.js
           guiin-funnel-v1.css
           guiin-funnel-v1.js
           guiin-home-daily-v1.js
