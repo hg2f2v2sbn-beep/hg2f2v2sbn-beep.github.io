@@ -143,3 +143,15 @@ html body #matchView .premiumIncluded .premiumItem{padding:10px 12px!important;m
 /* 예전 sticky 결제 카드는 본문을 가려서 일반 카드로 (하단 결제바가 대신함) */
 html body #resultView .premiumLock,html body #matchView .premiumLock{position:relative!important;bottom:auto!important;box-shadow:none!important}
 #gfClockNote{margin:8px 0 10px;padding:11px 13px;border-radius:14px;background:#fff7e0;border:1px solid #f0dca0;font-size:13px;line-height:1.55;color:#5a4a1c;word-break:keep-all}
+/* 첫 화면 바로 입력 (2026-11-20) */
+#guiinJourney.gjHero .gjQuick{position:relative;z-index:1;display:flex;flex-direction:column;gap:8px;margin-top:12px}
+html body #guiinJourney.gjHero .gjQuick input{width:100%;box-sizing:border-box;height:50px;margin:0!important;padding:0 14px!important;border:1.5px solid #cfe3d3!important;border-radius:14px!important;background:#fff!important;font-size:16px!important;color:#16301f!important}
+html body #guiinJourney.gjHero .gjQuick input:focus{outline:none;border-color:#24885a!important;box-shadow:0 0 0 3px rgba(36,136,90,.15)}
+#guiinJourney.gjHero .gjqSeg{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+html body #guiinJourney.gjHero .gjqSeg button{height:44px;border-radius:12px;border:1.5px solid #cfe3d3;background:#fff;color:#41564a;font-size:15px;font-weight:700;cursor:pointer}
+html body #guiinJourney.gjHero .gjqSeg button.on{border-color:#1a6e48;background:#e8f5ec;color:#1a6e48;font-weight:900}
+#guiinJourney.gjHero .gjqMsg{min-height:0;font-size:13px;font-weight:700;color:#c0392b;line-height:1.4}
+#guiinJourney.gjHero .gjqMsg:empty{display:none}
+#guiinJourney.gjHero .gjQuick .gjMain{margin-top:4px}
+#guiinJourney.gjHero .gjqNote{text-align:center;font-size:12.5px;color:#5b6b60;line-height:1.5}
+#guiinJourney.gjHero .gjqNote a{color:#1a6e48;font-weight:800;text-decoration:none;margin-left:4px;white-space:nowrap}
