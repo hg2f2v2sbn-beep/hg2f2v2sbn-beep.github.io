@@ -156,3 +156,21 @@ html body #guiinJourney.gjHero .gjqSeg button.on{border-color:#1a6e48;background
 #guiinJourney.gjHero .gjqNote{text-align:center;font-size:12.5px;color:#5b6b60;line-height:1.5}
 #guiinJourney.gjHero .gjqNote a{color:#1a6e48;font-weight:800;text-decoration:none;margin-left:4px;white-space:nowrap}
 #guiinJourney.gjHero .gjProdsQ{margin:14px 0 0}
+/* 첫 화면 정리 q4: 한 화면 안에 입력·상품·오행 */
+html body #home #guiinJourney.gjHero.gjHero{padding:18px 16px 16px!important;margin:6px 0 12px!important}
+html body #guiinJourney.gjHero h3{font-size:21px!important;margin:0 0 4px!important}
+#guiinJourney.gjHero .gjKick{margin-bottom:8px}
+#guiinJourney.gjHero .gjQuick{gap:7px;margin-top:10px}
+html body #guiinJourney.gjHero .gjQuick input{height:46px}
+html body #guiinJourney.gjHero .gjqSeg button{height:40px}
+html body #guiinJourney.gjHero .gjQuick .gjMain{min-height:52px;margin-top:2px}
+#guiinJourney.gjHero .gjProdsQ{margin:12px 0 0;gap:8px}
+html body #guiinJourney.gjHero .gjProdsQ .gjProd{padding:10px 12px 9px}
+#guiinJourney.gjHero .gjLinks{margin-top:8px;gap:14px}
+#guiinJourney.gjHero .gjLinks a{font-size:13px;padding:4px 2px}
+html body #guiinJourney.gjHero .gjOheng{position:relative;z-index:1;display:flex;align-items:center;gap:12px;margin-top:8px;padding:12px 14px;border-radius:16px;background:linear-gradient(135deg,#fffbe8,#fff1bd);border:1.5px solid #efd06a;text-decoration:none;box-shadow:0 4px 12px rgba(190,150,30,.16)}
+#guiinJourney.gjHero .gjOhI{font-size:26px;line-height:1}
+#guiinJourney.gjHero .gjOhT{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+#guiinJourney.gjHero .gjOhT b{font-size:16px;font-weight:900;color:#5a4300}
+#guiinJourney.gjHero .gjOhT small{font-size:12.5px;color:#7a6a3a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#guiinJourney.gjHero .gjOhA{font-size:24px;font-weight:900;color:#9a6a00}
