@@ -42,9 +42,7 @@ jobs:
           guiin-b6-features.js
           guiin-deep-ai.js
           guiin-deep-compat-b3.js
-          guiin-deep-compat.js
           guiin-deep-voice-b3.js
-          guiin-deep-voice.js
           guiin-fortune-v2.js
           guiin-home-polish.js
           guiin-interpretation-v4-b3.js
