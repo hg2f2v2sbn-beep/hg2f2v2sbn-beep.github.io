@@ -30,11 +30,12 @@ var GEN={목:'화',화:'토',토:'금',금:'수',수:'목'},CTRL={목:'토',토:
 var EL_WORD={목:'나무',화:'불',토:'흙',금:'쇠',수:'물'};
 function grp(g){g=String(g||'');if(/비견|겁재/.test(g))return '비겁';if(/식신|상관/.test(g))return '식상';if(/편재|정재/.test(g))return '재성';if(/편관|정관/.test(g))return '관성';if(/편인|정인/.test(g))return '인성';return ''}
 function pctOf(c){try{if(window.GuiinCompat&&GuiinCompat.pct)return GuiinCompat.pct(c)}catch(_e){}var t=0,o={};EL.forEach(function(e){t+=+((c.elCount||{})[e])||0});EL.forEach(function(e){o[e]=Math.round(((+((c.elCount||{})[e])||0)/(t||1))*100)});return o}
-function domWeak(p){var s=EL.slice().sort(function(x,y){return p[y]-p[x]});return {dom:s[0],weak:s[4]}}
+function charCount(ch){var o={목:0,화:0,토:0,금:0,수:0},p=ch&&ch.pillars||{},unk=ch&&ch.input&&ch.input.hourUnknown;['year','month','day','hour'].forEach(function(k){if(k==='hour'&&unk)return;var x=p[k];if(!x)return;if(o[x.stemEl]!=null)o[x.stemEl]++;if(o[x.branchEl]!=null)o[x.branchEl]++});return o}
+function domWeak(p,n){n=n||{};var s=EL.slice().sort(function(x,y){return ((n[y]||0)-(n[x]||0))||(p[y]-p[x])});return {dom:s[0],weak:s[4]}}
 function eng2(c){try{if(c.engine2&&c.engine2.strength)return c.engine2}catch(_e){}try{if(window.GuiinSajuEngine2&&GuiinSajuEngine2.analyze){c.engine2=GuiinSajuEngine2.analyze(c);return c.engine2}}catch(_e){}return null}
 function strengthOf(c){var e=eng2(c),s=e&&e.strength;if(!s||!isFinite(+s.score))return {grade:'중간',score:null,band:'mid'};var g=String(s.grade||'중간');return {grade:g,score:Math.round(+s.score),band:/^강|중강/.test(g)?'strong':/^약|중약/.test(g)?'weak':'mid'}}
 function transitOf(c){var e=eng2(c),t=e&&e.transit;if(!t)return null;var y=t.year||{},l=t.luck||null;return {yearKo:y.pillar&&y.pillar.ko||'',yearGod:y.god||'',yearRel:(y.relations||[]).slice(),luckKo:l&&l.ko||'',luckGod:l&&l.god||''}}
-function strengthWord(s){return s.score==null?'강약 '+s.grade:'강약 '+s.grade+'('+s.score+'점)'}
+function strengthWord(s){return s.score==null?s.grade:s.grade+'('+s.score+'점)'}
 
 /* ───────── 두 사람 사실값 (기존 엔진 결과만 읽음) ───────── */
 function facts(a,b,opt){
@@ -47,12 +48,12 @@ function facts(a,b,opt){
  var wonjin=ia>=0&&ib>=0&&WJ.some(function(q){return (q[0]===ia&&q[1]===ib)||(q[0]===ib&&q[1]===ia)});
  var sig=C.relationSignals(a,b)||{combine:0,tension:0,types:[]};
  var tg=C.crossTenGod(a,b)||{aSeesB:'',bSeesA:''};
- var pa=pctOf(a),pb=pctOf(b),wa=domWeak(pa),wb=domWeak(pb);
+ var pa=pctOf(a),pb=pctOf(b),na=charCount(a),nb=charCount(b),wa=domWeak(pa,na),wb=domWeak(pb,nb);
  var eA=a.dayMaster.el,eB=b.dayMaster.el;
  var dm=eA===eB?'same':GEN[eA]===eB?'aGen':GEN[eB]===eA?'bGen':CTRL[eA]===eB?'aCtl':CTRL[eB]===eA?'bCtl':'x';
  var sA=strengthOf(a),sB=strengthOf(b);
- var fill=pb[wa.weak]>=22,fillB=pa[wb.weak]>=22;
- return {a:a,b:b,nA:nA,nB:nB,dayRel:dayRel,wonjin:wonjin,sig:sig,tg:tg,gA:grp(tg.aSeesB),gB:grp(tg.bSeesA),pa:pa,pb:pb,wa:wa,wb:wb,eA:eA,eB:eB,dm:dm,sA:sA,sB:sB,fill:fill,fillB:fillB,
+ var fill=(nb[wa.weak]||0)>=2&&(nb[wa.weak]||0)>(na[wa.weak]||0),fillB=(na[wb.weak]||0)>=2&&(na[wb.weak]||0)>(nb[wb.weak]||0);
+ return {a:a,b:b,nA:nA,nB:nB,dayRel:dayRel,wonjin:wonjin,na:na,nb:nb,sig:sig,tg:tg,gA:grp(tg.aSeesB),gB:grp(tg.bSeesA),pa:pa,pb:pb,wa:wa,wb:wb,eA:eA,eB:eB,dm:dm,sA:sA,sB:sB,fill:fill,fillB:fillB,
   tA:transitOf(a),tB:transitOf(b),seed:hash(a.pillars.day.ko+b.pillars.day.ko+a.pillars.month.ko+b.pillars.month.ko+(opt.theme||''))};
 }
 var REL_KIND={'육합':'bond','충':'clash','형':'knot','해':'hurt','파':'break','직접 관계 없음':'none'};
@@ -99,10 +100,11 @@ function strengthPair(f){
  return '두 사람의 강약은 한쪽으로 크게 치우치지 않아('+f.sA.grade+'·'+f.sB.grade+'). 누가 이끄는지는 상황에 따라 바뀌는 편이야.';
 }
 function complementLine(f){
- if(f.fill&&f.fillB)return f.nA+'에게 적은 '+f.wa.weak+' 기운을 '+f.nB+' 쪽이 갖고 있고('+f.pb[f.wa.weak]+'%), '+f.nB+'에게 적은 '+f.wb.weak+' 기운은 '+f.nA+' 쪽이 갖고 있어('+f.pa[f.wb.weak]+'%). 서로 비어 있는 곳을 채워 주는 구조야.';
- if(f.fill)return f.nA+'에게 적은 '+f.wa.weak+' 기운('+f.pa[f.wa.weak]+'%)을 '+f.nB+' 쪽이 넉넉히 갖고 있어('+f.pb[f.wa.weak]+'%). '+f.nA+' 입장에서는 '+f.nB+'에게서 부족한 부분을 채우는 느낌을 받기 쉬워.';
- if(f.fillB)return f.nB+'에게 적은 '+f.wb.weak+' 기운('+f.pb[f.wb.weak]+'%)을 '+f.nA+' 쪽이 넉넉히 갖고 있어('+f.pa[f.wb.weak]+'%). '+f.nB+' 입장에서는 '+f.nA+'에게서 채워지는 느낌을 받기 쉬워.';
- if(f.wa.dom===f.wb.dom)return '두 사람 모두 '+f.wa.dom+' 기운이 가장 강해('+f.pa[f.wa.dom]+'%·'+f.pb[f.wb.dom]+'%). 잘 통하는 대신 같은 쪽으로 함께 치우치기 쉬워.';
+ var ca=f.na||{},cb=f.nb||{};
+ if(f.fill&&f.fillB)return f.nA+'에게 적은 '+f.wa.weak+' 기운('+(ca[f.wa.weak]||0)+'자)을 '+f.nB+' 쪽이 '+(cb[f.wa.weak]||0)+'자 갖고 있고, '+f.nB+'에게 적은 '+f.wb.weak+' 기운('+(cb[f.wb.weak]||0)+'자)은 '+f.nA+' 쪽이 '+(ca[f.wb.weak]||0)+'자 갖고 있어. 서로 비어 있는 곳을 채워 주는 구조야.';
+ if(f.fill)return f.nA+'에게 적은 '+f.wa.weak+' 기운('+(ca[f.wa.weak]||0)+'자)을 '+f.nB+' 쪽이 '+(cb[f.wa.weak]||0)+'자나 갖고 있어. '+f.nA+' 입장에서는 '+f.nB+'에게서 부족한 부분을 채우는 느낌을 받기 쉬워.';
+ if(f.fillB)return f.nB+'에게 적은 '+f.wb.weak+' 기운('+(cb[f.wb.weak]||0)+'자)을 '+f.nA+' 쪽이 '+(ca[f.wb.weak]||0)+'자나 갖고 있어. '+f.nB+' 입장에서는 '+f.nA+'에게서 채워지는 느낌을 받기 쉬워.';
+ if(f.wa.dom===f.wb.dom)return '두 사람 모두 '+f.wa.dom+' 기운이 가장 많아('+(ca[f.wa.dom]||0)+'자·'+(cb[f.wb.dom]||0)+'자). 잘 통하는 대신 같은 쪽으로 함께 치우치기 쉬워.';
  return '오행 분포로 보면 '+f.nA+' 쪽은 '+f.wa.dom+', '+f.nB+' 쪽은 '+f.wb.dom+' 기운이 가장 강해. 서로 채워 주기보다 각자 강한 쪽이 달라서 생기는 차이가 더 눈에 띄는 조합이야.';
 }
 
@@ -138,18 +140,19 @@ function yearLine(n,t,alt){
 function luckLine(n,t){if(!t||!t.luckKo)return '';return n+'의 현재 대운은 '+Y(t.luckKo+(t.luckGod?'('+t.luckGod+')':''))+'.'}
 
 /* ───────── 근거(명리 데이터) ───────── */
+function DN(n){return !n||n==='나'?'너':n}
 function evidenceRowsV1(f){
  var rows=[
-  ['일간',f.nA+' '+f.a.pillars.day.stem+'('+f.eA+') · '+f.nB+' '+f.b.pillars.day.stem+'('+f.eB+')'],
+  ['일간',DN(f.nA)+' '+f.a.pillars.day.stem+'('+f.eA+') · '+f.nB+' '+f.b.pillars.day.stem+'('+f.eB+')'],
   ['일주',f.a.pillars.day.ko+' · '+f.b.pillars.day.ko],
   ['일지 관계',f.dayRel==='직접 관계 없음'&&f.wonjin?'원진 (합·충은 없음)':f.dayRel],
-  ['교차 십신',f.nA+'→'+f.nB+' '+(f.tg.aSeesB||'-')+' · '+f.nB+'→'+f.nA+' '+(f.tg.bSeesA||'-')],
+  ['교차 십신',DN(f.nA)+'→'+f.nB+' '+(f.tg.aSeesB||'-')+' · '+f.nB+'→'+DN(f.nA)+' '+(f.tg.bSeesA||'-')],
   ['합·긴장 신호','합 '+f.sig.combine+' · 충형파해 '+f.sig.tension+(f.sig.types&&f.sig.types.length?' ('+f.sig.types.join(', ')+')':'')],
-  ['오행 분포',f.nA+' 강 '+f.wa.dom+' '+f.pa[f.wa.dom]+'% / 약 '+f.wa.weak+' '+f.pa[f.wa.weak]+'% · '+f.nB+' 강 '+f.wb.dom+' '+f.pb[f.wb.dom]+'% / 약 '+f.wb.weak+' '+f.pb[f.wb.weak]+'%'],
-  ['강약',f.nA+' '+strengthWord(f.sA)+' · '+f.nB+' '+strengthWord(f.sB)]
+  ['오행 분포',DN(f.nA)+': 많은 '+f.wa.dom+' '+((f.na||{})[f.wa.dom]||0)+'자, 적은 '+f.wa.weak+' '+((f.na||{})[f.wa.weak]||0)+'자 · '+f.nB+': 많은 '+f.wb.dom+' '+((f.nb||{})[f.wb.dom]||0)+'자, 적은 '+f.wb.weak+' '+((f.nb||{})[f.wb.weak]||0)+'자'],
+  ['기운 세기',DN(f.nA)+' '+strengthWord(f.sA)+' · '+f.nB+' '+strengthWord(f.sB)]
  ];
- if(f.tA&&f.tA.yearKo)rows.push(['올해 세운',f.tA.yearKo+' · '+f.nA+' '+f.tA.yearGod+(f.tB?' · '+f.nB+' '+f.tB.yearGod:'')]);
- if(f.tA&&f.tA.luckKo)rows.push(['현재 대운',f.nA+' '+f.tA.luckKo+(f.tB&&f.tB.luckKo?' · '+f.nB+' '+f.tB.luckKo:'')]);
+ if(f.tA&&f.tA.yearKo)rows.push(['올해 세운',f.tA.yearKo+' · '+DN(f.nA)+' '+f.tA.yearGod+(f.tB?' · '+f.nB+' '+f.tB.yearGod:'')]);
+ if(f.tA&&f.tA.luckKo)rows.push(['현재 대운',DN(f.nA)+' '+f.tA.luckKo+(f.tB&&f.tB.luckKo?' · '+f.nB+' '+f.tB.luckKo:'')]);
  if(f.a.input.hourUnknown||f.b.input.hourUnknown)rows.push(['참고','출생시간을 모르는 사람은 시주를 빼고 계산했어.']);
  return rows;
 }
@@ -191,7 +194,7 @@ function buildBreakupV1(f,x){
   {t:'실제로 확인해야 할 행동',list:[
     ({clash:'최근 다툰 날짜를 적고, 같은 주제로 부딪힌 날이 두 번 이상인지 세어 봐.',knot:'약속·연락·역할 중 어떤 규칙이 자주 깨지는지 적어 봐. 같은 규칙이 반복되면 구조의 문제야.',hurt:'서운했던 장면을 하나씩 적고, 그중 실제로 말로 꺼낸 것이 몇 개인지 세어 봐.',break:'약속이 깨진 횟수와 이유를 기록해 봐. 같은 이유가 반복되는지가 핵심이야.'}[k]||'최근 같은 이유로 다툰 일을 떠올려 봐. 같은 이유가 반복되는지 확인하는 게 먼저야.'),
     '다툰 뒤에 누가 먼저, 어떻게 회복을 시도하는지 봐. 회복 시도가 한쪽에만 있다면 그 점을 먼저 이야기해야 해.',
-    J(sa.need.replace(/것$/,'것'),'을/를')+' 상대에게 한 문장으로 요청해 보고, '+({short:'3~4주',mid:'2주',long:'한 달'}[x.len]||'2주')+' 동안 실제 행동이 바뀌는지 확인해.',
+    J(sa.need.replace(/것$/,'것'),'을/를')+' 상대에게 한 문장으로 요청해 보고, '+({short:'3~4주',mid:'2주',long:'한 달'}[x.len]||'2~3주')+' 동안 실제 행동이 바뀌는지 확인해.',
     state]}
  ];
  return {head:head,sum:[d.short,pick(['가장 먼저 볼 것은 같은 갈등이 같은 방식으로 반복되는지야.','먼저 확인할 것은 다툼의 주제가 바뀌는지, 같은 주제가 돌아오는지야.','이 관계에서는 싸움의 내용보다 회복 방식이 더 큰 힌트야.'],f.seed),pick(['결정은 사주가 아니라 실제 행동의 변화로 하는 게 좋아.','판단 근거는 명식이 아니라 최근 두 달의 행동이어야 해.','명식은 방향을 보여 줄 뿐, 결론은 두 사람이 실제로 바꾼 행동이 내려.'],f.seed+1)],cards:cards};
@@ -298,14 +301,14 @@ function evidenceRows(f){
   }
  }catch(_e){}
  if(f.a&&f.a.pillars&&f.a.pillars.month&&f.b&&f.b.pillars&&f.b.pillars.month){
-  extra.push(['월주',f.nA+' '+f.a.pillars.month.ko+' · '+f.nB+' '+f.b.pillars.month.ko]);
+  extra.push(['월주',DN(f.nA)+' '+f.a.pillars.month.ko+' · '+f.nB+' '+f.b.pillars.month.ko]);
  }
- if(pa&&pb&&(pa.social||pb.social))extra.push(['월간 십성',f.nA+' '+(pa.social||'-')+' · '+f.nB+' '+(pb.social||'-')]);
- if(pa&&pb&&(pa.intimate||pb.intimate))extra.push(['일지 본기 십성',f.nA+' '+(pa.intimate||'-')+' · '+f.nB+' '+(pb.intimate||'-')]);
+ if(pa&&pb&&(pa.social||pb.social))extra.push(['월간 십성',DN(f.nA)+' '+(pa.social||'-')+' · '+f.nB+' '+(pb.social||'-')]);
+ if(pa&&pb&&(pa.intimate||pb.intimate))extra.push(['일지 본기 십성',DN(f.nA)+' '+(pa.intimate||'-')+' · '+f.nB+' '+(pb.intimate||'-')]);
  function pill(c){var P=c&&c.pillars||{},h=P.hour?P.hour.ko:'시주 없음';return [P.year&&P.year.ko,P.month&&P.month.ko,P.day&&P.day.ko,h].join(' ')}
  var fillTxt=f.fill&&f.fillB?'양쪽 모두 보완 구조':f.fill?f.nA+'의 부족 오행을 '+f.nB+'이 채움':f.fillB?f.nB+'의 부족 오행을 '+f.nA+'이 채움':'없음';
  var ordered=[
-  ['기둥',f.nA+' '+pill(f.a)+' · '+f.nB+' '+pill(f.b)],
+  ['기둥',DN(f.nA)+' '+pill(f.a)+' · '+f.nB+' '+pill(f.b)],
   ['일간·교차 십신',rows[0][1]+' / '+rows[3][1]],
   ['일지 관계',f.dayRel==='직접 관계 없음'&&f.wonjin?'원진 (합·충은 없음)':f.dayRel],
   ['결속·긴장','결속 '+f.sig.combine+' / 긴장 '+f.sig.tension],
@@ -505,10 +508,12 @@ var STAR_PRI=['천을귀인','천덕귀인','월덕귀인','문창귀인','학�
 var PIL={day:'일주',month:'월주',hour:'시주',year:'년주'},PILW={day:3,month:2,hour:1,year:1};
 var TONE_TXT={good:'도움과 배움이 사람을 통해 들어오는 흐름이 강한 편이야.',move:'변화와 이동이 있는 환경에서 오히려 활력이 살아나는 편이야.',deep:'혼자 깊게 몰입하고 생각을 오래 다듬는 시간이 중요한 편이야.',power:'결단과 추진의 힘이 강해서, 마음먹은 일은 밀고 나가는 편이야.',popular:'사람의 시선을 끄는 매력과 표현력이 드러나는 편이야.',relation:'관계에서 미묘한 거리감을 조율하는 일이 자주 생기는 편이야.'};
 var G_GUIIN=/귀인|자립·기반|돌봄·회복|배움·전문성/,G_TALENT=/배움|통찰|몰입|감각|매력·표현|추진|주도|변화/,G_WATCH=/강한 기운|관계·조정|매력·관계/;
+/* 누구에게나 몇 개씩 뜨는 12신살은 뒤로 (귀인·도화·역마·화개처럼 사람마다 다른 별이 앞에 오게) */
+var COMMON12=/^(지살|망신살|장성살|반안살|육해살|겁살|재살|천살|월살|해살)$/;
 function buildShinsal(c){
  var n=nm(c,'나'),hits=(c.stars&&c.stars.hits)||[],M=(window.GuiinSaju&&GuiinSaju.SINSAL_META)||{};
  var by={};hits.forEach(function(h){if(!h||!h.name)return;var o=by[h.name]||(by[h.name]={name:h.name,pillars:[],meta:h.meta||M[h.name]||{}});if(o.pillars.indexOf(h.pillar)<0)o.pillars.push(h.pillar)});
- var list=Object.keys(by).map(function(k){var o=by[k],pi=STAR_PRI.indexOf(k);o.score=(pi<0?0:40-pi)+o.pillars.reduce(function(s,p){return s+(PILW[p]||0)},0)*3;return o});
+ var list=Object.keys(by).map(function(k){var o=by[k],pi=STAR_PRI.indexOf(k);o.score=(pi<0?0:40-pi)+o.pillars.reduce(function(s,p){return s+(PILW[p]||0)},0)*3-(COMMON12.test(k)?60:0);return o});
  if(!list.length)return {head:J(n,'은/는')+' 눈에 띄는 신살·귀인이 적은 명식이야.',sum:[pick(['신살은 보조 정보야. 원국과 오행이 해석의 중심이야.','신살은 참고용 표식이야. 성격의 중심은 원국에서 봐.','신살이 적다고 부족한 사주가 아니야. 원국이 기본 틀이야.'],hash(n))],cards:[{t:'성립한 신살·귀인',b:['이 명식에서는 대표적인 신살·귀인이 잡히지 않았어. 신살이 적다고 부족한 사주라는 뜻은 아니야.']}],stars:[]};
  list.sort(function(x,y){return y.score-x.score});
  var seenS={},top=list.filter(function(o){if(!o.meta||!o.meta.short||seenS[o.meta.short])return false;seenS[o.meta.short]=1;return true}).slice(0,3);
@@ -697,7 +702,7 @@ function kwForm(T){
 }
 function extraForm(T){
  if(!T.extra)return kwForm(T)?'<div class="gtForm x"><h3>고민 키워드</h3>'+kwForm(T)+'</div>':'';
- return '<div class="gtForm x"><h3>관계 정보</h3>'+kwForm(T)+T.extra.map(function(x){return '<div class="gtF" style="margin-bottom:8px"><label>'+esc(x.label)+'</label><div class="gtSeg" data-seg="gtx_'+x.k+'">'+x.opts.map(function(o,i){return '<button type="button" data-v="'+o[0]+'" class="'+(i===0?'on':'')+'">'+esc(o[1])+'</button>'}).join('')+'</div></div>'}).join('')+'<p class="gtHint">관계 정보는 행동 조언에만 쓰고, 명리 계산에는 넣지 않아.</p></div>';
+ return '<div class="gtForm x"><h3>관계 정보</h3>'+kwForm(T)+T.extra.map(function(x){return '<div class="gtF" style="margin-bottom:8px"><label>'+esc(x.label)+'</label><div class="gtSeg" data-seg="gtx_'+x.k+'">'+x.opts.map(function(o,i){return '<button type="button" data-v="'+o[0]+'" class="">'+esc(o[1])+'</button>'}).join('')+'</div></div>'}).join('')+'<p class="gtHint">해당하는 것만 골라 줘. 안 골라도 돼. 관계 정보는 행동 조언에만 쓰고, 명리 계산에는 넣지 않아.</p></div>';
 }
 function detailHTML(k){
  var T=THEMES[k],d=profileDefault();
@@ -841,7 +846,7 @@ function next(){
 function onClick(e){
  var t=e.target;
  var kb=t.closest('[data-kw] button');if(kb){var grp=kb.parentNode,on=kb.classList.contains('on'),n=grp.querySelectorAll('button.on').length,hint=grp.parentNode.parentNode.querySelector('[data-kwmsg]');if(!on&&n>=3){if(hint)hint.textContent='키워드는 최대 3개까지 고를 수 있어요.';return}if(hint)hint.textContent='';kb.classList.toggle('on');return}
- var seg=t.closest('.gtSeg button');if(seg){seg.parentNode.querySelectorAll('button').forEach(function(b){b.classList.toggle('on',b===seg)});return}
+ var seg=t.closest('.gtSeg button');if(seg){var opt=/^gtx_/.test(seg.parentNode.getAttribute('data-seg')||''),was=seg.classList.contains('on');seg.parentNode.querySelectorAll('button').forEach(function(b){b.classList.toggle('on',b===seg&&!(opt&&was))});return}
  if(t.closest('[data-gtback]')){if(state.theme)render(null);else go('home');window.scrollTo(0,0);return}
  var g=t.closest('[data-gt]');if(g){render(g.getAttribute('data-gt'));window.scrollTo(0,0);return}
  if(t.closest('[data-gtrun]')){run();return}

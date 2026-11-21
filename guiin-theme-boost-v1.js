@@ -9,7 +9,7 @@
 (function(root){
 'use strict';
 if(root.GUIIN_THEME_BOOST_OFF)return;
-var V='theme-boost-v1-20261120';
+var V='theme-boost-v1-20261121';
 var IMG={갑:'큰 나무',을:'덩굴꽃',병:'한낮의 해',정:'촛불',무:'큰 산',기:'논밭',경:'무쇠',신:'보석',임:'큰 바다',계:'빗물'};
 var ELN={목:'나무',화:'불',토:'흙',금:'쇠',수:'물'};
 var GODS=['비견','겁재','식신','상관','편재','정재','편관','정관','편인','정인'];
@@ -63,6 +63,23 @@ function GO(w){return w+(jong(w)?'이고':'고')}
 function nameCall(n){return n+(jong(n)?'아':'야')}
 function esc(s){return String(s==null?'':s)}
 
+/* 두 사람 일간(첫 글자) 관계로 '끌리는 이유'를 쌍마다 다르게 */
+var STEM_HAP={갑:'기',기:'갑',을:'경',경:'을',병:'신',신:'병',정:'임',임:'정',무:'계',계:'무'};
+var STEM_EL={갑:'목',을:'목',병:'화',정:'화',무:'토',기:'토',경:'금',신:'금',임:'수',계:'수'};
+var SP_GEN={목:'화',화:'토',토:'금',금:'수',수:'목'},SP_CTRL={목:'토',토:'수',수:'화',화:'금',금:'목'},SP_W={목:'나무',화:'불',토:'흙',금:'쇠',수:'물'};
+function stemPull(f){
+ var a=String(f.a&&f.a.pillars&&f.a.pillars.day&&f.a.pillars.day.ko||'').charAt(0),b=String(f.b&&f.b.pillars&&f.b.pillars.day&&f.b.pillars.day.ko||'').charAt(0),ea=STEM_EL[a],eb=STEM_EL[b];
+ if(!ea||!eb)return '';
+ if(STEM_HAP[a]===b)return '게다가 둘은 일간끼리 합('+a+b+'합)이야. 처음 봤을 때부터 이유 없이 편하고, 자꾸 같이 있고 싶어지는 끌림이 깔려 있어.';
+ if(a===b)return '게다가 일간이 똑같은 '+a+ea+(jong(ea)?'이라':'라')+', 말 안 해도 생각하는 방식이 비슷해. 편한 대신 서로의 단점도 거울처럼 보여.';
+ if(ea===eb)return '게다가 둘 다 '+SP_W[ea]+' 기운의 일간이라, 속도와 감각이 비슷해서 금방 친해져.';
+ if(SP_GEN[ea]===eb)return '게다가 네 일간 기운('+SP_W[ea]+')이 그 사람 기운('+SP_W[eb]+')을 살려 주는 방향이라, 챙겨 줄수록 네가 더 뿌듯해지는 사이야.';
+ if(SP_GEN[eb]===ea)return '게다가 그 사람 일간 기운('+SP_W[eb]+')이 네 기운('+SP_W[ea]+')을 살려 주는 방향이라, 곁에 있으면 힘이 차오르는 느낌이 들어.';
+ if(SP_CTRL[ea]===eb)return '게다가 네 일간 기운('+SP_W[ea]+')이 그 사람 기운('+SP_W[eb]+')을 누르는 방향이라, 처음엔 네가 주도권을 쥐기 쉬워. 대신 너무 몰아붙이면 그 사람이 숨 막혀 해.';
+ if(SP_CTRL[eb]===ea)return '게다가 그 사람 일간 기운('+SP_W[eb]+')이 네 기운('+SP_W[ea]+')을 다잡는 방향이라, 묘하게 그 사람 말에 끌려가게 돼. 그게 설렘이 되기도 하고 부담이 되기도 해.';
+ return '';
+}
+
 function counts(ch){
  var out={목:0,화:0,토:0,금:0,수:0},p=ch&&ch.pillars||{},keys=['year','month','day','hour'];
  var unk=ch&&ch.input&&ch.input.hourUnknown;
@@ -99,7 +116,8 @@ function pairCard(k,f,a,b){
   ps.push('그때 무너진 지점도 같은 자리야. '+ra.risk+'. 다시 연락한다면 방식부터 달라야 해. '+rb.key+'.');
  }else{
   ps.push(tgLine);
-  ps.push((same?'둘 다 같은 이유로 끌려. '+ra.pull+'. ':nA+' 쪽에서 끌리는 건 이거야. '+ra.pull+'. '+nB+' 쪽은 이거고. '+rb.pull+'. ')+'대신 부딪히는 곳도 정확히 알아 둬. '+ra.risk+'.');
+  var sp=stemPull(f);
+  ps.push((same?'둘 다 같은 이유로 끌려. '+ra.pull+'. ':nA+' 쪽에서 끌리는 건 이거야. '+ra.pull+'. '+nB+' 쪽은 이거고. '+rb.pull+'. ')+(sp?sp+' ':'')+'대신 부딪히는 곳도 정확히 알아 둬. '+ra.risk+'.');
  }
  var rel=REL[f.dayRel];
  if(rel)ps.push(rel);
@@ -233,7 +251,7 @@ function meFix(s){
   return t.replace(new RegExp(B+'나님의 ','g'),'$1너의 ').replace(new RegExp(B+'나님은 ','g'),'$1너는 ').replace(new RegExp(B+'나님이 ','g'),'$1네가 ').replace(new RegExp(B+'나님','g'),'$1너')
    .replace(new RegExp(B+'나가 ','g'),'$1네가 ').replace(new RegExp(B+'나는 ','g'),'$1너는 ').replace(new RegExp(B+'나의 ','g'),'$1너의 ')
    .replace(new RegExp(B+'나한테 ','g'),'$1너한테 ').replace(new RegExp(B+'나에게 ','g'),'$1너에게 ').replace(new RegExp(B+'나도 ','g'),'$1너도 ')
-   .replace(new RegExp(B+'나 (곁|쪽)','g'),'$1네 $2').replace(new RegExp(B+'나에게는 ','g'),'$1너에게는 ').replace(new RegExp(B+'이런 나를 ','g'),'$1이런 너를 ')
+   .replace(new RegExp(B+'나 (곁|쪽)','g'),'$1네 $2').replace(new RegExp(B+'나에게는 ','g'),'$1너에게는 ').replace(new RegExp(B+'나 입장','g'),'$1네 입장').replace(new RegExp(B+'이런 나를 ','g'),'$1이런 너를 ')
    .replace(/내가 가장 나다워져/g,'네가 가장 너다워져');
  });
 }
