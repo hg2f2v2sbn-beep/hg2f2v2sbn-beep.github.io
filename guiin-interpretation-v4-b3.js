@@ -3015,7 +3015,7 @@ function pairConditions(C){
   const {PA,PB,a,b}=C,ad=adjustables(C),td=tendency(C);
   const ps=[];
   ps.push(`차이를 두 종류로 나눠서 풀어야 해. 합의와 실천으로 줄일 수 있는 차이가 있고, 각자의 반응 습관이 바뀌어야 줄어드는 차이가 있어.`);
-  if(ad.adj.length)ad.adj.forEach(x=>ps.push(`${x.t}는 이렇게 합의해 봐. ${x.how}`));
+  if(ad.adj.length)ad.adj.forEach(x=>ps.push(`${J(x.t,'은/는')} 이렇게 합의해 봐. ${x.how}`));
   else ps.push('합의로 풀어야 할 큰 생활 차이는 두드러지지 않아서, 중요한 약속이 바빠질 때 줄어들지 않는지만 월 1회 확인하면 돼.');
   if(ad.str.length)ps.push(`${ad.str[0].t}은 합의만으로는 풀리지 않고, 압박을 받을 때 나오는 첫 반응을 각자 바꿔야 줄어. 각자 바꿀 행동은 아래에서 따로 나누고, 한 사람이 계속 참거나 상대를 관리하는 방식으로 풀지 않게 해.`);
   ps.push(S2_ON&&flOf(PA).fix===flOf(PB).fix?`각자 맡을 행동을 나눠 볼게. 두 사람은 바꿀 행동도 같아서, 서로 이렇게 해 보자고 약속하면 돼. ${flOf(PA).fix}.`:`각자 맡을 행동을 나눠 볼게. ${J(a,'은/는')} ${flOf(PA).fix}. ${J(b,'은/는')} ${flOf(PB).fix}.`);

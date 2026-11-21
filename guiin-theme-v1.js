@@ -43,6 +43,8 @@ function facts(a,b,opt){
  if(nA===nB){nB=nB+'(상대)'}
  var C=window.GuiinCompat;
  var dayRel=C.dayBranchRelation(a,b);
+ var WJ=[[0,7],[1,6],[2,9],[3,8],[4,11],[5,10]],BRK='자축인묘진사오미신유술해',ia=BRK.indexOf(String(a.pillars.day.ko||'').charAt(1)),ib=BRK.indexOf(String(b.pillars.day.ko||'').charAt(1));
+ var wonjin=ia>=0&&ib>=0&&WJ.some(function(q){return (q[0]===ia&&q[1]===ib)||(q[0]===ib&&q[1]===ia)});
  var sig=C.relationSignals(a,b)||{combine:0,tension:0,types:[]};
  var tg=C.crossTenGod(a,b)||{aSeesB:'',bSeesA:''};
  var pa=pctOf(a),pb=pctOf(b),wa=domWeak(pa),wb=domWeak(pb);
@@ -50,7 +52,7 @@ function facts(a,b,opt){
  var dm=eA===eB?'same':GEN[eA]===eB?'aGen':GEN[eB]===eA?'bGen':CTRL[eA]===eB?'aCtl':CTRL[eB]===eA?'bCtl':'x';
  var sA=strengthOf(a),sB=strengthOf(b);
  var fill=pb[wa.weak]>=22,fillB=pa[wb.weak]>=22;
- return {a:a,b:b,nA:nA,nB:nB,dayRel:dayRel,sig:sig,tg:tg,gA:grp(tg.aSeesB),gB:grp(tg.bSeesA),pa:pa,pb:pb,wa:wa,wb:wb,eA:eA,eB:eB,dm:dm,sA:sA,sB:sB,fill:fill,fillB:fillB,
+ return {a:a,b:b,nA:nA,nB:nB,dayRel:dayRel,wonjin:wonjin,sig:sig,tg:tg,gA:grp(tg.aSeesB),gB:grp(tg.bSeesA),pa:pa,pb:pb,wa:wa,wb:wb,eA:eA,eB:eB,dm:dm,sA:sA,sB:sB,fill:fill,fillB:fillB,
   tA:transitOf(a),tB:transitOf(b),seed:hash(a.pillars.day.ko+b.pillars.day.ko+a.pillars.month.ko+b.pillars.month.ko+(opt.theme||''))};
 }
 var REL_KIND={'육합':'bond','충':'clash','형':'knot','해':'hurt','파':'break','직접 관계 없음':'none'};
@@ -140,7 +142,7 @@ function evidenceRowsV1(f){
  var rows=[
   ['일간',f.nA+' '+f.a.pillars.day.stem+'('+f.eA+') · '+f.nB+' '+f.b.pillars.day.stem+'('+f.eB+')'],
   ['일주',f.a.pillars.day.ko+' · '+f.b.pillars.day.ko],
-  ['일지 관계',f.dayRel],
+  ['일지 관계',f.dayRel==='직접 관계 없음'&&f.wonjin?'원진 (합·충은 없음)':f.dayRel],
   ['교차 십신',f.nA+'→'+f.nB+' '+(f.tg.aSeesB||'-')+' · '+f.nB+'→'+f.nA+' '+(f.tg.bSeesA||'-')],
   ['합·긴장 신호','합 '+f.sig.combine+' · 충형파해 '+f.sig.tension+(f.sig.types&&f.sig.types.length?' ('+f.sig.types.join(', ')+')':'')],
   ['오행 분포',f.nA+' 강 '+f.wa.dom+' '+f.pa[f.wa.dom]+'% / 약 '+f.wa.weak+' '+f.pa[f.wa.weak]+'% · '+f.nB+' 강 '+f.wb.dom+' '+f.pb[f.wb.dom]+'% / 약 '+f.wb.weak+' '+f.pb[f.wb.weak]+'%'],
@@ -305,7 +307,7 @@ function evidenceRows(f){
  var ordered=[
   ['기둥',f.nA+' '+pill(f.a)+' · '+f.nB+' '+pill(f.b)],
   ['일간·교차 십신',rows[0][1]+' / '+rows[3][1]],
-  ['일지 관계',f.dayRel],
+  ['일지 관계',f.dayRel==='직접 관계 없음'&&f.wonjin?'원진 (합·충은 없음)':f.dayRel],
   ['결속·긴장','결속 '+f.sig.combine+' / 긴장 '+f.sig.tension],
   ['부족 오행 보완',fillTxt],
   ['오행 분포',rows[5][1]]
@@ -682,12 +684,12 @@ function personForm(p,who,d){
 /* 고민 키워드(최대 3개): 사용자가 고른 주제를 풀이 끝에 한 카드로 이어 줘. 원문은 저장·전송하지 않아. */
 var KW=[['money','돈·생활'],['talk','대화 방식'],['time','연락·시간 차이'],['trust','신뢰·불안'],['family','가족·주변 시선'],['future','앞으로의 방향']];
 var KW_NOTE={
- money:'돈과 생활 리듬을 어떻게 나눌지가 함께 정해야 할 주제로 읽혀요.',
- talk:'결론부터 말할지 감정부터 말할지 맞추면 오해가 크게 줄어들 가능성이 커요.',
- time:'연락 빈도와 만남 간격에 대한 기대치를 서로 한 번 확인해 보면 좋아요.',
- trust:'불안이 올라올 때 확인하는 방법을 미리 정해 두면 흔들림이 덜해요.',
- family:'주변 시선이나 가족 의견이 관계에 끼어드는 순간을 따로 정리해 두세요.',
- future:'지금 관계를 어디까지 이어 갈지 기준을 짧게 적어 보는 게 도움이 돼요.'
+ money:'돈과 생활 리듬을 어떻게 나눌지가 함께 정해야 할 주제야.',
+ talk:'결론부터 말할지 감정부터 말할지 맞추면 오해가 크게 줄어들 가능성이 커.',
+ time:'연락 빈도와 만남 간격에 대한 기대치를 서로 한 번 확인해 봐.',
+ trust:'불안이 올라올 때 확인하는 방법을 미리 정해 두면 흔들림이 덜해.',
+ family:'주변 시선이나 가족 의견이 관계에 끼어드는 순간을 따로 정리해 둬.',
+ future:'지금 관계를 어디까지 이어 갈지 기준을 짧게 적어 보는 게 도움이 돼.'
 };
 function kwForm(T){
  if(!T.pair)return '';

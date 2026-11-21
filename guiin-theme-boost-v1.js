@@ -9,7 +9,7 @@
 (function(root){
 'use strict';
 if(root.GUIIN_THEME_BOOST_OFF)return;
-var V='theme-boost-v1-20261106';
+var V='theme-boost-v1-20261120';
 var IMG={갑:'큰 나무',을:'덩굴꽃',병:'한낮의 해',정:'촛불',무:'큰 산',기:'논밭',경:'무쇠',신:'보석',임:'큰 바다',계:'빗물'};
 var ELN={목:'나무',화:'불',토:'흙',금:'쇠',수:'물'};
 var GODS=['비견','겁재','식신','상관','편재','정재','편관','정관','편인','정인'];
@@ -17,13 +17,13 @@ var GODS=['비견','겁재','식신','상관','편재','정재','편관','정관
 /* 상대가 나에게 어떤 십성인지 → 끌림 / 깨지는 지점 / 통하는 방식 */
 var ROLE={
  비견:{who:'나랑 같은 편, 친구 같은 사람',pull:'말 안 해도 속도가 맞고, 같이 있으면 내 편이 하나 더 생긴 기분이 들어',risk:'둘 다 자기 방식이 있어서 누가 먼저 숙이느냐로 자존심 싸움이 붙어',key:'친구처럼 대등하게, "같이 하자"는 말로 다가가는 게 먹혀. 위에서 챙기거나 밑에서 맞추면 오히려 멀어져'},
- 겁재:{who:'나랑 닮았는데 은근히 경쟁하게 되는 사람',pull:'나를 자극하고 승부욕을 깨워서, 옆에 있으면 심장이 빨리 뛰어',risk:'양보가 손해처럼 느껴져서 사소한 결정에서도 기싸움이 길어져',key:'밀당보다 정면으로 가. 솔직하게 원하는 걸 말하고, 이기려 들지 말고 같은 팀이라는 신호를 계속 줘'},
- 식신:{who:'편하게 챙겨 주고 싶어지는 사람',pull:'같이 먹고 웃는 시간이 제일 자연스럽고, 내가 가장 나다워져',risk:'편한 게 당연해지면 설렘이 빠지고, 한쪽만 계속 챙기는 구조가 굳어져',key:'맛집, 산책, 같이 웃을 거리처럼 가볍고 즐거운 걸로 다가가. 무거운 얘기는 그다음이야'},
+ 겁재:{who:'나랑 닮았는데 은근히 경쟁하게 되는 사람',pull:'서로 자극하고 승부욕을 깨워서, 옆에 있으면 심장이 빨리 뛰어',risk:'양보가 손해처럼 느껴져서 사소한 결정에서도 기싸움이 길어져',key:'밀당보다 정면으로 가. 솔직하게 원하는 걸 말하고, 이기려 들지 말고 같은 팀이라는 신호를 계속 줘'},
+ 식신:{who:'편하게 챙겨 주고 싶어지는 사람',pull:'같이 먹고 웃는 시간이 제일 자연스럽고, 가장 자기다워져',risk:'편한 게 당연해지면 설렘이 빠지고, 한쪽만 계속 챙기는 구조가 굳어져',key:'맛집, 산책, 같이 웃을 거리처럼 가볍고 즐거운 걸로 다가가. 무거운 얘기는 그다음이야'},
  상관:{who:'내 안의 말과 끼를 끌어내는 사람',pull:'이 사람 앞에서는 평소 안 하던 말과 표현이 튀어나와서 생기가 돌아',risk:'말이 세게 나가기 쉬워. 농담 한마디가 상처로 꽂히고, 그 말이 오래 남아',key:'재치 있고 가벼운 대화로 다가가. 대신 지적이나 평가처럼 들리는 말은 딱 끊어'},
  편재:{who:'자꾸 눈이 가고 갖고 싶어지는 사람',pull:'신선하고 자극적이라 자꾸 생각나고, 먼저 움직이고 싶어져',risk:'손에 들어오면 흥미가 식거나, 반대로 놓칠까 봐 조급해져서 무리하게 돼',key:'선물이나 이벤트보다 같이 새로운 걸 해 보자고 제안해. 대신 속도는 상대 반응 보면서 한 템포 늦춰'},
  정재:{who:'곁에 두고 아끼고 싶은, 생활이 그려지는 사람',pull:'같이 있으면 안정되고, 이 사람이랑 사는 그림이 자연스럽게 그려져',risk:'아끼는 만큼 관리하려 들어서, 상대는 챙김을 간섭으로 느낄 수 있어',key:'약속을 정확히 지키고 꾸준히 연락하는 걸로 믿음을 쌓아. 한 방보다 꾸준함이 먹히는 상대야'},
  편관:{who:'긴장되는데 끌리는, 나를 시험하는 사람',pull:'어렵고 긴장되는데 그래서 더 끌려. 이 사람한테 인정받고 싶어져',risk:'눈치를 보다가 내 할 말을 삼키게 되고, 그게 쌓여서 숨이 막혀',key:'잘 보이려고 맞추지 말고, 네 기준을 분명하게 보여 줘. 당당할 때 오히려 이 사람이 너를 다시 봐'},
- 정관:{who:'믿음직하고 기대고 싶은, 기준이 되어 주는 사람',pull:'이 사람 말이면 믿어지고, 옆에 있으면 내가 바르게 서는 느낌이 들어',risk:'기대치가 높아서 실망도 크고, "이래야 한다"는 틀이 서로를 답답하게 해',key:'예의 있고 진지하게 다가가. 가볍게 떠보는 방식은 안 먹혀. 말한 걸 지키는 모습이 제일 큰 무기야'},
+ 정관:{who:'믿음직하고 기대고 싶은, 기준이 되어 주는 사람',pull:'이 사람 말이면 믿어지고, 옆에 있으면 스스로 바르게 서는 느낌이 들어',risk:'기대치가 높아서 실망도 크고, "이래야 한다"는 틀이 서로를 답답하게 해',key:'예의 있고 진지하게 다가가. 가볍게 떠보는 방식은 안 먹혀. 말한 걸 지키는 모습이 제일 큰 무기야'},
  편인:{who:'말 안 해도 나를 이해해 줄 것 같은, 묘하게 깊이 엮이는 사람',pull:'대화가 깊어지고, 남한테 안 한 얘기까지 꺼내게 돼',risk:'속을 다 안다고 믿다가, 서로 말을 안 해서 오해가 쌓여',key:'깊은 대화로 다가가. 취향, 생각, 고민 같은 얘기에서 마음이 열리는 상대야. 대신 혼자 있는 시간은 건드리지 마'},
  정인:{who:'나를 품어 주고 쉬게 해 주는 사람',pull:'옆에 있으면 쉬는 느낌이 들고, 기대도 괜찮다는 안심이 생겨',risk:'기대는 게 익숙해지면 한쪽만 받는 관계가 되고, 받는 쪽은 미안함을, 주는 쪽은 서운함을 쌓아',key:'고민을 털어놓거나 조언을 구하는 식으로 다가가. 이 사람은 도와줄 때 마음이 열려'}
 };
@@ -86,6 +86,8 @@ function pairCard(k,f,a,b){
  ps.push(nA+'는 '+dayKo(a)+' 일주, '+nB+'는 '+dayKo(b)+' 일주야. '+(IMG[sa]||sa)+'랑 '+(IMG[sb]||sb)+'가 만난 거지.');
  ps[0]=J(nA,'은/는')+' '+dayKo(a)+' 일주, '+J(nB,'은/는')+' '+dayKo(b)+' 일주야. '+J(IMG[sa]||sa,'과/와')+' '+J(IMG[sb]||sb,'이/가')+' 만난 거지.';
  var tgLine=nA+'한테 '+J(nB,'은/는')+' '+YA(f.tg.aSeesB)+'. '+ra.who+'. '+nB+'한테 '+J(nA,'은/는')+' '+GO(f.tg.bSeesA)+'. '+rb.who+'.';
+ var same=f.tg.aSeesB===f.tg.bSeesA;
+ if(same)tgLine='둘은 서로에게 똑같이 '+YA(f.tg.aSeesB)+'. '+ra.who.replace(/(^|\s)나(랑|를|한테) /g,'$1서로 ').replace(/(^|\s)내 /g,'$1서로의 ')+'. 거울 보듯 닮은 사이라는 뜻이야.';
  if(k==='crush'){
   ps.push(tgLine+' 그래서 네가 끌리는 이유는 딱 이거야. '+ra.pull+'.');
   ps.push(nB+' 쪽에서 보면 너는 '+f.tg.bSeesA+' 자리에 들어와. 그러니까 다가가는 방법도 정해져 있어. '+rb.key+'.');
@@ -97,10 +99,11 @@ function pairCard(k,f,a,b){
   ps.push('그때 무너진 지점도 같은 자리야. '+ra.risk+'. 다시 연락한다면 방식부터 달라야 해. '+rb.key+'.');
  }else{
   ps.push(tgLine);
-  ps.push(nA+' 쪽에서 끌리는 건 이거야. '+ra.pull+'. '+nB+' 쪽은 이거고. '+rb.pull+'. 대신 부딪히는 곳도 정확히 알아 둬. '+ra.risk+'.');
+  ps.push((same?'둘 다 같은 이유로 끌려. '+ra.pull+'. ':nA+' 쪽에서 끌리는 건 이거야. '+ra.pull+'. '+nB+' 쪽은 이거고. '+rb.pull+'. ')+'대신 부딪히는 곳도 정확히 알아 둬. '+ra.risk+'.');
  }
  var rel=REL[f.dayRel];
  if(rel)ps.push(rel);
+ else if(f.wonjin)ps.push('둘 일지 사이엔 합도 충도 없는 대신 원진이 하나 걸려 있어. 크게 싸우진 않아도, 말 안 한 서운함이 쌓이면 어느 날 갑자기 멀게 느껴지는 자리야.');
  else ps.push('둘 일지 사이엔 합도 충도 없어. 크게 끌어당기지도, 크게 부딪히지도 않아서 관계 온도는 둘이 만드는 만큼 가.');
  var fillA=cb.zero.length===0||ca.zero.some(function(e){return counts(b)[e]>0});
  var elLine=J(nA,'은/는')+' '+ca.txt+(ca.zero.length?', '+J(ca.zero.join('·'),'은/는')+' 0자':'')+'야. '+J(nB,'은/는')+' '+cb.txt+(cb.zero.length?', '+J(cb.zero.join('·'),'은/는')+' 0자':'')+'고.';
@@ -186,6 +189,115 @@ function boost(k,out,f,a,b){
   var pc=pairCard(k,f,a,b);
   if(pc)out.cards.unshift(pc);
  }
+ try{out=polish(k,out,f,a,b)||out}catch(e){try{(root.GUIIN_THEME_BOOST_LOG=root.GUIIN_THEME_BOOST_LOG||[]).push('polish:'+String(e&&e.message))}catch(_){}}
+ return out;
+}
+
+/* ---------- 마지막 다듬기 (20261120) ----------
+ * 1) 이름을 안 넣었을 때: '나가/나님의/나 곁' → '네가/너의/네 곁', 요약의 '너야,' 부름말 제거 (따옴표 속 대사는 그대로)
+ * 2) 같은 결과 안에서 똑같은 문단이 두 번 나오면 뒤엣것을 뺀다
+ * 3) 요약 제목을 두 사람 일지 관계에 맞춰 고른다 (같은 제목이 모든 쌍에 나오지 않게)
+ * 4) 짝사랑: 사귀는 사이를 전제로 한 문장(싸움, 함께하는 시간, 커플 대화)을 빼고 일지 관계 문장을 짝사랑용으로 바꾼다
+ * 5) 존댓말로 끝나는 문장은 반말로, '갑목)로' 같은 조사 보정
+ * 6) 신살: 일반인이 알아듣기 어려운 설명을 쉬운 말로 바꾼다
+ */
+var REL_HEAD={
+ compat:{육합:'붙으면 잘 안 떨어지는 사이야',충:'좋을 땐 끝내주고 틀어지면 크게 틀어지는 사이야',형:'서로를 단련시키는, 조금 매운 사이야',해:'잘해 주려다 엇나가기 쉬운 사이야',파:'작은 금만 안 쌓이면 오래 가는 사이야',원진:'말 안 한 서운함만 조심하면 되는 사이야'},
+ breakup:{육합:'끊기 어려운 인연이라 더 헷갈리는 거야',충:'좋아하는 만큼 지치는 관계야',형:'서로를 할퀴는 말이 문제야',해:'잘해 줘도 서운한 데는 이유가 있어',파:'작은 실망이 쌓여서 여기까지 온 거야',원진:'말 안 한 서운함이 이 관계를 식혔어'},
+ reunion:{육합:'끊어도 다시 이어지기 쉬운 인연이야',충:'다시 만나도 같은 데서 부딪힐 수 있어',형:'다시 만난다면 말투부터 바꿔야 해',해:'미련보다 그때 서운했던 이유부터 봐',파:'작은 금이 깨뜨린 관계, 고칠 수는 있어',원진:'정이 뚝 떨어졌던 그 순간부터 다시 봐','none':'다시 이어질지는 운보다 둘의 행동에 달렸어'},
+ crush:{육합:'가까워지기만 하면 잘 붙는 사이야',충:'끌림은 강한데 속도 조절이 필요해',형:'신경 쓰이는 만큼 예민해지는 사이야',해:'잘해 주는 방식부터 바꿔 봐',파:'오해만 안 쌓이면 승산 있어',원진:'기다리면 멀어지는 사이야, 먼저 말 걸어'}
+};
+var CRUSH_REL={
+ 육합:'둘 일지가 육합이야. 가까워지기만 하면 자연스럽게 붙는 자리라, 첫 대화를 트는 게 제일 중요해.',
+ 합:'둘 일지가 합으로 묶여 있어. 가까워지기만 하면 자연스럽게 붙는 자리라, 첫 대화를 트는 게 제일 중요해.',
+ 충:'둘 일지가 충이야. 처음 끌림은 강하게 오는데, 가까워질수록 서로 기준이 부딪히기 쉬워. 속도를 천천히 맞춰.',
+ 형:'둘 일지가 형이야. 서로 신경 쓰이는 만큼 사소한 말에 예민해지기 쉬워. 농담은 가볍게.',
+ 해:'둘 일지가 해야. 잘해 준다고 한 게 부담으로 닿기 쉬운 자리라, 챙김은 작게 시작해.',
+ 파:'둘 일지가 파야. 작은 오해가 쌓이면 멀어지기 쉬워서, 애매한 말은 그때그때 풀어.',
+ 원진:'둘 일지 사이에 원진이 걸려 있어. 혼자 서운해하다 거리를 두기 쉬운 자리라, 기다리기보다 먼저 가볍게 말을 걸어.',
+ none:'둘 일지 사이엔 합도 충도 없어. 운명처럼 당기는 힘보다, 네가 얼마나 자주 접점을 만드느냐가 더 중요해.'
+};
+var CRUSH_DROP=/왜 이것도 안 해|싸움|싸우|싸운|싸워|조용히 넘어가는 날|함께하는 시간이|개인 시간이 줄|일정을 정할 때|중요한 약속은|최종 확인|먼저 말한다면|혼자 있는 시간이 가장 중요한 필요|같은 속도로 움직이다|서로의 일정이 겹치/;
+var STAR_PLAIN={
+ '월지 삼합국의 양간으로 보는 전통 길신':'어려울 때 주변 도움으로 큰 탈 없이 넘어가는 복',
+ '월지 기준으로 보는 전통적 완충·도움의 길신':'위기 때 충격을 덜어 주는 보호막 같은 복',
+ '월지 기준으로 보는 돌봄과 회복의 전통 상징':'사람을 돌보고 회복시키는 재능',
+ '건록의 육합지로 보는 숨은 기반의 상징':'드러나지 않게 들어오는 도움과 생활 기반'
+};
+var STAR_NAME={지살:'이동과 새 출발이 잦은 기운',망신살:'체면보다 실속을 챙겨야 하는 기운',반안살:'안정된 자리에 올라앉는 기운',장성살:'앞장서서 이끄는 기운',육해살:'작은 일에도 쉽게 지치는 기운',해살:'관계를 풀어내고 정리하는 기운',천살:'예상 못 한 큰 변수를 겪는 기운',재살:'갇힌 듯 답답할 때 버텨 내는 힘',겁살:'빼앗기기 쉬운 걸 지켜야 하는 기운',월살:'막힌 일을 다시 다지는 기운',연살:'사람을 끌어당기는 매력',백호살:'강하게 밀어붙이는 힘, 대신 몸과 사고는 조심',괴강살:'타협 없는 강한 리더십',현침살:'말과 손끝이 날카로운 기운',귀문관살:'예민한 감각과 깊은 몰입'};
+function relKind(f){if(!f)return '';var r=f.dayRel;if(r==='직접 관계 없음')return f.wonjin?'원진':'none';return r||''}
+function outsideQuotes(s,fn){return String(s).split(/(“[^”]*”|"[^"]*")/).map(function(part,i){return i%2?part:fn(part)}).join('')}
+function meFix(s){
+ return outsideQuotes(s,function(t){
+  var B='(^|[\\s(·,])';
+  return t.replace(new RegExp(B+'나님의 ','g'),'$1너의 ').replace(new RegExp(B+'나님은 ','g'),'$1너는 ').replace(new RegExp(B+'나님이 ','g'),'$1네가 ').replace(new RegExp(B+'나님','g'),'$1너')
+   .replace(new RegExp(B+'나가 ','g'),'$1네가 ').replace(new RegExp(B+'나는 ','g'),'$1너는 ').replace(new RegExp(B+'나의 ','g'),'$1너의 ')
+   .replace(new RegExp(B+'나한테 ','g'),'$1너한테 ').replace(new RegExp(B+'나에게 ','g'),'$1너에게 ').replace(new RegExp(B+'나도 ','g'),'$1너도 ')
+   .replace(new RegExp(B+'나 (곁|쪽)','g'),'$1네 $2').replace(new RegExp(B+'나에게는 ','g'),'$1너에게는 ').replace(new RegExp(B+'이런 나를 ','g'),'$1이런 너를 ')
+   .replace(/내가 가장 나다워져/g,'네가 가장 너다워져');
+ });
+}
+/* '너한테 상대는 X야. (너 입장 설명)' / '상대한테 너는 X고. (상대 입장 설명)' 의 1인칭을 바로잡는다 */
+function whoFix(s,me,nA,nB){
+ var A=me?'너':nA,RAW=nA||'나',Q=function(t){return t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')};
+ var sub=function(w,who){return w.replace(/(^|\s)내 안/g,'$1'+(who==='너'?'네':who)+' 안').replace(/(^|\s)내 /g,'$1'+(who==='너'?'네':who+'의')+' ').replace(/(^|\s)나(를|랑|한테|도) /g,function(a,p,j){return p+(j==='를'?J(who,'을/를'):j==='랑'?(who==='너'?'너랑':J(who,'과/와').slice(0,-1)+(jong(who)?'이랑':'랑')):who+j)+' '})};
+ s=s.replace(new RegExp('('+Q(RAW)+'한테 [^ ]+ [가-힣]+(?:이야|야)\\. )([^.]*\\.)'),function(a,h,w){return h+sub(w,A)});
+ s=s.replace(new RegExp('(한테 '+Q(RAW)+'(?:은|는) [가-힣]+(?:이고|고)\\. )([^.]*\\.)'),function(a,h,w){return h+sub(w,me?'그 사람':nB)});
+ return s;
+}
+function politeFix(s){return splitS(s).map(function(x){return /(요|니다)[.!?]?\s*$/.test(x)?banmal(x.replace(/아닙니다/g,'아니야')):x}).join('')}
+function roFix(s){return String(s).replace(/\(([갑을병정무기경신임계])([목화토금수])\)로 /g,function(a,st,el){return '('+st+el+')'+(/[목금]/.test(el)?'으로 ':'로 ')})}
+function starFix(s){
+ Object.keys(STAR_PLAIN).forEach(function(k){s=s.split(k).join(STAR_PLAIN[k])});
+ return s.replace(/([가-힣]+)(은|는) [^.]*보조 상징(이야)?\.\s*/g,function(all,n){return STAR_NAME[n]?J(n,'은/는')+' '+YA(STAR_NAME[n])+'. ':''});
+}
+
+/* 마지막 한마디: 누구에게나 맞는 위로 대신 내 사주(강약·올해 세운·귀인)에서 나온 한 줄로 바꾼다 */
+var YEAR_TALK={비견:'올해는 네 편이 늘어나는 해야. 혼자 끙끙대지 말고 사람한테 기대도 돼.',겁재:'올해는 지기 싫은 마음이 커지는 해야. 그 힘은 관계 말고 네 일에 써.',식신:'올해는 네 매력이 말과 표정으로 잘 드러나는 해야. 하고 싶은 말은 아끼지 마.',상관:'올해는 네 말발이 제일 센 해야. 대신 그 칼은 너를 지키는 데만 써.',편재:'올해는 움직인 만큼 손에 쥐는 게 생기는 해야. 사람 때문에 네 기회를 놓치지 마.',정재:'올해는 꾸준히 한 게 쌓여서 돌아오는 해야. 관계 때문에 네 생활 리듬을 무너뜨리지 마.',편관:'올해는 압박과 책임이 같이 오는 해야. 다 짊어지지 말고 네 몫만 들어.',정관:'올해는 관계든 일이든 자리를 분명히 하고 싶어지는 해야. 애매한 건 애매하다고 말해도 돼.',편인:'올해는 생각이 많아지는 해야. 혼자 결론 내리기 전에 한 사람한테만 털어놔.',정인:'올해는 위로가 필요한 해야. 기대는 건 약한 게 아니야.'};
+function strongTalk(sA){if(!sA||!sA.grade)return '';var sc=isFinite(sA.score)?'('+sA.score+'점)':'';if(/강/.test(sA.grade))return '네 사주는 기운이 센 편'+sc+'이라, 누가 받쳐 주지 않아도 혼자 다시 일어서는 힘이 있어.';if(/약/.test(sA.grade))return '네 사주는 기운이 여린 편'+sc+'이라, 좋은 사람 곁에 있을 때 훨씬 크게 빛나. 그러니 사람은 꼭 골라서 곁에 둬.';return '네 사주는 기운이 한쪽으로 치우치지 않은 편'+sc+'이라, 어떤 사람을 만나도 균형을 다시 잡아.'}
+function closingFix(k,out,f){
+ var c=(out.cards||[]).find(function(x){return /^마지막으로/.test(x.t||'')});if(!c||!c.b||!c.b.length)return;
+ var line='';
+ if(f){line=[strongTalk(f.sA),YEAR_TALK[f.tA&&f.tA.yearGod]||''].filter(Boolean).join(' ')}
+ else{
+  var st=(out.cards||[]).find(function(x){return x.stars&&x.stars.length}),g=st&&st.stars.filter(function(o){return /귀인|덕|천의|록/.test(o.name)})[0];
+  line=g?J(g.name,'이/가')+' '+(g.where?g.where+'에 ':'')+'있다는 건, 힘들 때 꼭 누군가 손을 내민다는 뜻이야. 그러니 혼자 다 해결하려고 하지 마.':'네 사주는 귀인보다 네 힘으로 길을 여는 별이 앞에 있어. 지금까지 해 온 게 다 네 실력이야.';
+ }
+ if(line)c.b=f?c.b.slice(0,1).concat([line]):[line];
+}
+function chipsFix(out){
+ (out.cards||[]).forEach(function(c){if(c.chips&&/성립한 신살/.test(c.t||'')&&c.chips.length>8){var n=c.chips.length;c.chips=c.chips.slice(0,8).concat(['그 밖에 '+(n-8)+'개']);c.t='성립한 신살·귀인 (영향 큰 순)'}});
+}
+function polish(k,out,f,a,b){
+ var nA=(f&&f.nA)||(a&&a.input&&a.input.name)||'나',me=!nA||nA==='나',nB=(f&&f.nB)||'상대';
+ var fix=function(s){
+  s=String(s||'');
+  s=whoFix(s,me,nA,nB);
+  if(me){s=meFix(s);s=s.replace(/^너야, /,'').replace(/(^|[.!?]\s+)너야, /g,'$1')}
+  s=s.split(nB+'님의 ').join(nB+'의 ').split(nA+'님의 ').join(nA+'의 ');
+  s=s.split(nB+'가 상대의 ').join(nB+'가 '+(me?'네 ':nA+'의 ')).split(nB+'이 상대의 ').join(nB+'이 '+(me?'네 ':nA+'의 '));
+  s=roFix(politeFix(s));
+  if(k==='shinsal')s=starFix(s);
+  return s;
+ };
+ var rk=relKind(f);
+ if(out.head){var H=REL_HEAD[k];if(H&&H[rk])out.head=H[rk];else if(k==='compat'&&rk==='none'&&/틀어지면 크게 틀어지는/.test(out.head))out.head='설명서만 잘 읽으면 오래 가는 궁합이야';out.head=fix(out.head)}
+ if(out.sum)out.sum=out.sum.map(fix).filter(function(p){return p&&p.trim()});
+ var seen={};(out.sum||[]).forEach(function(p){seen[p.trim()]=1});
+ out.cards=(out.cards||[]).map(function(c){
+  var c2=Object.assign({},c);
+  ['b','list'].forEach(function(key){
+   if(!c2[key])return;
+   c2[key]=c2[key].map(fix).map(function(p){
+    if(k!=='crush')return p;
+    if(/^둘 일지/.test(p.trim()))return CRUSH_REL[rk]||CRUSH_REL.none;
+    return splitS(p).filter(function(x){return !CRUSH_DROP.test(x)}).join('').trim();
+   }).filter(function(p){var t=p&&p.trim();if(!t||seen[t])return false;seen[t]=1;return true});
+  });
+  if(c2.stars&&k==='shinsal')c2.stars=c2.stars.map(function(st){var s2=Object.assign({},st);s2.short=STAR_PLAIN[st.short]||(/보조 상징/.test(st.short||'')&&STAR_NAME[st.name])||st.short;return s2});
+  return c2;
+ }).filter(function(c){return (c.b&&c.b.length)||(c.list&&c.list.length)||c.chips||c.stars});
+ try{closingFix(k,out,f);if(k==='shinsal')chipsFix(out)}catch(_e){}
  return out;
 }
 
@@ -201,5 +313,5 @@ function install(){
  return true;
 }
 if(!install()){var n=0,t=setInterval(function(){if(install()||++n>40)clearInterval(t)},150)}
-root.GuiinThemeBoost={version:V,_pairCard:pairCard,_starCards:starCards,_tidy:tidy};
+root.GuiinThemeBoost={version:V,_polish:polish,_pairCard:pairCard,_starCards:starCards,_tidy:tidy};
 })(typeof globalThis!=='undefined'?globalThis:this);
