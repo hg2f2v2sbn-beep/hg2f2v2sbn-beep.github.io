@@ -14331,5 +14331,22 @@ window.addEventListener('pageshow',function(){setTimeout(refresh,300)});
 <script src="guiin-funnel-v1.js?v=20261119-f8" defer></script>
 <script src="guiin-invite-v1.js?v=20261120-i1" defer></script>
 <script src="guiin-track-v1.js?v=20261120-t1" defer></script>
+<script>
+/* 결과 화면 측정: 얼마나 내려 읽는지, 결제 버튼을 실제로 봤는지 (개인정보 없음) */
+(function(){
+ if(/demo\.html$/.test(location.pathname))return;
+ function T(n){try{window.__guiinTrack&&__guiinTrack.once('screen',n)}catch(_){}}
+ function tick(){
+  var r=document.getElementById('result');if(!r||!r.classList.contains('active'))return;
+  var h=r.scrollHeight||r.offsetHeight;if(h<1500)return;
+  var seen=(scrollY+innerHeight-r.getBoundingClientRect().top-scrollY)/h;
+  [25,50,75,95].forEach(function(p){if(seen>=p/100)T('rdepth'+p)});
+  var bs=r.querySelectorAll('button');for(var i=0;i<bs.length;i++){var b=bs[i];if(/잠긴 풀이 전부 열기/.test(b.textContent)&&b.offsetParent){var q=b.getBoundingClientRect();if(q.top<innerHeight&&q.bottom>0){T('rcta_seen');break}}}
+  var bar=document.getElementById('gfPayBar');if(bar&&bar.classList.contains('on'))T('rbar_seen');
+ }
+ var p=0;addEventListener('scroll',function(){if(p)return;p=1;setTimeout(function(){p=0;tick()},400)},{passive:true});
+ setInterval(tick,3000);
+})();
+</script>
 </body>
 </html>
