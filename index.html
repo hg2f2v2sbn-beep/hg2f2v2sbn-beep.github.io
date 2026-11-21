@@ -4460,7 +4460,7 @@ function compatPremiumPreviewHTML(){
   if(a&&b){
    const an=esc(a.input?.name||'나'),bn=esc(b.input?.name||'상대방');
    const av=guiinNarrative(a),bv=guiinNarrative(b);
-   actual=`<div class="personalTeaser card"><div class="mini">두 사람의 실제 명식 미리보기</div><h3>${an}님은 ${esc(av.day.headline)} / ${bn}님은 ${esc(bv.day.headline)}</h3><p>${esc(matchMeta?.good||'두 사람의 강점과 차이를 실제 명식으로 비교합니다.')}</p><div class="easyPoint watch"><b>실제로 조율할 부분</b><p>${esc(matchMeta?.watch||'연락·돈·생활·감정 표현에서 반복되는 차이를 확인합니다.')}</p></div><div class="easyPoint tip"><b>프리미엄에서 잠긴 질문</b><p>누가 먼저 불안해지는지 · 누가 거리를 두는지 · 누가 권태를 빨리 느끼는지 · 친밀감 속도와 스킨십 차이 · 장기연애·결혼 후 돈과 가족 역할 · 자녀를 키울 때 역할 분담까지 이어서 봅니다.</p></div></div>`;
+   actual=`<div class="personalTeaser card"><div class="mini">두 사람의 실제 명식 미리보기</div><h3>${av.day.headline===bv.day.headline?`${an}님과 ${bn}님 둘 다 ${esc(av.day.headline)}`:`${an}님은 ${esc(av.day.headline)} / ${bn}님은 ${esc(bv.day.headline)}`}</h3><p>${esc(matchMeta?.good||'두 사람의 강점과 차이를 실제 명식으로 비교합니다.')}</p><div class="easyPoint watch"><b>실제로 조율할 부분</b><p>${esc(matchMeta?.watch||'연락·돈·생활·감정 표현에서 반복되는 차이를 확인합니다.')}</p></div><div class="easyPoint tip"><b>프리미엄에서 잠긴 질문</b><p>누가 먼저 불안해지는지 · 누가 거리를 두는지 · 누가 권태를 빨리 느끼는지 · 친밀감 속도와 스킨십 차이 · 장기연애·결혼 후 돈과 가족 역할 · 자녀를 키울 때 역할 분담까지 이어서 봅니다.</p></div></div>`;
   }
  }catch(_e){}
  const sample={eyebrow:'궁합 풀이 예시 · 갈등 번역기',title:'같은 싸움도 한쪽은 “해결하려는 말”, 다른 쪽은 “공격받는 말”로 느낄 수 있습니다.',body:'프리미엄 궁합은 누가 더 나쁜지 고르는 대신 두 사람의 일간·일지·십신·관계 신호를 겹쳐 갈등이 시작되는 지점과 회복 속도를 따로 봅니다.',good:'서로의 반응을 번역해서 이해하면 같은 갈등이 반복되는 횟수를 줄이는 데 도움이 됩니다.',watch:'불안형·회피형 같은 심리 진단을 사주로 확정하거나 외도 여부를 판정하지 않습니다.',support:'관계의 차이는 정답이 아니라 조율해야 할 생활 언어일 수 있습니다.',evidence:'두 사람의 일간·일지 + 십신 + 합충형파해 + 현재 대운을 함께 보는 방식'};
@@ -4681,6 +4681,48 @@ function guiinCompatBand(score,sig){
   return {key,i,score,combine:c,tension:t,downgraded,...T[key]};
 }
 globalThis.guiinCompatBand=guiinCompatBand;
+/* 궁합 무료 결론: 결론을 먼저 말하고, 그렇게 본 이유를 사주 근거 3줄로 (20261121) */
+function guiinCompatWhyV1(a,b){
+ const BR='자축인묘진사오미신유술해',ANI={자:'쥐',축:'소',인:'호랑이',묘:'토끼',진:'용',사:'뱀',오:'말',미:'양',신:'원숭이',유:'닭',술:'개',해:'돼지'};
+ const EL_W={목:'나무',화:'불',토:'흙',금:'쇠',수:'물'},SEL={갑:'목',을:'목',병:'화',정:'화',무:'토',기:'토',경:'금',신:'금',임:'수',계:'수'},HAP={갑:'기',기:'갑',을:'경',경:'을',병:'신',신:'병',정:'임',임:'정',무:'계',계:'무'};
+ const J=(w,p)=>{try{return krJoin(w,p)}catch(_e){return w+p.split('/')[1]}};
+ const an=String(a?.input?.name||'나'),bn=String(b?.input?.name||'상대');
+ const da=String(a?.pillars?.day?.ko||''),db=String(b?.pillars?.day?.ko||'');if(da.length<2||db.length<2)return [];
+ const sa=da[0],sb=db[0],za=da[1],zb=db[1],ia=BR.indexOf(za),ib=BR.indexOf(zb);
+ const pair=(x,y)=>[x,y].sort().join('');const P=pair(za,zb);
+ const SIX=['자축','인해','묘술','진유','사신','오미'].map(t=>pair(t[0],t[1])),WJ=['자미','축오','인유','묘신','진해','사술'].map(t=>pair(t[0],t[1]));
+ const HYEONG=['인사','사신','인신','축술','술미','축미','자묘'].map(t=>pair(t[0],t[1])),HAE=['자미','축오','인사','묘진','신해','유술'].map(t=>pair(t[0],t[1])),PA=['자유','축진','인해','묘오','사신','술미'].map(t=>pair(t[0],t[1]));
+ const zz=za+'('+ANI[za]+')·'+zb+'('+ANI[zb]+')',out=[];
+ if(da===db)out.push('둘 다 '+da+' 일주야. 사주의 중심이 똑같아서 말 안 해도 통하는 대신, 같은 약점이 동시에 튀어나와.');
+ if(za===zb&&/[진오유해]/.test(za))out.push('배우자 자리(일지)가 같은 '+za+'('+ANI[za]+')끼리 부딪히는 자형이야. 서로의 단점을 거울처럼 콕콕 찌르기 쉬워.');
+ else if(ia>=0&&ib>=0&&Math.abs(ia-ib)===6)out.push('배우자 자리(일지)가 '+zz+' 충이야. 끌림이 센 만큼, 싸울 때도 크게 부딪혀.');
+ else if(SIX.includes(P))out.push('배우자 자리(일지)가 '+zz+' 육합이야. 한번 붙으면 잘 안 떨어지고, 생활이 자연스럽게 맞물리는 관계야.');
+ else if(HYEONG.includes(P))out.push('배우자 자리(일지)가 '+zz+' 형이야. 서로 고쳐 주려다 같은 문제로 반복해서 부딪히기 쉬워.');
+ else if(WJ.includes(P))out.push('배우자 자리(일지)에 '+zz+' 원진이 걸려 있어. 크게 싸우진 않아도, 말 안 한 서운함이 쌓이면 갑자기 멀어져.');
+ else if(HAE.includes(P))out.push('배우자 자리(일지)가 '+zz+' 해(害) 관계야. 잘해 준 게 오히려 서운함으로 돌아오기 쉬워.');
+ else if(PA.includes(P))out.push('배우자 자리(일지)가 '+zz+' 파 관계야. 약속이나 계획이 중간에 틀어지는 일이 쌓이면 믿음이 깎여.');
+ else{
+  const BAN=['인오','오술','인술','신자','자진','신진','해묘','묘미','해미','사유','유축','사축'].map(t=>pair(t[0],t[1])),BANG=['인묘','묘진','사오','신유','유술','해자'].map(t=>pair(t[0],t[1]));
+  if(BAN.includes(P))out.push('배우자 자리(일지)가 '+zz+' 반합이야. 같은 목표를 보면 힘을 합치기 쉬운, 팀처럼 움직이는 관계야.');
+  else if(BANG.includes(P))out.push('배우자 자리(일지)가 '+zz+'로 같은 계절 기운이야. 생활 리듬과 취향이 비슷해서 같이 있으면 편해.');
+ }
+ if(HAP[sa]===sb)out.push('일간끼리 '+sa+sb+'합이야. 처음 봤을 때부터 이유 없이 편하고 끌리는 조합이야.');
+ else if(sa===sb&&da!==db)out.push('둘 다 '+sa+SEL[sa]+' 일간이라 생각하는 방식이 닮았어. 편한 대신 서로 양보가 잘 안 돼.');
+ const cnt=c=>{const o={목:0,화:0,토:0,금:0,수:0},p=c?.pillars||{},unk=c?.input?.hourUnknown;['year','month','day','hour'].forEach(k=>{if(k==='hour'&&unk)return;const x=p[k];if(!x)return;if(o[x.stemEl]!=null)o[x.stemEl]++;if(o[x.branchEl]!=null)o[x.branchEl]++});return o};
+ const ca=cnt(a),cb=cnt(b);
+ const gA=Object.keys(ca).filter(e=>ca[e]===0&&cb[e]>=2).sort((x,y)=>cb[y]-cb[x])[0],gB=Object.keys(cb).filter(e=>cb[e]===0&&ca[e]>=2).sort((x,y)=>ca[y]-ca[x])[0];
+ if(gA&&gB)out.push(an+'에게 없는 '+EL_W[gA]+'('+gA+') 기운은 '+J(bn,'이/가')+', '+bn+'에게 없는 '+EL_W[gB]+'('+gB+') 기운은 '+J(an,'이/가')+' 갖고 있어. 서로 빈칸을 채워 주는 관계야.');
+ else if(gA)out.push(an+'에게 없는 '+EL_W[gA]+'('+gA+') 기운을 '+J(bn,'이/가')+' '+cb[gA]+'자나 갖고 있어. 곁에 있으면 빈칸이 채워지는 느낌이 드는 이유야.');
+ else if(gB)out.push(bn+'에게 없는 '+EL_W[gB]+'('+gB+') 기운을 '+J(an,'이/가')+' '+ca[gB]+'자나 갖고 있어. '+J(bn,'이/가')+' 너한테 끌리는 이유야.');
+ if(out.length<2&&!(HAP[sa]===sb)&&SEL[sa]!==SEL[sb]){const G={목:'화',화:'토',토:'금',금:'수',수:'목'},C={목:'토',토:'수',수:'화',화:'금',금:'목'},ea=SEL[sa],eb=SEL[sb];
+  if(G[ea]===eb)out.push(an+'의 일간 기운('+EL_W[ea]+')이 '+bn+'의 기운('+EL_W[eb]+')을 살려 주는 방향이야. '+J(an,'이/가')+' 챙겨 줄수록 관계가 단단해져.');
+  else if(G[eb]===ea)out.push(bn+'의 일간 기운('+EL_W[eb]+')이 '+an+'의 기운('+EL_W[ea]+')을 살려 주는 방향이야. 곁에 있으면 '+J(an,'이/가')+' 힘을 얻는 관계야.');
+  else if(C[ea]===eb)out.push(an+'의 일간 기운('+EL_W[ea]+')이 '+bn+'의 기운('+EL_W[eb]+')을 누르는 방향이야. '+J(an,'이/가')+' 주도권을 쥐기 쉬운데, 너무 몰아붙이면 '+J(bn,'이/가')+' 숨 막혀 해.');
+  else if(C[eb]===ea)out.push(bn+'의 일간 기운('+EL_W[eb]+')이 '+an+'의 기운('+EL_W[ea]+')을 다잡는 방향이야. 묘하게 '+bn+' 말에 끌려가게 되는 관계야.');}
+ if(out.length<2&&sa!==sb&&SEL[sa]===SEL[sb]&&HAP[sa]!==sb)out.push('둘 다 '+EL_W[SEL[sa]]+'('+SEL[sa]+') 기운의 일간이라 속도와 감각이 비슷해. 금방 친해지는 대신, 둘 다 약한 부분은 서로 못 채워 줘.');
+ return out.slice(0,3);
+}
+globalThis.guiinCompatWhyV1=guiinCompatWhyV1;
 function guiinCompatMetricsV56(a,b){
   const pa=GuiinExpert.pct(a),pb=GuiinExpert.pct(b),q=guiinCompatSignalV5(a,b);
   try{globalThis.__guiinCompatSig=q&&q.sig?{combine:Number(q.sig.combine||0),tension:Number(q.sig.tension||0)}:null}catch(_e){}
@@ -5842,7 +5884,8 @@ function submitMatch(){
   const pairNow=compatPairProfile(a.dayMaster?.el||a.pillars?.day?.stemEl||'토',b.dayMaster?.el||b.pillars?.day?.stemEl||'토');
   const pairStructure=guiinCompatSignalV5(a,b);
   const pairLead=pairStructure?.archetype?`${pairStructure.archetype}. ${pairStructure.oppositeTemp?'서로 다른 계절의 온도는 끌림이 될 수 있지만 실제 생활 조율을 함께 봐야 합니다.':'성격과 생활 리듬의 합을 함께 봐야 합니다.'}`:(pairNow?.fit||'두 사람의 생활 패턴을 함께 확인해 보세요.');
-  matchBaseHTML=`<div class="matchHero card"><h3>${matchHeadline}</h3><p>${esc(pairLead)} 점수보다 실제 생활에서 반복되는 패턴을 함께 보세요.</p><div class="matchArt"><img loading="lazy" decoding="async" src="guiin-compat-friends.webp" alt=""></div><div style="font-size:9px;margin-top:7px">귀인사주 참고 궁합 지수</div><div class="score">♥ ${score}<small>점</small></div><p>${band}</p></div>
+  const _bandV=guiinCompatBand(score,compatMetrics.q&&compatMetrics.q.sig),_why=(()=>{try{return guiinCompatWhyV1(a,b)}catch(_e){return []}})();
+  matchBaseHTML=`<div class="matchHero card"><h3>${esc(_bandV.title||matchHeadline)}</h3><p data-verdict="1">${esc(_bandV.verdict||pairLead)}</p>${_why.length?`<div class="compatWhy" style="text-align:left;margin:10px 0 4px;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.65);font-size:14px;line-height:1.6"><b style="display:block;margin-bottom:4px">이렇게 본 이유</b>${_why.map(t=>`<p style="margin:4px 0">· ${esc(t)}</p>`).join('')}</div>`:''}<div class="matchArt"><img loading="lazy" decoding="async" src="guiin-compat-friends.webp" alt=""></div><div style="font-size:9px;margin-top:7px">귀인사주 참고 궁합 지수</div><div class="score">♥ ${score}<small>점</small></div></div>
    <div class="infoCard card"><div class="pair"><div class="person"><b>나<br>${esc(a.input.name)}</b><br>${a.input.year}.${a.input.month}.${a.input.day}<br>${a.input.gender==='여'?'여성':'남성'}</div><div class="heartSvg">${ICONS.heart}</div><div class="person b"><b>상대방<br>${esc(b.input.name)}</b><br>${b.input.year}.${b.input.month}.${b.input.day}<br>${b.input.gender==='여'?'여성':'남성'}</div></div></div>
    <div class="infoCard card"><h3>세부 궁합 지수</h3>${[['연애·끌림',love,'pink'],['성격·대화',personality,'mint'],['돈·생활',money,'gold'],['장기조율',future,'purple']].map(x=>`<div class="scoreRow"><span>${x[0]}</span><div class="scoreBar"><i class="${x[2]}" style="width:${x[1]}%"></i></div><b>${x[1]}</b></div>`).join('')}</div>`+
    guiinRenderMansePair(a,b);
@@ -6082,7 +6125,7 @@ function renderToday(){
  compatPremiumPreviewHTML=function(){
   const domains=['상대방 성격','나의 관계 반응','초반 끌림','연락·거리감','대화와 갈등','권태·자극','친밀감·스킨십','돈과 생활','결혼·장기관계','가족과 경계','자녀 양육 역할','현재 대운과 앞으로'];
   const a=matchMeta?.a,b=matchMeta?.b;let actual='';
-  try{if(a&&b){const an=esc(a.input?.name||'나'),bn=esc(b.input?.name||'상대방'),av=guiinNarrative(a),bv=guiinNarrative(b);actual=`<div class="personalTeaser card"><div class="mini">두 사람의 실제 명식 미리보기</div><h3>${an} 쪽은 ${esc(av.day.headline)} / ${bn} 쪽은 ${esc(bv.day.headline)}</h3><p>${esc(matchMeta?.good||'두 사람의 강점과 차이를 실제 명식으로 비교해.')}</p><div class="easyPoint watch"><b>여기서 조율이 필요해</b><p>${esc(matchMeta?.watch||'연락·돈·생활·감정 표현에서 반복되는 차이를 확인해.')}</p></div><div class="easyPoint tip"><b>프리미엄에서 이어서 보는 것</b><p>누가 불안할 때 먼저 확인하는지, 누가 혼자 정리하는지, 권태와 친밀감 속도는 어떻게 다른지, 돈·결혼·가족 역할과 현재 대운이 관계 속도에 어떤 영향을 주는지까지 이어서 볼 수 있어.</p></div></div>`;}}catch(_e){}
+  try{if(a&&b){const an=esc(a.input?.name||'나'),bn=esc(b.input?.name||'상대방'),av=guiinNarrative(a),bv=guiinNarrative(b);actual=`<div class="personalTeaser card"><div class="mini">두 사람의 실제 명식 미리보기</div><h3>${av.day.headline===bv.day.headline?`${an}·${bn} 둘 다 ${esc(av.day.headline)} 같은 결이라, 부딪힐 때도 같은 지점에서 부딪혀.`:`${an} 쪽은 ${esc(av.day.headline)} / ${bn} 쪽은 ${esc(bv.day.headline)}`}</h3><p>${esc(matchMeta?.good||'두 사람의 강점과 차이를 실제 명식으로 비교해.')}</p><div class="easyPoint watch"><b>여기서 조율이 필요해</b><p>${esc(matchMeta?.watch||'연락·돈·생활·감정 표현에서 반복되는 차이를 확인해.')}</p></div><div class="easyPoint tip"><b>프리미엄에서 이어서 보는 것</b><p>누가 불안할 때 먼저 확인하는지, 누가 혼자 정리하는지, 권태와 친밀감 속도는 어떻게 다른지, 돈·결혼·가족 역할과 현재 대운이 관계 속도에 어떤 영향을 주는지까지 이어서 볼 수 있어.</p></div></div>`;}}catch(_e){}
   return `<div class="premiumPreview"><div class="premiumHero card"><div class="mini">프리미엄 궁합 · 7,900원</div><h2>점수만 보고 끝내지 않고, 왜 끌리고 어디서 부딪히는지 생활 장면으로 풀어볼게.</h2><p>초반 끌림부터 장기연애·결혼·돈·가족·권태·친밀감·자녀 역할·현재 대운까지 관계의 시간 흐름으로 연결해서 봐.</p></div>${actual}${premiumCompareHTML('compat')}<div class="premiumIncluded card"><h3>심층 궁합 12개 영역</h3><div class="premiumGrid">${domains.map((x,i)=>`<div class="premiumItem"><b>${i+1}. ${x}</b><span>실제 두 사람의 계산 근거 · 잘 맞을 때 · 부딪힐 때 · 조율법</span></div>`).join('')}</div></div><div class="sampleNotice">예시는 설명 방식을 보여주기 위한 거야. 실제 결제 후에는 두 사람 입력값으로 다시 계산해서 보여줘.</div><div class="premiumLock"><strong>두 사람의 실제 심층 궁합 전체 열기</strong><p>상대 단독 성격부터 연락·권태·친밀감·돈·결혼·가족 역할과 현재 대운의 속도까지 이어서 볼 수 있어.</p><button onclick="openCompatPay()">프리미엄 궁합 7,900원 ›</button></div></div>`;
  };
 
@@ -9546,7 +9589,7 @@ document.addEventListener('visibilitychange',()=>{
   try{
    const pair=typeof compatPairProfile==='function'?compatPairProfile(d.elA,d.elB):null;
    const p=root.querySelector('.matchHero>p');
-   if(p&&pair?.fit)p.textContent=pair.fit+' 점수보다 실제 생활에서 반복되는 패턴을 같이 보는 게 더 중요해.';
+   if(p&&pair?.fit&&!p.hasAttribute('data-verdict'))p.textContent=pair.fit+' 점수보다 실제 생활에서 반복되는 패턴을 같이 보는 게 더 중요해.';
   }catch(_e){}
   // 관계 타입은 상단 히어로에서 이미 보여주므로 동일 카드의 반복 노출을 제거한다.
   root.querySelectorAll('article[data-r24-key="type"]').forEach(x=>x.remove());
@@ -13789,7 +13832,7 @@ try{Object.assign(window,{guiinPaymentCenterStart});}catch(_e){}
 .guiinSeenBar span{flex:1}.guiinSeenBar button{min-height:36px;padding:0 12px;border-radius:999px;border:1px solid #b9d5c3;background:#fff;color:#1f5a43;font-weight:800}
 </style>
 <script id="GUIIN_B3_FIX_V1" src="guiin-b3-fix.js?v=20261020-b9"></script>
-<script id="GUIIN_B6_FEATURES_V1" src="guiin-b6-features.js?v=20261025-final"></script>
+<script id="GUIIN_B6_FEATURES_V1" src="guiin-b6-features.js?v=20261121-c1"></script>
 <style id="guiin-ui-products-v1">
 /* 홈 판매 상품 2카드 + 상품·이용권 안내 화면 (UI 전용, 기능 변경 없음) */
 .homeProductReview.duo{padding:15px 12px 12px}

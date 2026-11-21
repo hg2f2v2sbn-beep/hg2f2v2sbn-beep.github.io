@@ -93,7 +93,7 @@
   var BUSY={편관:1,정관:1,겁재:1},REST={편인:1,정인:1,식신:1},MONEY={편재:1,정재:1},CHG={상관:1,편재:1},LEARN={편인:1,정인:1};
   function pairLine(a,b,ga,gb){
     function T(s,x,y){return s.replace(/\{a\}은/g,jo(x,'은','는')).replace(/\{b\}은/g,jo(y,'은','는')).replace(/\{a\}/g,x).replace(/\{b\}/g,y)}
-    if(ga===gb)return PAIR.same;
+    if(ga===gb){var ST={비견:['내 몫이 중요해지는 해','누가 더 손해 봤는지 따지지 않게 할 일과 돈을 미리 나눠 둬.'],겁재:['지기 싫은 마음이 커지는 해','둘이 경쟁하지 말고 같은 편이 되는 목표를 하나 정해.'],식신:['여유와 즐거움을 찾는 해','같이 놀고 쉬는 계획을 먼저 잡으면 사이가 더 좋아져.'],상관:['말이 세지고 바꾸고 싶은 해','싸울 땐 그 자리에서 끝내지 말고 하루 지나서 얘기해.'],편재:['돈과 기회가 크게 움직이는 해','함께 쓰는 돈의 기준을 연초에 정해 둬.'],정재:['차곡차곡 모으고 지키고 싶은 해','저축 목표를 같이 세우면 서로 든든해져.'],편관:['압박과 책임이 커지는 해','둘 다 지치기 쉬우니 짧아도 매일 연락하는 규칙을 정해.'],정관:['자리와 관계를 분명히 하고 싶은 해','관계의 다음 단계를 진지하게 얘기하기 좋은 때야.'],편인:['혼자 생각이 많아지는 해','거리를 둬도 마음이 식은 게 아니라고 미리 말해 둬.'],정인:['위로와 기댈 곳이 필요한 해','서로 기대는 걸 부담스러워하지 말고 먼저 안아 줘.']}[ga];return ST?'둘 다 '+ST[0]+'야. '+ST[1]:PAIR.same}
     if(BUSY[ga]&&BUSY[gb])return '둘 다 바쁘고 책임이 커지는 해라서 서로 챙길 여유가 줄 수 있어. 짧아도 꾸준히 연락하는 규칙을 정해 둬.';
     if(BUSY[ga]&&REST[gb])return T(PAIR.busyrest,a,b);if(BUSY[gb]&&REST[ga])return T(PAIR.busyrest,b,a);
     if(MONEY[ga]&&!MONEY[gb])return T(PAIR.moneyone,a,b);if(MONEY[gb]&&!MONEY[ga])return T(PAIR.moneyone,b,a);
