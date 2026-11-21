@@ -68,7 +68,7 @@ input:focus,select:focus{outline:none;border-color:#7b61c9}
 .foot{text-align:center;font-size:12px;color:#9a94ad;margin-top:22px;line-height:1.6}
 .foot a{color:#8e86a8}
 .postHook{text-align:center;padding:14px 16px!important;margin-bottom:12px;background:linear-gradient(145deg,#f6f0ff,#fff)!important}.postHook b{display:block;font-size:17px;color:#5b3fb8;margin-bottom:4px}.postHook span{font-size:14px;color:#6b6480}.myLine{margin:10px 0 12px;padding:14px;border-radius:16px;background:#f6f0ff;font-size:20px;font-weight:800;line-height:1.45;color:#3a2a70;word-break:keep-all}.moreTopics{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:12px}.moreTopics a{font-size:13px;padding:7px 11px;border-radius:999px;background:#fff;border:1px solid #e3d9fb;color:#5b3fb8;text-decoration:none;font-weight:700}
-.allList{margin-top:12px;text-align:left;display:grid;gap:8px}.allMore{display:grid;gap:8px}.allMore[hidden]{display:none}.allRow{display:block;padding:11px 13px;border-radius:14px;background:#f6f0ff;text-decoration:none}.allRow span{display:block;font-size:12px;font-weight:800;color:#8e7cc8;margin-bottom:3px}.allRow b{display:block;font-size:15px;line-height:1.45;color:#3a2a70;word-break:keep-all}.allBtn{margin-top:10px;width:100%;padding:11px;border:0;border-radius:14px;background:#efe8ff;color:#5b3fb8;font-size:14px;font-weight:800}
+.ijMore{display:inline-block;margin-top:10px;padding:8px 14px;border-radius:999px;background:#efe8ff;color:#5b3fb8;font-size:14px;font-weight:800;text-decoration:none}.allList{margin-top:12px;text-align:left;display:grid;gap:8px}.allMore{display:grid;gap:8px}.allMore[hidden]{display:none}.allRow{display:block;padding:11px 13px;border-radius:14px;background:#f6f0ff;text-decoration:none}.allRow span{display:block;font-size:12px;font-weight:800;color:#8e7cc8;margin-bottom:3px}.allRow b{display:block;font-size:15px;line-height:1.45;color:#3a2a70;word-break:keep-all}.allBtn{margin-top:10px;width:100%;padding:11px;border:0;border-radius:14px;background:#efe8ff;color:#5b3fb8;font-size:14px;font-weight:800}
 .ilju{text-align:center;padding:20px 18px!important}.ilju .k{font-size:14px;font-weight:800;color:#8e86a8}.ilju .ij{margin:4px 0 6px;font-size:40px;font-weight:900;letter-spacing:-.03em;color:#2b2140}.ilju p{margin:0;font-size:14px;line-height:1.5;color:#6b6480}.ilju p b{color:#2b2140}
 </style>
 </head>
@@ -215,14 +215,15 @@ const friendSVG=(t,x,y,s=1,face='happy')=>`<g transform="translate(${x} ${y}) sc
     const i=GJ.indexOf(day);if(!POST||i<0)return '';
     const others=Object.keys(POSTS).filter(k=>k!==TK).sort(()=>Math.random()-.5).slice(0,4);
     try{window.__guiinTrack&&__guiinTrack.send('screen','postline_'+TK)}catch(_e){}
-    return `<div class="k">[${POST.t}]</div><div class="ij">${day}일주</div><div class="myLine">${POST.L[i].replace(/[<>&]/g,'')}</div><p>친구·애인 일주도 넣어 보고 맞는지 비교해 봐요!</p><div class="moreTopics">${others.map(k=>`<a href="?t=${k}">${POSTS[k].t.replace(/^일주별 /,'')}</a>`).join('')}</div>`;
+    return `<div class="k">[${POST.t}]</div><div class="ij">${day}일주</div><div class="myLine">${POST.L[i].replace(/[<>&]/g,'')}</div><p>친구·애인 일주도 넣어 보고 맞는지 비교해 봐요!</p><a class="ijMore" href="${iljuUrl(day)}">${day}일주 특징 전체 보기 ›</a><div class="moreTopics">${others.map(k=>`<a href="?t=${k}">${POSTS[k].t.replace(/^일주별 /,'')}</a>`).join('')}</div>`;
   }
   /* 프로필 링크로 그냥 들어온 경우: [일주별] 게시물 전체에서 내 일주 줄만 모아 보여 준다 */
+  function iljuUrl(d){var S={'갑':'gap','을':'eul','병':'byeong','정':'jeong','무':'mu','기':'gi','경':'gyeong','신':'sin','임':'im','계':'gye'},B={'자':'ja','축':'chuk','인':'in','묘':'myo','진':'jin','사':'sa','오':'o','미':'mi','신':'sin','유':'yu','술':'sul','해':'hae'};return S[d[0]]&&B[d[1]]?'/ilju-'+S[d[0]]+B[d[1]]+'.html':'/ilju.html'}
   function allCard(day){
     const i=GJ.indexOf(day);if(i<0)return '';
     const rows=Object.keys(POSTS).map(k=>`<a class="allRow" href="?t=${k}"><span>${POSTS[k].t.replace(/^일주별 /,'')}</span><b>${POSTS[k].L[i].replace(/[<>&]/g,'')}</b></a>`);
     try{window.__guiinTrack&&__guiinTrack.send('screen','postall')}catch(_e){}
-    return `<div class="k">내 일주는</div><div class="ij">${day}일주</div><p>인스타 [일주별] 게시물 속 <b>내 줄</b>만 모아 봤어요</p><div class="allList">${rows.slice(0,5).join('')}<div class="allMore" hidden>${rows.slice(5).join('')}</div></div>${rows.length>5?`<button class="allBtn" onclick="this.previousElementSibling.querySelector('.allMore').hidden=false;this.remove()">${rows.length-5}개 더 보기 ▾</button>`:''}`;
+    return `<div class="k">내 일주는</div><div class="ij">${day}일주</div><p>인스타 [일주별] 게시물 속 <b>내 줄</b>만 모아 봤어요</p><a class="ijMore" href="${iljuUrl(day)}">${day}일주 특징 전체 보기 ›</a><div class="allList">${rows.slice(0,5).join('')}<div class="allMore" hidden>${rows.slice(5).join('')}</div></div>${rows.length>5?`<button class="allBtn" onclick="this.previousElementSibling.querySelector('.allMore').hidden=false;this.remove()">${rows.length-5}개 더 보기 ▾</button>`:''}`;
   }
   let last=null;
 
