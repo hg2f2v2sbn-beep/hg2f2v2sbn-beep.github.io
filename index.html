@@ -2418,6 +2418,7 @@ html.gsMenuOpen,body.gsMenuOpen{overflow:hidden!important;overscroll-behavior:no
   <div class="resultActionBar" aria-label="사주 결과 도구">
     <button type="button" onclick="guiinShareResult('saju')">공유하기</button>
     <button type="button" class="primaryAction" onclick="go('ask')" data-guiin-nav="ask">AI로 더 묻기</button>
+    <button type="button" class="gInvBtn" onclick="guiinInviteCreate()"><b>💞 친구·애인에게 궁합 초대 보내기</b><small>상대는 생년월일만 넣으면 돼요 · 내 이름·생일이 함께 전달돼요</small></button>
   </div>
   <div id="resultView"></div>
 </section>
@@ -14278,8 +14279,9 @@ window.addEventListener('pageshow',function(){setTimeout(refresh,300)});
   }catch(_e){}
 })();
 </script>
-<link rel="stylesheet" href="guiin-funnel-v1.css?v=20261120-r1">
+<link rel="stylesheet" href="guiin-funnel-v1.css?v=20261120-i1">
 <script src="guiin-funnel-v1.js?v=20261119-f8" defer></script>
+<script src="guiin-invite-v1.js?v=20261120-i1" defer></script>
 <script src="guiin-track-v1.js?v=20261120-t1" defer></script>
 </body>
 </html>
