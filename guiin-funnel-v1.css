@@ -202,11 +202,3 @@ body.gInvOpen{overflow:hidden}
 .gInvMsg{font-size:13px;font-weight:700;color:#c0392b}.gInvMsg:empty{display:none}
 .gInvGo{height:54px;border:0;border-radius:16px;background:linear-gradient(135deg,#d6336c,#b8285a);color:#fff;font-size:17px;font-weight:900;cursor:pointer;box-shadow:0 6px 16px rgba(184,40,90,.28)}
 .gInvNote{text-align:center;font-size:12.5px;color:#7a857e}
-
-/* 홈: 일주 확인 배너 크게 */
-html body #guiinJourney.gjHero .gjOheng.gjBig{display:block;margin-top:14px;padding:18px 18px 16px;border-radius:22px;background:linear-gradient(145deg,#7b5ce0,#a37cf0);border:0;box-shadow:0 10px 24px rgba(107,79,196,.32);text-align:center}
-#guiinJourney.gjHero .gjBig .gjOhK{display:inline-block;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.2);color:#fff;font-size:12px;font-weight:800}
-#guiinJourney.gjHero .gjBig .gjOhT{align-items:center;gap:4px;margin-top:8px}
-#guiinJourney.gjHero .gjBig .gjOhT b{font-size:25px;color:#fff;letter-spacing:-.03em}
-#guiinJourney.gjHero .gjBig .gjOhT small{font-size:13.5px;color:#f1ebff;white-space:normal}
-#guiinJourney.gjHero .gjBig .gjOhBtn{display:block;margin-top:12px;padding:12px;border-radius:14px;background:#fff;color:#5b3fb8;font-size:16px;font-weight:900}
