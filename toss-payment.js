@@ -304,6 +304,18 @@
     };
     if(typeof root.go==="function")root.go("paymentResult");
   }
+  /* 토스 SDK는 async로 받아 두고, 결제 시점에 아직 없으면 여기서 기다리거나 다시 불러온다 */
+  function loadTossSdk(){
+    if(typeof root.TossPayments==="function")return Promise.resolve();
+    return new Promise(function(resolve,reject){
+      var doc=root.document,tag=doc.getElementById("tossSdk");
+      function done(){typeof root.TossPayments==="function"?resolve():reject(new Error("toss_sdk_missing"))}
+      if(!tag||tag.dataset.failed){tag=doc.createElement("script");tag.src="https://js.tosspayments.com/v2/standard";tag.async=true;doc.head.appendChild(tag);}
+      tag.addEventListener("load",done,{once:true});
+      tag.addEventListener("error",function(){tag.dataset.failed="1";reject(new Error("toss_sdk_missing"))},{once:true});
+      setTimeout(function(){if(typeof root.TossPayments==="function")resolve()},0);
+    });
+  }
   async function start(productCode,messageId,buttonId){
     if(root.guiinDemoConsultationBlocked?.()){message(messageId,"데모 결제는 분리된 staging 테스트 환경이 필요해. 운영 주문은 만들지 않았어.");return;}
     const btn=el(buttonId);
@@ -314,6 +326,7 @@
       if(!isCheckoutReady(current)){message(messageId,"토스페이먼츠 결제 연결이 아직 열리지 않았어요.");return;}
       if(!productCode){message(messageId,"상품 정보를 확인하지 못했어요.");return;}
       try{root.__guiinTrack&&root.__guiinTrack.send("pay_start",String(productCode))}catch(_e){}
+      if(typeof root.TossPayments!=="function")await timed(loadTossSdk(),10000,"toss_sdk_timeout");
       if(typeof root.TossPayments!=="function")throw new Error("toss_sdk_missing");
       setBusy(true);
       if(btn)btn.disabled=true;
