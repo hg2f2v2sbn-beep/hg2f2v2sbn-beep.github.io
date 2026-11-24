@@ -14322,6 +14322,9 @@ window.addEventListener('pageshow',function(){setTimeout(refresh,300)});
       else if(hu&&!hu.checked)hu.click();
       if(typeof go==='function')go('saju');
       try{history.replaceState(null,'',location.pathname+'#saju');}catch(_e){}
+      /* 일주 페이지에서 온 사람: 표시용 정보 저장 + 입력 한 번 더 누르지 않게 바로 결과로 */
+      try{sessionStorage.setItem('gwi_from_ilju',JSON.stringify({day:q.get('oday')||'',topic:q.get('ot')||''}));}catch(_e){}
+      setTimeout(function(){try{if(typeof submitSaju==='function'&&document.getElementById('saju')&&document.getElementById('saju').classList.contains('active'))submitSaju();}catch(_e){}},250);
     }
     if(document.readyState==='complete')setTimeout(run,300);else window.addEventListener('load',function(){setTimeout(run,300);});
   }catch(_e){}
@@ -14331,8 +14334,8 @@ window.addEventListener('pageshow',function(){setTimeout(refresh,300)});
 <script src="guiin-funnel-v1.js?v=20261119-f8" defer></script>
 <script src="guiin-invite-v1.js?v=20261120-i1" defer></script>
 <script src="guiin-track-v1.js?v=20261120-t1" defer></script>
-<link rel="stylesheet" href="guiin-conv-v2.css?v=20261124-c1">
-<script src="guiin-conv-v2.js?v=20261124-c1" defer></script>
+<link rel="stylesheet" href="guiin-conv-v2.css?v=20261124-c2">
+<script src="guiin-conv-v2.js?v=20261124-c2" defer></script>
 <script>
 /* 결과 화면 측정: 얼마나 내려 읽는지, 결제 버튼을 실제로 봤는지 (개인정보 없음) */
 (function(){

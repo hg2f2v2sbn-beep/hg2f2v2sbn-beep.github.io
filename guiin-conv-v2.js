@@ -30,6 +30,10 @@
     return '';
   }
 
+  function fromIlju(){
+    try{var o=JSON.parse(sessionStorage.getItem('gwi_from_ilju')||'null');if(o&&/^[가-힣]{2}$/.test(o.day||'')){var cd='';try{cd=String((typeof chart!=='undefined'&&chart&&chart.pillars&&chart.pillars.day&&chart.pillars.day.ko)||'');}catch(_e){}if(cd&&cd!==o.day)return null;return {day:o.day,topic:String(o.topic||'').slice(0,30)};}}catch(_e){}
+    return null;
+  }
   function hook(v){
     var old=v.querySelector(':scope > .gcvHook');
     var peek=v.querySelector('.glfCard .glfPeek');
@@ -38,8 +42,15 @@
     var anchor=v.querySelector(':scope > .manseSnapshot');if(!anchor)return;
     var rows=peek.querySelectorAll('.glfPeekRow');if(!rows.length)return;
     var box=doc.createElement('section');box.className='gcvHook';
-    var nm=nameOf();
-    var h=doc.createElement('b');h.className='gcvT';h.textContent='🔍 '+(nm?nm+'님 ':'내 ')+'사주에서 미리 찾은 것';box.appendChild(h);
+    var nm=nameOf(),IL=fromIlju();
+    if(IL){
+      box.classList.add('gcvIlju');
+      var k=doc.createElement('p');k.className='gcvK';k.textContent='📌 '+IL.day+'일주'+(IL.topic?' · '+IL.topic:'')+' 보고 오셨죠?';box.appendChild(k);
+      var hh=doc.createElement('b');hh.className='gcvH';hh.textContent='게시물에서 본 건 내 사주 중 딱 2글자예요';box.appendChild(hh);
+      var ex=doc.createElement('p');ex.className='gcvX';ex.textContent='같은 '+IL.day+'일주라도 나머지 글자에 따라 연애가 풀리는 해, 돈이 붙는 해가 사람마다 달라요. '+(nm?nm+'님':'내')+' 사주 전체로 계산해 보니:';box.appendChild(ex);
+    }else{
+      var h=doc.createElement('b');h.className='gcvT';h.textContent='🔍 '+(nm?nm+'님 ':'내 ')+'사주에서 미리 찾은 것';box.appendChild(h);
+    }
     for(var i=0;i<rows.length&&i<2;i++){
       var c=rows[i].cloneNode(true);c.className='gcvRow';
       var em=c.querySelector('em');if(em)em.remove();
@@ -47,10 +58,10 @@
     }
     var s=doc.createElement('p');s.className='gcvS';s.textContent='그게 정확히 언제인지, 그때 뭘 하면 좋은지는 평생사주에서 알려 줘요.';box.appendChild(s);
     var b=doc.createElement('button');b.type='button';b.className='gcvGo';b.textContent='언제인지 전부 열기 · 5,900원 ›';
-    b.addEventListener('click',function(){buy('rtop_buy');});
+    b.addEventListener('click',function(){buy(IL?'rilju_buy':'rtop_buy');});
     box.appendChild(b);
     anchor.parentNode.insertBefore(box,anchor);
-    T('rtop_show');
+    T(IL?'rilju_show':'rtop_show');
   }
 
   function locks(v){

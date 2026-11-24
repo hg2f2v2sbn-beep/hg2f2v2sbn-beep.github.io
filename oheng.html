@@ -109,7 +109,7 @@ input:focus,select:focus{outline:none;border-color:#7b61c9}
       <div class="lack" id="lack"></div>
     </div>
     <div class="card" style="margin-top:14px" id="traits"></div>
-    <a class="cta main" id="fullLink" href="/#saju">내 사주 전체 무료로 보기 ›</a>
+    <a class="cta main" id="fullLink" href="/#saju">내 사주 전체 보기 · 무료 ›<small style="display:block;font-size:13px;font-weight:600;opacity:.85;margin-top:4px">일주는 내 사주 중 딱 2글자예요. 나머지 글자까지 보면 연애·돈 시기가 보여요</small></a>
     <a class="cta sub" href="/#match">그 사람과 나, 궁합 보기 ›</a>
     <div class="row2"><button id="saveBtn">결과 이미지 저장</button><button id="shareBtn">친구에게 공유</button></div>
     <a class="cta home" href="/">🍀 귀인사주 홈으로 가기 ›<small>사주풀이 · 궁합 · 오늘의 운세 · AI 상담</small></a>
@@ -246,7 +246,7 @@ const friendSVG=(t,x,y,s=1,face='happy')=>`<g transform="translate(${x} ${y}) sc
     $('bars').innerHTML=ORDER.map(k=>{const p=Math.round((+c[k]||0)/total*100);return `<div class="bar"><span class="n" style="color:${EL[k].color}">${EL[k].name}</span><span class="t"><i style="width:${Math.max(p,3)}%;background:${EL[k].bar}"></i></span><span class="v">${p}%</span></div>`}).join('');
     $('lack').innerHTML=`<b>부족한 기운: ${EL[low].name}</b><br>${LACK[low]}`;
     $('traits').innerHTML=`<div class="trait" style="margin-top:0"><h3>💘 연애할 때</h3><p>${E.love}</p></div><div class="trait"><h3>💰 돈 버는 스타일</h3><p>${E.money}</p></div><div class="trait"><h3>🤝 잘 맞는 사람</h3><p>${E.match}</p></div><p style="margin-top:14px;font-size:14px;color:#8e86a8;line-height:1.5">여기까지는 맛보기예요. 내 일간(${last.day||''}일주)과 대운까지 보면 언제 돈이 들어오고, 언제 인연이 오는지까지 나와요.</p>`;
-    const q=new URLSearchParams({oy:y,om:m,od:d,ocal:last.cal,og:last.g});if(h!=='')q.set('oh',h);if(last.leap)q.set('oleap','1');
+    const q=new URLSearchParams({oy:y,om:m,od:d,ocal:last.cal,og:last.g});if(last.day)q.set('oday',last.day);if(POST&&POST.t)q.set('ot',POST.t.replace(/^일주별 /,''));if(h!=='')q.set('oh',h);if(last.leap)q.set('oleap','1');
     $('fullLink').href='/?'+q.toString()+'#saju';
     $('result').style.display='block';
     setTimeout(()=>$('result').scrollIntoView({behavior:'smooth',block:'start'}),50);

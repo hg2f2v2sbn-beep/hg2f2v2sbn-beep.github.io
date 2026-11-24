@@ -10,3 +10,9 @@
 #resultView .gptrCard li.lock[data-gcv]{opacity:.85}
 #resultView .gptrCard li.lock[data-gcv] p{color:#8a6a40;font-weight:700}
 #resultView .gcvTrust{margin:8px 0 0;text-align:center;font-size:12.5px;line-height:1.45;color:#8a7f6e;word-break:keep-all}
+#resultView .gcvHook.gcvIlju{background:#f6f1ff;border-color:#cdbbf3}
+#resultView .gcvHook .gcvK{margin:0 0 4px;font-size:13px;font-weight:800;color:#6b4fc4;word-break:keep-all}
+#resultView .gcvHook .gcvH{display:block;font-size:17px;font-weight:900;color:#2d2540;line-height:1.4;letter-spacing:-.02em;word-break:keep-all}
+#resultView .gcvHook .gcvX{margin:6px 0 4px;font-size:13.5px;line-height:1.55;color:#5a5170;word-break:keep-all}
+#resultView .gcvHook.gcvIlju .gcvRow{border-top-color:#ddd0f5}
+#resultView .gcvHook.gcvIlju .gcvGo{background:#6b4fc4}
