@@ -16,3 +16,15 @@
 #resultView .gcvHook .gcvX{margin:6px 0 4px;font-size:13.5px;line-height:1.55;color:#5a5170;word-break:keep-all}
 #resultView .gcvHook.gcvIlju .gcvRow{border-top-color:#ddd0f5}
 #resultView .gcvHook.gcvIlju .gcvGo{background:#6b4fc4}
+#resultView .gcvManse{margin:6px 12px 14px;padding:14px 15px;border-radius:16px;background:#fff6e6;border:1.5px solid #f0d29c}
+#resultView .gcvManse .gcvMT{display:block;font-size:15px;font-weight:900;color:#8a5a1c}
+#resultView .gcvManse .gcvMS{margin:6px 0 12px;font-size:13.5px;line-height:1.55;color:#5c4a33;word-break:keep-all}
+#resultView .gcvManse .gcvGo{display:block;width:100%;min-height:48px;border:0;border-radius:14px;background:#2f6b47;color:#fff;font-size:15.5px;font-weight:900;cursor:pointer}
+#matchView .gcvHook{margin:12px 0 14px;padding:15px 15px 14px;border-radius:18px;background:#fff0f4;border:1.5px solid #f3b8c8;box-shadow:0 4px 14px rgba(200,80,120,.08)}
+#matchView .gcvHook .gcvT{display:block;font-size:15px;font-weight:900;color:#b23a62;margin-bottom:6px}
+#matchView .gcvHook .gcvRow{display:flex;gap:8px;align-items:flex-start;font-size:14.5px;line-height:1.55;color:#3a2a30;padding:7px 0;border-top:1px dashed #f1cbd6;word-break:keep-all}
+#matchView .gcvHook .gcvRow:first-of-type{border-top:0}
+#matchView .gcvHook .gcvRow i{font-style:normal;flex:0 0 auto}
+#matchView .gcvHook .gcvS{margin:6px 0 12px;font-size:13px;line-height:1.5;color:#8a4a60;word-break:keep-all}
+#matchView .gcvHook .gcvGo{display:block;width:100%;min-height:50px;border:0;border-radius:14px;background:#c2416c;color:#fff;font-size:16px;font-weight:900;cursor:pointer}
+#matchView .gcvTrust{margin:8px 0 0;text-align:center;font-size:12.5px;line-height:1.45;color:#8a7f6e;word-break:keep-all}

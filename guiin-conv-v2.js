@@ -18,11 +18,11 @@
   var TRUST='결제하면 바로 열려요 · 한 번 결제로 이 사주는 계속 다시 볼 수 있어요';
 
   function T(n){try{root.__guiinTrack&&root.__guiinTrack.once('screen',n);}catch(_e){}}
-  function buy(src){
+  function buy(src,compat){
     T(src);
     try{
-      if(typeof root.guiinPaymentCenterStart==='function'){root.guiinPaymentCenterStart('LIFETIME_SAJU');return;}
-      if(typeof root.openPremiumPay==='function')root.openPremiumPay();
+      if(typeof root.guiinPaymentCenterStart==='function'){root.guiinPaymentCenterStart(compat?'PREMIUM_COMPAT':'LIFETIME_SAJU');return;}
+      var f=compat?root.openCompatPay:root.openPremiumPay;if(typeof f==='function')f();
     }catch(_e){}
   }
   function nameOf(){
@@ -87,9 +87,54 @@
     }
   }
 
+  /* 만세력 표를 펼친 사람에게: 이 글자들이 언제 움직이는지로 연결 */
+  function manse(v){
+    var m=v.querySelector(':scope > .manseSnapshot'),btn=v.querySelector(':scope > .gMsBtn'),old=v.querySelector(':scope > .gcvManse');
+    var open=m&&btn&&m.dataset.gms==='1'&&!m.classList.contains('gMsFold');
+    if(!open){if(old)old.remove();return;}
+    if(old)return;
+    var box=doc.createElement('section');box.className='gcvManse';
+    box.innerHTML='<b class="gcvMT">📜 이 글자들이 언제 움직이는지 궁금하다면</b><p class="gcvMS"></p><button type="button" class="gcvGo"></button>';
+    box.querySelector('.gcvMS').textContent='만세력은 내 사주의 재료예요. 지금 대운과 올해·내년 세운이 이 글자들과 만나서 언제 돈이 붙고 언제 연애가 풀리는지는 평생사주에서 연도별로 풀어 드려요.';
+    var g=box.querySelector('.gcvGo');g.textContent='내 대운·세운 풀이 열기 · 5,900원 ›';
+    g.addEventListener('click',function(){buy('rmanse_buy');});
+    btn.insertAdjacentElement('afterend',box);T('rmanse_show');
+  }
+
+  /* 궁합 결과: 점수 바로 아래에 두 사람 사주에서 찾은 것 + 7,900원 */
+  var C_UNPAID='.premiumPreview,[data-glf-buy="compat"]',C_BTNS='[data-glf-buy="compat"],.premiumLock button';
+  var C_TRUST='결제하면 바로 열려요 · 한 번 결제로 이 궁합은 계속 다시 볼 수 있어요';
+  function compatHook(v){
+    var old=v.querySelector(':scope > .gcvHook');
+    var peek=v.querySelector('.glfCard .glfPeek');
+    if(!peek){if(old)old.remove();return;}
+    if(old)return;
+    var anchor=v.querySelector(':scope > .matchHero');if(!anchor)return;
+    var rows=peek.querySelectorAll('.glfPeekRow');if(!rows.length)return;
+    var box=doc.createElement('section');box.className='gcvHook gcvPair';
+    var h=doc.createElement('b');h.className='gcvT';h.textContent='💞 두 사람 사주에서 미리 찾은 것';box.appendChild(h);
+    for(var i=0;i<rows.length&&i<2;i++){var c=rows[i].cloneNode(true);c.className='gcvRow';var em=c.querySelector('em');if(em)em.remove();box.appendChild(c);}
+    var s=doc.createElement('p');s.className='gcvS';s.textContent='점수보다 중요한 건 시기예요. 둘이 언제 가까워지고 언제 부딪히는지, 그때 어떻게 하면 좋은지는 프리미엄 궁합에서 알려 줘요.';box.appendChild(s);
+    var b=doc.createElement('button');b.type='button';b.className='gcvGo';b.textContent='두 사람 시기 전부 열기 · 7,900원 ›';
+    b.addEventListener('click',function(){buy('ctop_buy',true);});box.appendChild(b);
+    anchor.insertAdjacentElement('afterend',box);T('ctop_show');
+  }
+  function compatTrust(v){
+    var bs=v.querySelectorAll(C_BTNS);
+    for(var i=0;i<bs.length;i++){var b=bs[i],n=b.nextElementSibling;if(n&&n.classList.contains('gcvTrust'))continue;
+      var p=doc.createElement('p');p.className='gcvTrust';p.textContent=C_TRUST;b.insertAdjacentElement('afterend',p);}
+  }
+  function applyCompat(){
+    var v=doc.getElementById('matchView');if(!v)return;
+    if(!v.querySelector(C_UNPAID)){var o=v.querySelector(':scope > .gcvHook');if(o)o.remove();return;}
+    try{compatHook(v);}catch(_e){}
+    try{compatTrust(v);}catch(_e){}
+  }
+
   var busy=false;
   function apply(){
     busy=false;
+    try{applyCompat();}catch(_e){}
     var v=doc.getElementById('resultView');if(!v)return;
     if(!v.querySelector(UNPAID)){
       var o=v.querySelector(':scope > .gcvHook');if(o)o.remove();
@@ -98,11 +143,14 @@
     try{hook(v);}catch(_e){}
     try{locks(v);}catch(_e){}
     try{trust(v);}catch(_e){}
+    try{manse(v);}catch(_e){}
   }
   function schedule(){if(busy)return;busy=true;setTimeout(apply,150);}
   function start(){
     var v=doc.getElementById('resultView');
-    if(v&&root.MutationObserver)new MutationObserver(schedule).observe(v,{childList:true,subtree:true});
+    if(v&&root.MutationObserver)new MutationObserver(schedule).observe(v,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
+    var mv=doc.getElementById('matchView');
+    if(mv&&root.MutationObserver)new MutationObserver(schedule).observe(mv,{childList:true,subtree:true});
     schedule();
   }
   if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',start,{once:true});else start();
