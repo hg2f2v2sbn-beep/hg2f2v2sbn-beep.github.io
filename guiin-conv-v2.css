@@ -1,0 +1,12 @@
+/* 결과 화면 전환 보완 v2 */
+#resultView .gcvHook{margin:12px 0 14px;padding:15px 15px 14px;border-radius:18px;background:#fff6e6;border:1.5px solid #f0d29c;box-shadow:0 4px 14px rgba(160,110,40,.08)}
+#resultView .gcvHook .gcvT{display:block;font-size:15px;font-weight:900;color:#8a5a1c;margin-bottom:6px}
+#resultView .gcvHook .gcvRow{display:flex;gap:8px;align-items:flex-start;font-size:14.5px;line-height:1.55;color:#3a3127;padding:7px 0;border-top:1px dashed #efdcbc;word-break:keep-all}
+#resultView .gcvHook .gcvRow:first-of-type{border-top:0}
+#resultView .gcvHook .gcvRow i{font-style:normal;flex:0 0 auto}
+#resultView .gcvHook .gcvS{margin:6px 0 12px;font-size:13px;line-height:1.5;color:#8a6a40;word-break:keep-all}
+#resultView .gcvHook .gcvGo{display:block;width:100%;min-height:50px;border:0;border-radius:14px;background:#2f6b47;color:#fff;font-size:16px;font-weight:900;cursor:pointer}
+#resultView .gptrCard li.lock[data-gcv]{cursor:pointer}
+#resultView .gptrCard li.lock[data-gcv]{opacity:.85}
+#resultView .gptrCard li.lock[data-gcv] p{color:#8a6a40;font-weight:700}
+#resultView .gcvTrust{margin:8px 0 0;text-align:center;font-size:12.5px;line-height:1.45;color:#8a7f6e;word-break:keep-all}

@@ -1,0 +1,98 @@
+/* 귀인사주 결과 화면 → 평생사주 결제 전환 보완 v2
+ * 1) 첫 화면(만세력 카드 위)에 "내 사주에서 미리 찾은 것" 요약 + 결제 버튼
+ * 2) 잠긴 항목의 "평생사주에서 열려"를 무엇을 알려 주는지 구체적으로 바꾸고, 누르면 결제로 연결
+ * 3) 결제 버튼 아래에 안심 문구
+ * 미결제 화면에서만 동작하고, 결제가 확인되면 1)은 사라짐. */
+(function(root){
+  'use strict';
+  var doc=root.document;if(!doc)return;
+  var UNPAID='[data-gptr-buy],.premiumPreview,[data-glf-buy="saju"]';
+  var BTNS='[data-gptr-buy],[data-glf-buy="saju"],.premiumLock button';
+  var LOCK={
+    '잘 맞는 일':'맞는 직업 이름까지 콕 집어 알려 줘요',
+    '지금 대운':'지금 10년이 어떤 시기인지, 언제 바뀌는지',
+    '잘 맞는 사람':'어떤 사람을 만나야 편하고 잘 풀리는지',
+    '감정 패턴':'지치고 우울해질 때 왜 그런지, 푸는 법',
+    '이럴 때 답답해':'내가 유독 답답해지는 순간과 이유'
+  };
+  var TRUST='결제하면 바로 열려요 · 한 번 결제로 이 사주는 계속 다시 볼 수 있어요';
+
+  function T(n){try{root.__guiinTrack&&root.__guiinTrack.once('screen',n);}catch(_e){}}
+  function buy(src){
+    T(src);
+    try{
+      if(typeof root.guiinPaymentCenterStart==='function'){root.guiinPaymentCenterStart('LIFETIME_SAJU');return;}
+      if(typeof root.openPremiumPay==='function')root.openPremiumPay();
+    }catch(_e){}
+  }
+  function nameOf(){
+    try{if(typeof root.currentName==='function'){var n=root.currentName();if(n)return String(n);}}catch(_e){}
+    return '';
+  }
+
+  function hook(v){
+    var old=v.querySelector(':scope > .gcvHook');
+    var peek=v.querySelector('.glfCard .glfPeek');
+    if(!peek){if(old)old.remove();return;}
+    if(old)return;
+    var anchor=v.querySelector(':scope > .manseSnapshot');if(!anchor)return;
+    var rows=peek.querySelectorAll('.glfPeekRow');if(!rows.length)return;
+    var box=doc.createElement('section');box.className='gcvHook';
+    var nm=nameOf();
+    var h=doc.createElement('b');h.className='gcvT';h.textContent='🔍 '+(nm?nm+'님 ':'내 ')+'사주에서 미리 찾은 것';box.appendChild(h);
+    for(var i=0;i<rows.length&&i<2;i++){
+      var c=rows[i].cloneNode(true);c.className='gcvRow';
+      var em=c.querySelector('em');if(em)em.remove();
+      box.appendChild(c);
+    }
+    var s=doc.createElement('p');s.className='gcvS';s.textContent='그게 정확히 언제인지, 그때 뭘 하면 좋은지는 평생사주에서 알려 줘요.';box.appendChild(s);
+    var b=doc.createElement('button');b.type='button';b.className='gcvGo';b.textContent='언제인지 전부 열기 · 5,900원 ›';
+    b.addEventListener('click',function(){buy('rtop_buy');});
+    box.appendChild(b);
+    anchor.parentNode.insertBefore(box,anchor);
+    T('rtop_show');
+  }
+
+  function locks(v){
+    var li=v.querySelectorAll('.gptrCard li.lock');
+    for(var i=0;i<li.length;i++){
+      var x=li[i];if(x.getAttribute('data-gcv'))continue;
+      var k=(x.querySelector('b')||{}).textContent||'';
+      var p=x.querySelector('p');
+      if(p&&LOCK[k.trim()])p.textContent='🔒 '+LOCK[k.trim()];
+      x.setAttribute('data-gcv','1');x.setAttribute('role','button');x.tabIndex=0;
+      x.addEventListener('click',function(){buy('rlock_buy');});
+      x.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();buy('rlock_buy');}});
+    }
+  }
+
+  function trust(v){
+    var bs=v.querySelectorAll(BTNS);
+    for(var i=0;i<bs.length;i++){
+      var b=bs[i],n=b.nextElementSibling;
+      if(n&&n.classList.contains('gcvTrust'))continue;
+      var p=doc.createElement('p');p.className='gcvTrust';p.textContent=TRUST;
+      b.insertAdjacentElement('afterend',p);
+    }
+  }
+
+  var busy=false;
+  function apply(){
+    busy=false;
+    var v=doc.getElementById('resultView');if(!v)return;
+    if(!v.querySelector(UNPAID)){
+      var o=v.querySelector(':scope > .gcvHook');if(o)o.remove();
+      return;
+    }
+    try{hook(v);}catch(_e){}
+    try{locks(v);}catch(_e){}
+    try{trust(v);}catch(_e){}
+  }
+  function schedule(){if(busy)return;busy=true;setTimeout(apply,150);}
+  function start(){
+    var v=doc.getElementById('resultView');
+    if(v&&root.MutationObserver)new MutationObserver(schedule).observe(v,{childList:true,subtree:true});
+    schedule();
+  }
+  if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',start,{once:true});else start();
+})(typeof window!=='undefined'?window:this);
