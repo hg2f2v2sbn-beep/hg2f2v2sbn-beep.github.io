@@ -120,13 +120,23 @@ function yearScoreMoney(c,C,y,tier){
  var rel=c.pillars.day.branch&&LIUHE[c.pillars.day.branch]===yp.branch;if(rel)s+=0.5;
  return {y:y,yp:yp,s:s,gs:gs,gb:gb,luck:L,why:why,weak:hasJae&&tier==='약',rob:gs==='겁재'||gb==='겁재'};
 }
+/* 가까운 3년(연말이면 내년부터) 안에서 점수가 충분한 해 중 가장 좋은 해 */
+function startYear(){return nowYear()+((new Date().getMonth()+1)>=10?1:0)}
+function nearPick(arr){
+ var start=startYear();
+ var c=arr.filter(function(x){return x.y>=start&&x.y<start+3&&x.s>=1.2});
+ if(!c.length)return null;
+ return c.sort(function(a,b){return b.s-a.s||a.y-b.y})[0];
+}
 var MONEYWHY={정재:'꾸준히 쌓이는 돈',편재:'크게 한 번 들어오는 돈, 부수입, 기회성 수입',식신:'잘하는 걸 반복해서 버는 돈',상관:'아이디어와 말재주로 버는 돈'};
 function secMoney(c,C,tier){
  var y0=nowYear(),arr=[];for(var y=y0;y<y0+10;y++)arr.push(yearScoreMoney(c,C,y,tier));
+ var sy=startYear(),ar2=arr.filter(function(x){return x.y>=sy});if(ar2.length)arr=ar2;
  var best=arr.slice().sort(function(a,b){return b.s-a.s}).slice(0,3).sort(function(a,b){return a.y-b.y});
  var bad=arr.filter(function(x){return x.rob}).slice(0,2);
  var top=arr.slice().sort(function(a,b){return b.s-a.s})[0];
- var ans='돈이 제일 크게 붙는 해는 '+top.y+'년('+top.yp.ko+'), 그다음은 '+best.filter(function(x){return x.y!==top.y}).map(function(x){return x.y+'년'}).join('·')+'이야.';
+ var np=nearPick(arr),near=np||top;
+ var ans=!np&&top.y>=sy+3?'가까운 3년('+sy+'~'+(sy+2)+')은 돈의 별이 약하게 들어와서 실력과 기반을 쌓는 시기고, 돈이 제일 크게 붙는 해는 '+top.y+'년('+top.yp.ko+')이야.':near.y===top.y?'돈이 제일 크게 붙는 해는 '+top.y+'년('+top.yp.ko+'), 그다음은 '+best.filter(function(x){return x.y!==top.y}).map(function(x){return x.y+'년'}).join('·')+'이야.':'가까운 3년 안에 돈이 붙는 해는 '+near.y+'년('+near.yp.ko+')이고, 10년 중 제일 크게 붙는 해는 '+top.y+'년('+top.yp.ko+')이야.';
  var ps=['결론부터. '+ans+' 앞으로 10년의 해마다 들어오는 글자를 네 일간에 대 보고, 돈의 별(재성)과 돈을 만드는 별(식상)이 들어오는 해, 대운이 받쳐 주는 해를 골랐어.'];
  best.forEach(function(x){
   var kinds=x.why.filter(function(g){return MONEYWHY[g]}).map(function(g){return MONEYWHY[g]});
@@ -145,7 +155,7 @@ function secMoney(c,C,tier){
  var pc=C.pct.재성;
  if(C.low==='재성'||pc<=8)ps.push('참고로 네 원국엔 재성이 얇아. 돈 욕심이 없는 게 아니라, 돈을 "쫓는" 방식이 안 맞는 거야. 잘하는 걸 키우면 돈이 따라오는 순서로 가.');
  else if(C.top==='재성'||pc>=30)ps.push('네 원국엔 재성이 두꺼워. 돈 감각은 타고났는데, 그만큼 돈 때문에 마음이 흔들리기도 쉬워. 수입보다 "지키는 규칙"이 먼저야.');
- return {id:'ans-money',title:'그래서 돈은 언제 버는데?',answer:ans,paragraphs:ps,evidence:'앞으로 10년 세운 대조 · 재성·식상·겁재'};
+ return {id:'ans-money',title:'그래서 돈은 언제 버는데?',answer:ans,yr:(np||top).y,paragraphs:ps,evidence:'앞으로 10년 세운 대조 · 재성·식상·겁재'};
 }
 
 /* ---------- 4. 연애 시기 ---------- */
@@ -171,10 +181,11 @@ function secLove(c,C){
  var d=c.pillars.day.stem,db=c.pillars.day.branch,yb=c.pillars.year.branch,g=(c.input&&c.input.gender)||'';
  var want=g==='남'?['재성']:g==='여'?['관성']:['재성','관성'];
  var th=[TAOHUA[db],TAOHUA[yb]].filter(Boolean);
- var arr=loveArr(c);
+ var arr=loveArr(c),sy=startYear(),ar2=arr.filter(function(x){return x.y>=sy});if(ar2.length)arr=ar2;
  var best=arr.slice().sort(function(a,b){return b.s-a.s}).slice(0,3).sort(function(a,b){return a.y-b.y});
  var top=arr.slice().sort(function(a,b){return b.s-a.s})[0];
- var ans='연애운이 제일 세게 들어오는 해는 '+top.y+'년('+top.yp.ko+'), 그다음은 '+best.filter(function(x){return x.y!==top.y}).map(function(x){return x.y+'년'}).join('·')+'이야.';
+ var np=nearPick(arr),near=np||top;
+ var ans=!np&&top.y>=sy+3?'가까운 3년('+sy+'~'+(sy+2)+')은 인연의 별이 약하게 들어와서 나를 가꾸고 사람을 넓히는 시기고, 연애운이 제일 세게 들어오는 해는 '+top.y+'년('+top.yp.ko+')이야.':near.y===top.y?'연애운이 제일 세게 들어오는 해는 '+top.y+'년('+top.yp.ko+'), 그다음은 '+best.filter(function(x){return x.y!==top.y}).map(function(x){return x.y+'년'}).join('·')+'이야.':'가까운 3년 안에 연애운이 들어오는 해는 '+near.y+'년('+near.yp.ko+')이고, 10년 중 제일 세게 들어오는 해는 '+top.y+'년('+top.yp.ko+')이야.';
  var ps=['결론부터. '+ans];
  ps.push('어떻게 골랐는지 말해 줄게. 전통 명리에서는 '+(g==='남'?'남자에게 재성':g==='여'?'여자에게 관성':'재성과 관성')+'을 인연의 별로 봐. 여기에 배우자 자리(일지 '+db+')와 합이 되는 해, 사람을 끌어당기는 도화가 뜨는 해, 네 일간과 천간합이 되는 해를 같이 겹쳐서 점수를 매겼어.');
  var LT={'일지 육합':'배우자 자리와 그해 글자가 육합으로 묶여. 자연스럽게 가까워지고, 관계가 "정식"이 되기 쉬운 흐름이야','일지 삼합':'배우자 자리와 삼합으로 이어져서, 모임이나 소개처럼 사람을 통해 인연이 이어지기 쉬워','도화':'도화가 떠서 네 매력이 평소보다 잘 보여. 연락 오는 사람이 늘고, 새로운 만남의 장이 열려','일지 충':'배우자 자리가 흔들리는 해야. 새 사람이 들어오거나, 지금 관계가 크게 바뀌는 계기가 생겨','일간 합':'네 일간과 그해 천간이 합을 해서, 마음이 확 끌리는 사람이 나타나기 쉬워'};
@@ -189,7 +200,7 @@ function secLove(c,C){
  if(chs.length)ps.push(chs[0].y+'년('+chs[0].yp.ko+')은 배우자 자리가 충을 맞는 해야. 이별이나 이사처럼 관계의 모양이 바뀌기 쉬우니, 이 해엔 감정적으로 결론 내리지 말고 한 달만 시간을 두고 정해.');
  var dg=GRP[tg(d,BMAIN[db])];
  ps.push({비겁:'네 일지에는 비겁이 앉아 있어서, 친구처럼 시작한 관계가 오래 가. 소개팅보다 동호회, 스터디, 운동 모임에서 만난 인연을 눈여겨봐.',식상:'네 일지에는 식상이 앉아 있어서, 말이 잘 통하고 같이 웃는 사람에게 빠져. 대화가 재미없으면 조건이 좋아도 오래 못 가.',재성:'네 일지에는 재성이 앉아 있어서, 생활이 그려지는 사람에게 마음이 가. 같이 장 보고 밥 먹는 장면이 편한 사람이 네 사람이야.',관성:'네 일지에는 관성이 앉아 있어서, 믿음직하고 약속을 지키는 사람에게 끌려. 가볍게 시작하는 관계보다 천천히 신뢰가 쌓이는 관계가 맞아.',인성:'네 일지에는 인성이 앉아 있어서, 나를 이해해 주고 기다려 주는 사람에게 마음을 열어. 급하게 다가오는 사람은 오히려 부담스러워.'}[dg]||'');
- return {id:'ans-love',title:'그래서 내 연애운은 언제 들어오는데?',answer:ans,paragraphs:ps.filter(Boolean),evidence:'일지 '+db+' · 도화 기준 '+th.join('·')+' · 앞으로 10년 세운 대조'};
+ return {id:'ans-love',title:'그래서 내 연애운은 언제 들어오는데?',answer:ans,yr:(np||top).y,paragraphs:ps.filter(Boolean),evidence:'일지 '+db+' · 도화 기준 '+th.join('·')+' · 앞으로 10년 세운 대조'};
 }
 
 /* ---------- 5. 맞는 사람 ---------- */
@@ -250,9 +261,9 @@ function build(c){
 }
 function teaser(c){
  try{var rows=build(c),pick=function(id){var r=rows.find(function(x){return x.id===id});return r&&r.answer};
-  var m=pick('ans-money'),l=pick('ans-love'),w=pick('ans-work');
+  var m=pick('ans-money'),l=pick('ans-love'),w=pick('ans-work'),yr=function(id){var r=rows.find(function(x){return x.id===id});return r&&r.yr?r.yr+'년':''};
   var yy=function(s){var x=String(s||'').match(/(\d{4})년/);return x?x[1]+'년':''};
-  return {money:yy(m),love:yy(l),work:w?String(w).replace(/^제일 잘 맞는 건 /,'').replace(/ 쪽이야\.$/,'').split(',')[0]:''};
+  return {money:yr('ans-money')||yy(m),love:yr('ans-love')||yy(l),work:w?String(w).replace(/^제일 잘 맞는 건 /,'').replace(/ 쪽이야\.$/,'').split(',')[0]:''};
  }catch(_e){return null}
 }
 /* 따로 섹션을 만들지 않고, 기존 풀이의 해당 섹션 안에 이어 붙인다 */
@@ -267,7 +278,7 @@ function mergeInto(base,add){
    if(lead)row.paragraphs=[lead].concat(row.paragraphs||[]);
   }else{
    if(ps[0]){var f0=String(ps[0]).replace(/^결론부터( 말할게)?\.\s*/,'');
-    f0=f0.replace(/^돈이 제일 크게 붙는 해는/,'그럼 돈은 언제 붙냐면, 제일 크게 붙는 해는').replace(/^연애운이 제일 세게 들어오는 해는/,'그럼 연애운은 언제 들어오냐면, 제일 세게 들어오는 해는').replace(/^너랑 잘 맞는 건/,'그래서 너랑 잘 맞는 사람은 딱 이래.').replace(/^네 가라앉음은 주로/,'그럼 기분이 가라앉는 건 어디서 오냐면, 주로').replace(/^장점은/,'딱 정리하면, 장점은');
+    f0=f0.replace(/^돈이 제일 크게 붙는 해는/,'그럼 돈은 언제 붙냐면, 제일 크게 붙는 해는').replace(/^연애운이 제일 세게 들어오는 해는/,'그럼 연애운은 언제 들어오냐면, 제일 세게 들어오는 해는').replace(/^가까운 3년 안에 돈이 붙는 해는/,'그럼 돈은 언제 붙냐면, 가까운 3년 안에서는').replace(/^가까운 3년 안에 연애운이 들어오는 해는/,'그럼 연애운은 언제 들어오냐면, 가까운 3년 안에서는').replace(/^가까운 3년\(/,'그럼 언제냐면, 가까운 3년(').replace(/^너랑 잘 맞는 건/,'그래서 너랑 잘 맞는 사람은 딱 이래.').replace(/^네 가라앉음은 주로/,'그럼 기분이 가라앉는 건 어디서 오냐면, 주로').replace(/^장점은/,'딱 정리하면, 장점은');
     ps[0]=f0;}
    row.paragraphs=(row.paragraphs||[]).concat(ps);
   }
