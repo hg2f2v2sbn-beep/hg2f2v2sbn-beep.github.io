@@ -131,6 +131,45 @@
     try{compatTrust(v);}catch(_e){}
   }
 
+  /* 무료 맛보기: 유료 해설 14개 중 '나에게 맞는 일'을 실제 내 명식으로 한 편 통째로 보여 주고,
+   * 이 깊이로 돈·연애 시기까지 열리는 걸 결제로 연결한다. 시기(연·월)는 여기서 보여 주지 않는다. */
+  var SAMPLE_SHOW=4;
+  function sample(v){
+    var card=v.querySelector(':scope > .glfCard');
+    var old=v.querySelector(':scope > .gcvSample');
+    if(!card||!card.querySelector('[data-glf-buy="saju"]')){if(old)old.remove();return;}
+    if(old)return;
+    var A=root.GuiinAnswers,c=null;try{c=(typeof chart!=='undefined')?chart:null;}catch(_e){}
+    if(!A||!c)return;
+    var rows;try{rows=A.build(c)||[];}catch(_e){return;}
+    var w=null;for(var i=0;i<rows.length;i++)if(rows[i].id==='ans-work'){w=rows[i];break;}
+    if(!w)return;
+    var ps=(w.paragraphs||[]).map(function(x){return String(x||'').trim();}).filter(Boolean)
+      .filter(function(x){return !/^결론부터 말하면/.test(x);});
+    if(ps.length<2)return;
+    var nm=nameOf();
+    var box=doc.createElement('section');box.className='gcvSample';
+    var k=doc.createElement('p');k.className='gcvSK';k.textContent='🎁 평생사주 14개 이야기 중 1편 무료로 열어 드려요';box.appendChild(k);
+    var h=doc.createElement('h3');h.className='gcvSH';h.textContent=(nm?nm+'님에게':'나에게')+' 맞는 일';box.appendChild(h);
+    if(w.answer){var a=doc.createElement('p');a.className='gcvSA';a.textContent=String(w.answer);box.appendChild(a);}
+    var body=doc.createElement('div');body.className='gcvSB';
+    ps.forEach(function(x,j){var p=doc.createElement('p');p.textContent=x;if(j>=SAMPLE_SHOW)p.hidden=true;body.appendChild(p);});
+    box.appendChild(body);
+    if(ps.length>SAMPLE_SHOW){
+      var more=doc.createElement('button');more.type='button';more.className='gcvSM';more.textContent='계속 읽기 ▾ ('+(ps.length-SAMPLE_SHOW)+'문단 더)';
+      more.addEventListener('click',function(){var hs=body.querySelectorAll('p[hidden]');for(var j=0;j<hs.length;j++)hs[j].hidden=false;more.remove();T('rsample_more');});
+      box.appendChild(more);
+    }
+    var nx=doc.createElement('div');nx.className='gcvSN';
+    nx.innerHTML='<b>이런 깊이로 나머지 13편이 이어져요</b><span>💰 돈이 붙는 해와 달</span><span>💞 연애·결혼운이 들어오는 해</span><span>🧭 지금 대운과 앞으로 10년</span><span>🤝 곁에 두면 좋은 사람</span>';
+    box.appendChild(nx);
+    var b=doc.createElement('button');b.type='button';b.className='gcvGo';b.textContent='나머지 13편 전부 열기 · 5,900원 ›';
+    b.addEventListener('click',function(){buy('rsample_buy');});box.appendChild(b);
+    var tr=doc.createElement('p');tr.className='gcvTrust';tr.textContent=TRUST;box.appendChild(tr);
+    card.parentNode.insertBefore(box,card);
+    T('rsample_show');
+  }
+
   /* 평생사주 결제창: 내 사주에서 찾은 것을 결제창 위에 다시 보여 주고,
    * 동의 체크 없이 흐린 결제 버튼을 누르면 동의 칸을 짚어 준다. (11/25 결제창 연 8명 중 7명 이탈) */
   function sheetMine(){
@@ -182,6 +221,7 @@
     try{locks(v);}catch(_e){}
     try{trust(v);}catch(_e){}
     try{manse(v);}catch(_e){}
+    try{sample(v);}catch(_e){}
   }
   function schedule(){if(busy)return;busy=true;setTimeout(apply,150);}
   function start(){
