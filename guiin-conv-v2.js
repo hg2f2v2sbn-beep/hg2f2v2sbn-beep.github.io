@@ -131,6 +131,44 @@
     try{compatTrust(v);}catch(_e){}
   }
 
+  /* 평생사주 결제창: 내 사주에서 찾은 것을 결제창 위에 다시 보여 주고,
+   * 동의 체크 없이 흐린 결제 버튼을 누르면 동의 칸을 짚어 준다. (11/25 결제창 연 8명 중 7명 이탈) */
+  function sheetMine(){
+    var sh=doc.getElementById('premiumSheet');if(!sh)return;
+    var old=sh.querySelector('.gcvMine');if(old)old.remove();
+    var rv=doc.getElementById('resultView');if(!rv)return;
+    var peek=rv.querySelector('.glfCard .glfPeek');if(!peek)return;
+    var rows=peek.querySelectorAll('.glfPeekRow');if(!rows.length)return;
+    var price=sh.querySelector('.price');if(!price)return;
+    var nm=nameOf();
+    var box=doc.createElement('div');box.className='gcvMine';
+    var h=doc.createElement('b');h.className='gcvMineT';h.textContent='📌 '+(nm?nm+'님':'내')+' 사주에서 이미 찾은 것';box.appendChild(h);
+    for(var i=0;i<rows.length&&i<2;i++){var c=rows[i].cloneNode(true);c.className='gcvMineR';var em=c.querySelector('em');if(em)em.remove();box.appendChild(c);}
+    var s=doc.createElement('p');s.className='gcvMineS';s.textContent='결제하면 그게 정확히 몇 년 몇 월인지, 그때 뭘 하면 좋은지 바로 열려요.';box.appendChild(s);
+    price.insertAdjacentElement('afterend',box);
+    T('psheet_mine');
+  }
+  function nudgeConsent(){
+    var c=doc.getElementById('premiumPayConsent');if(!c||c.checked)return;
+    var lab=c.closest('label');if(!lab)return;
+    lab.classList.remove('gcvNudge');void lab.offsetWidth;lab.classList.add('gcvNudge');
+    try{lab.scrollIntoView({block:'center',behavior:'smooth'});}catch(_e){}
+    T('psheet_noconsent_tap');
+  }
+  function sheetStart(){
+    var sh=doc.getElementById('premiumSheet');if(!sh||sh.getAttribute('data-gcv'))return;
+    sh.setAttribute('data-gcv','1');
+    var was=sh.classList.contains('on');
+    if(root.MutationObserver)new MutationObserver(function(){var on=sh.classList.contains('on');if(on&&!was)sheetMine();was=on;}).observe(sh,{attributes:true,attributeFilter:['class']});
+    /* 흐린(disabled) 버튼은 클릭이 안 잡혀서, CSS로 클릭을 통과시킨 뒤 버튼 자리를 눌렀는지 본다 */
+    sh.addEventListener('click',function(e){
+      var b=doc.getElementById('premiumPayBtn');if(!b||!b.disabled)return;
+      var r=b.getBoundingClientRect();
+      if(e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom)nudgeConsent();
+    });
+    doc.addEventListener('change',function(e){if(e.target&&e.target.id==='premiumPayConsent'&&e.target.checked)T('psheet_consent');},true);
+  }
+
   var busy=false;
   function apply(){
     busy=false;
@@ -147,6 +185,7 @@
   }
   function schedule(){if(busy)return;busy=true;setTimeout(apply,150);}
   function start(){
+    try{sheetStart();}catch(_e){}
     var v=doc.getElementById('resultView');
     if(v&&root.MutationObserver)new MutationObserver(schedule).observe(v,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
     var mv=doc.getElementById('matchView');
