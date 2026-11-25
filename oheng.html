@@ -69,7 +69,7 @@ input:focus,select:focus{outline:none;border-color:#7b61c9}
 .foot a{color:#8e86a8}
 .postHook{text-align:center;padding:14px 16px!important;margin-bottom:12px;background:linear-gradient(145deg,#f6f0ff,#fff)!important}.postHook b{display:block;font-size:17px;color:#5b3fb8;margin-bottom:4px}.postHook span{font-size:14px;color:#6b6480}.myLine{margin:10px 0 12px;padding:14px;border-radius:16px;background:#f6f0ff;font-size:20px;font-weight:800;line-height:1.45;color:#3a2a70;word-break:keep-all}.moreTopics{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:12px}.moreTopics a{font-size:13px;padding:7px 11px;border-radius:999px;background:#fff;border:1px solid #e3d9fb;color:#5b3fb8;text-decoration:none;font-weight:700}
 .ijMore{display:inline-block;margin-top:10px;padding:8px 14px;border-radius:999px;background:#efe8ff;color:#5b3fb8;font-size:14px;font-weight:800;text-decoration:none}.allList{margin-top:12px;text-align:left;display:grid;gap:8px}.allMore{display:grid;gap:8px}.allLockBox{margin:4px 0 2px;padding:13px 13px 14px;border-radius:16px;background:#f6f1ff;border:1.5px dashed #c9b5f2}.allLockT{font-size:14px;font-weight:900;color:#5b3fb8;margin-bottom:8px}.allLock{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;margin-top:6px;border-radius:12px;background:#fff;text-decoration:none;color:#3a3150;font-size:14.5px;font-weight:700}.allLock b{color:#b9a3e6;letter-spacing:1px;filter:blur(.4px)}.allLockS{margin:10px 2px 10px;font-size:13px;line-height:1.5;color:#6a6185;word-break:keep-all}.allLockGo{display:block;text-align:center;padding:13px;border-radius:14px;background:#6b4fc4;color:#fff;font-size:15.5px;font-weight:900;text-decoration:none}.allMore[hidden]{display:none}.allRow{display:block;padding:11px 13px;border-radius:14px;background:#f6f0ff;text-decoration:none}.allRow span{display:block;font-size:12px;font-weight:800;color:#8e7cc8;margin-bottom:3px}.allRow b{display:block;font-size:15px;line-height:1.45;color:#3a2a70;word-break:keep-all}.allBtn{margin-top:10px;width:100%;padding:11px;border:0;border-radius:14px;background:#efe8ff;color:#5b3fb8;font-size:14px;font-weight:800}
-.ilju{text-align:center;padding:20px 18px!important}.ilju .k{font-size:14px;font-weight:800;color:#8e86a8}.ilju .ij{margin:4px 0 6px;font-size:40px;font-weight:900;letter-spacing:-.03em;color:#2b2140}.ilju p{margin:0;font-size:14px;line-height:1.5;color:#6b6480}.ilju p b{color:#2b2140}
+.tease{display:none;margin-top:14px;padding:18px!important;text-decoration:none;color:inherit;background:linear-gradient(160deg,#fff,#f6f0ff)!important;border:1.5px solid #d9ccf5!important}.tease .tk{font-size:15px;font-weight:900;color:#5b3fb8;margin-bottom:10px}.tease .tr{display:flex;justify-content:space-between;align-items:center;padding:10px 2px;border-top:1px solid #eee6fb;font-size:15px;color:#3a3150}.tease .tr b{font-size:17px;letter-spacing:.04em;color:#2b2140}.tease .tb{margin-top:12px;padding:14px;border-radius:14px;background:#7b5ce0;color:#fff;text-align:center;font-size:16px;font-weight:900}.ilju{text-align:center;padding:20px 18px!important}.ilju .k{font-size:14px;font-weight:800;color:#8e86a8}.ilju .ij{margin:4px 0 6px;font-size:40px;font-weight:900;letter-spacing:-.03em;color:#2b2140}.ilju p{margin:0;font-size:14px;line-height:1.5;color:#6b6480}.ilju p b{color:#2b2140}
 </style>
 </head>
 <body>
@@ -102,6 +102,7 @@ input:focus,select:focus{outline:none;border-color:#7b61c9}
 
   <div id="result">
     <div class="card ilju" id="iljuCard"></div>
+    <a class="card tease" id="teaseCard" href="/#saju" onclick="try{window.__guiinTrack&&__guiinTrack.send('screen','oheng_tease_click')}catch(_e){}"></a>
     <div class="card type" id="typeCard" style="margin-top:14px"></div>
     <div class="card" style="margin-top:14px">
       <div style="font-size:16px;font-weight:800">내 사주 속 오행 비율</div>
@@ -249,6 +250,10 @@ const friendSVG=(t,x,y,s=1,face='happy')=>`<g transform="translate(${x} ${y}) sc
     $('traits').innerHTML=`<div class="trait" style="margin-top:0"><h3>💘 연애할 때</h3><p>${E.love}</p></div><div class="trait"><h3>💰 돈 버는 스타일</h3><p>${E.money}</p></div><div class="trait"><h3>🤝 잘 맞는 사람</h3><p>${E.match}</p></div><p style="margin-top:14px;font-size:14px;color:#8e86a8;line-height:1.5">여기까지는 맛보기예요. 내 일간(${last.day||''}일주)과 대운까지 보면 언제 돈이 들어오고, 언제 인연이 오는지까지 나와요.</p>`;
     const q=new URLSearchParams({oy:y,om:m,od:d,ocal:last.cal,og:last.g});if(last.day)q.set('oday',last.day);if(POST&&POST.t)q.set('ot',POST.t.replace(/^일주별 /,''));if(h!=='')q.set('oh',h);if(last.leap)q.set('oleap','1');
     $('fullLink').href='/?'+q.toString()+'#saju';
+    $('teaseCard').href=$('fullLink').href;
+    $('teaseCard').innerHTML=`<div class="tk">🔒 내 사주 전체에서 이어서 보기</div><div class="tr"><span>💰 돈 들어오는 해</span><b>20●●년</b></div><div class="tr"><span>💘 연애운 들어오는 해</span><b>20●●년</b></div><div class="tb">앞으로 5년 중 언제인지 무료로 보기 ›</div>`;
+    $('teaseCard').style.display='block';
+    try{window.__guiinTrack&&__guiinTrack.once('screen','oheng_tease_seen')}catch(_e){}
     $('result').style.display='block';
     setTimeout(()=>$('result').scrollIntoView({behavior:'smooth',block:'start'}),50);
   });
