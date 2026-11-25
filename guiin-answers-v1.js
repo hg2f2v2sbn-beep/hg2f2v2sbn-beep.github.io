@@ -120,24 +120,29 @@ function yearScoreMoney(c,C,y,tier){
  var rel=c.pillars.day.branch&&LIUHE[c.pillars.day.branch]===yp.branch;if(rel)s+=0.5;
  return {y:y,yp:yp,s:s,gs:gs,gb:gb,luck:L,why:why,weak:hasJae&&tier==='약',rob:gs==='겁재'||gb==='겁재'};
 }
-/* 가까운 3년(연말이면 내년부터) 안에서 점수가 충분한 해 중 가장 좋은 해 */
+/* 너무 먼 미래는 빼고, 앞으로 5년(10월 이후면 내년부터)만 본다 */
 function startYear(){return nowYear()+((new Date().getMonth()+1)>=10?1:0)}
-function nearPick(arr){
- var start=startYear();
- var c=arr.filter(function(x){return x.y>=start&&x.y<start+3&&x.s>=1.2});
- if(!c.length)return null;
- return c.sort(function(a,b){return b.s-a.s||a.y-b.y})[0];
+function five(all,kind){
+ var sy=startYear(),win=all.filter(function(x){return x.y>=sy&&x.y<sy+5});if(!win.length)win=all.slice(0,5);
+ var byS=win.slice().sort(function(a,b){return b.s-a.s||a.y-b.y}),top=byS[0];
+ var good=win.filter(function(x){return x.s>=1.2});
+ var near=good[0]||null;
+ var best=byS.filter(function(x){return x.s>0}).slice(0,3).sort(function(a,b){return a.y-b.y});if(!best.length)best=[top];
+ var M=kind==='money'?{noun:'돈이 붙는 해',big:'제일 크게 붙는 해',none:'앞으로 5년은 한 방보다 꾸준히 쌓는 흐름이고, 그중 돈이 제일 잘 붙는 해는 ',one:'돈이',y1g:'돈이 붙는 해야',y1b:'돈보다 실력과 기반을 다지는 해야'}:{noun:'연애운이 들어오는 해',big:'제일 세게 들어오는 해',none:'앞으로 5년은 인연이 천천히 오는 흐름이고, 그중 연애운이 제일 좋은 해는 ',one:'연애운이',y1g:'연애운이 들어오는 해야',y1b:'인연보다 나를 가꾸는 데 힘이 실리는 해야'};
+ var Y=function(x){return x.y+'년('+x.yp.ko+')'},ans;
+ if(!good.length)ans=M.none+Y(top)+'이야.';
+ else if(good.length===1)ans='앞으로 5년 중 '+M.noun+'는 '+Y(good[0])+'이야.';
+ else ans='앞으로 5년 중 '+M.noun+'는 가까운 순서로 '+good.slice(0,3).map(function(x){return x.y+'년'}).join('·')+'이고, 그중 '+M.big+'는 '+Y(top)+'이야.';
+ var y1=win[0];if(y1&&!(good.length===1&&good[0].y===y1.y))ans+=' 바로 '+(y1.y===nowYear()+1?'내년':'올해')+'('+y1.y+'년)만 보면 '+(y1.s>=1.2?M.y1g:M.y1b)+'.';
+ return {sy:sy,win:win,top:top,near:near,best:best,ans:ans};
 }
 var MONEYWHY={정재:'꾸준히 쌓이는 돈',편재:'크게 한 번 들어오는 돈, 부수입, 기회성 수입',식신:'잘하는 걸 반복해서 버는 돈',상관:'아이디어와 말재주로 버는 돈'};
 function secMoney(c,C,tier){
  var y0=nowYear(),arr=[];for(var y=y0;y<y0+10;y++)arr.push(yearScoreMoney(c,C,y,tier));
- var sy=startYear(),ar2=arr.filter(function(x){return x.y>=sy});if(ar2.length)arr=ar2;
- var best=arr.slice().sort(function(a,b){return b.s-a.s}).slice(0,3).sort(function(a,b){return a.y-b.y});
+ var F=five(arr,'money'),sy=F.sy,top=F.top,np=F.near,ans=F.ans;arr=F.win;
+ var best=F.best;
  var bad=arr.filter(function(x){return x.rob}).slice(0,2);
- var top=arr.slice().sort(function(a,b){return b.s-a.s})[0];
- var np=nearPick(arr),near=np||top;
- var ans=!np&&top.y>=sy+3?'가까운 3년('+sy+'~'+(sy+2)+')은 돈의 별이 약하게 들어와서 실력과 기반을 쌓는 시기고, 돈이 제일 크게 붙는 해는 '+top.y+'년('+top.yp.ko+')이야.':near.y===top.y?'돈이 제일 크게 붙는 해는 '+top.y+'년('+top.yp.ko+'), 그다음은 '+best.filter(function(x){return x.y!==top.y}).map(function(x){return x.y+'년'}).join('·')+'이야.':'가까운 3년 안에 돈이 붙는 해는 '+near.y+'년('+near.yp.ko+')이고, 10년 중 제일 크게 붙는 해는 '+top.y+'년('+top.yp.ko+')이야.';
- var ps=['결론부터. '+ans+' 앞으로 10년의 해마다 들어오는 글자를 네 일간에 대 보고, 돈의 별(재성)과 돈을 만드는 별(식상)이 들어오는 해, 대운이 받쳐 주는 해를 골랐어.'];
+ var ps=['결론부터. '+ans+' 앞으로 5년의 해마다 들어오는 글자를 네 일간에 대 보고, 돈의 별(재성)과 돈을 만드는 별(식상)이 들어오는 해, 대운이 받쳐 주는 해를 골랐어.'];
  best.forEach(function(x){
   var kinds=x.why.filter(function(g){return MONEYWHY[g]}).map(function(g){return MONEYWHY[g]});
   var line=x.y+'년('+x.yp.ko+'년)은 네 일간 기준으로 천간이 '+x.gs+', 지지가 '+J(x.gb,'이야','야')+'. ';
@@ -181,11 +186,8 @@ function secLove(c,C){
  var d=c.pillars.day.stem,db=c.pillars.day.branch,yb=c.pillars.year.branch,g=(c.input&&c.input.gender)||'';
  var want=g==='남'?['재성']:g==='여'?['관성']:['재성','관성'];
  var th=[TAOHUA[db],TAOHUA[yb]].filter(Boolean);
- var arr=loveArr(c),sy=startYear(),ar2=arr.filter(function(x){return x.y>=sy});if(ar2.length)arr=ar2;
- var best=arr.slice().sort(function(a,b){return b.s-a.s}).slice(0,3).sort(function(a,b){return a.y-b.y});
- var top=arr.slice().sort(function(a,b){return b.s-a.s})[0];
- var np=nearPick(arr),near=np||top;
- var ans=!np&&top.y>=sy+3?'가까운 3년('+sy+'~'+(sy+2)+')은 인연의 별이 약하게 들어와서 나를 가꾸고 사람을 넓히는 시기고, 연애운이 제일 세게 들어오는 해는 '+top.y+'년('+top.yp.ko+')이야.':near.y===top.y?'연애운이 제일 세게 들어오는 해는 '+top.y+'년('+top.yp.ko+'), 그다음은 '+best.filter(function(x){return x.y!==top.y}).map(function(x){return x.y+'년'}).join('·')+'이야.':'가까운 3년 안에 연애운이 들어오는 해는 '+near.y+'년('+near.yp.ko+')이고, 10년 중 제일 세게 들어오는 해는 '+top.y+'년('+top.yp.ko+')이야.';
+ var F=five(loveArr(c),'love'),sy=F.sy,top=F.top,np=F.near,ans=F.ans,arr=F.win;
+ var best=F.best;
  var ps=['결론부터. '+ans];
  ps.push('어떻게 골랐는지 말해 줄게. 전통 명리에서는 '+(g==='남'?'남자에게 재성':g==='여'?'여자에게 관성':'재성과 관성')+'을 인연의 별로 봐. 여기에 배우자 자리(일지 '+db+')와 합이 되는 해, 사람을 끌어당기는 도화가 뜨는 해, 네 일간과 천간합이 되는 해를 같이 겹쳐서 점수를 매겼어.');
  var LT={'일지 육합':'배우자 자리와 그해 글자가 육합으로 묶여. 자연스럽게 가까워지고, 관계가 "정식"이 되기 쉬운 흐름이야','일지 삼합':'배우자 자리와 삼합으로 이어져서, 모임이나 소개처럼 사람을 통해 인연이 이어지기 쉬워','도화':'도화가 떠서 네 매력이 평소보다 잘 보여. 연락 오는 사람이 늘고, 새로운 만남의 장이 열려','일지 충':'배우자 자리가 흔들리는 해야. 새 사람이 들어오거나, 지금 관계가 크게 바뀌는 계기가 생겨','일간 합':'네 일간과 그해 천간이 합을 해서, 마음이 확 끌리는 사람이 나타나기 쉬워'};
@@ -278,7 +280,7 @@ function mergeInto(base,add){
    if(lead)row.paragraphs=[lead].concat(row.paragraphs||[]);
   }else{
    if(ps[0]){var f0=String(ps[0]).replace(/^결론부터( 말할게)?\.\s*/,'');
-    f0=f0.replace(/^돈이 제일 크게 붙는 해는/,'그럼 돈은 언제 붙냐면, 제일 크게 붙는 해는').replace(/^연애운이 제일 세게 들어오는 해는/,'그럼 연애운은 언제 들어오냐면, 제일 세게 들어오는 해는').replace(/^가까운 3년 안에 돈이 붙는 해는/,'그럼 돈은 언제 붙냐면, 가까운 3년 안에서는').replace(/^가까운 3년 안에 연애운이 들어오는 해는/,'그럼 연애운은 언제 들어오냐면, 가까운 3년 안에서는').replace(/^가까운 3년\(/,'그럼 언제냐면, 가까운 3년(').replace(/^너랑 잘 맞는 건/,'그래서 너랑 잘 맞는 사람은 딱 이래.').replace(/^네 가라앉음은 주로/,'그럼 기분이 가라앉는 건 어디서 오냐면, 주로').replace(/^장점은/,'딱 정리하면, 장점은');
+    f0=f0.replace(/^돈이 제일 크게 붙는 해는/,'그럼 돈은 언제 붙냐면, 제일 크게 붙는 해는').replace(/^연애운이 제일 세게 들어오는 해는/,'그럼 연애운은 언제 들어오냐면, 제일 세게 들어오는 해는').replace(/^앞으로 5년 중 돈이/,'그럼 돈은 언제 붙냐면, 앞으로 5년 중 돈이').replace(/^앞으로 5년 중 연애운이/,'그럼 연애운은 언제 들어오냐면, 앞으로 5년 중 연애운이').replace(/^앞으로 5년은 한 방보다/,'그럼 돈은 언제 붙냐면, 앞으로 5년은 한 방보다').replace(/^앞으로 5년은 인연이/,'그럼 연애운은 언제 들어오냐면, 앞으로 5년은 인연이').replace(/^너랑 잘 맞는 건/,'그래서 너랑 잘 맞는 사람은 딱 이래.').replace(/^네 가라앉음은 주로/,'그럼 기분이 가라앉는 건 어디서 오냐면, 주로').replace(/^장점은/,'딱 정리하면, 장점은');
     ps[0]=f0;}
    row.paragraphs=(row.paragraphs||[]).concat(ps);
   }
@@ -299,12 +301,12 @@ if(!install()){var n=0,t=setInterval(function(){if(install()||++n>60)clearInterv
 function moneyYears(c){
  try{if(!c||!c.pillars||!c.pillars.day||!S())return [];
   var C=census(c),tier=strengthTier(c),y0=nowYear(),arr=[];for(var y=y0;y<y0+10;y++)arr.push(yearScoreMoney(c,C,y,tier));
-  return arr.sort(function(a,b){return b.s-a.s||a.y-b.y}).map(function(x){return x.y});
+  var sy=startYear(),w=function(x){return x.y>=sy&&x.y<sy+5?1:0};return arr.sort(function(a,b){return w(b)-w(a)||b.s-a.s||a.y-b.y}).map(function(x){return x.y});
  }catch(_e){return []}
 }
 function loveYears(c){
  try{if(!c||!c.pillars||!c.pillars.day||!S())return [];
-  return loveArr(c).sort(function(a,b){return b.s-a.s||a.y-b.y}).map(function(x){return x.y});
+  var sy=startYear(),w=function(x){return x.y>=sy&&x.y<sy+5?1:0};return loveArr(c).sort(function(a,b){return w(b)-w(a)||b.s-a.s||a.y-b.y}).map(function(x){return x.y});
  }catch(_e){return []}
 }
 root.GuiinAnswers={version:V,build:build,teaser:teaser,moneyYears:moneyYears,loveYears:loveYears,_census:census};

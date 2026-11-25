@@ -14,6 +14,12 @@ var CSS='.glfCard{margin:14px 0;padding:18px 16px;border-radius:18px;background:
 '.glfCard .glfToc{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px;padding:0;list-style:none}'+
 '.glfCard .glfToc li{font-size:12.5px;padding:4px 10px;border-radius:999px;background:#f6eedf;color:#6b5434}'+
 '.glfCard .glfToc li.lock{opacity:.6}'+
+'.glfCard .glfPrev{margin:12px 0 14px;padding:14px 14px 12px;border-radius:16px;background:#fffaf0;border:1px dashed #e2cc9c}'+
+'.glfCard .glfPrevT{display:block;font-size:14px;color:#7a5a20;margin-bottom:4px}'+
+'.glfCard .glfPrevI{margin-top:10px}.glfCard .glfPrevI b{font-size:12.5px;color:#9a7a3e}'+
+'.glfCard .glfPrevI p{margin:3px 0 0;font-size:14.5px;line-height:1.65;color:#3b3428;word-break:keep-all}'+
+'.glfCard .glfBlr{filter:blur(4.5px);user-select:none;-webkit-user-select:none;pointer-events:none}'+
+'.glfCard .glfPrevS{display:block;margin-top:10px;font-size:12px;color:#9a8a6a}'+
 '.glfCard button.glfBtn{width:100%;padding:13px;border-radius:12px;border:0;background:#2f7a43;color:#fff;font-weight:800;font-size:15px;cursor:pointer}'+
 '.glfCard button.glfBtn[disabled]{opacity:.6;cursor:default}'+
 '.glfCard .glfWait{font-size:13.5px;line-height:1.6;color:#6b5d4b;text-align:center;padding:14px 4px}'+
@@ -114,16 +120,16 @@ function pkIs(a,b,list,chars){var x=chars[a],y=chars[b];return list.some(functio
 function sajuPeek(c){
   var P=pkPillars(c);if(P.length<3)return '';
   var day=P.filter(function(x){return x.pos==='day';})[0];if(!day)return '';
-  var d=day.s,y0=pkNowYear(),money=0,love=0;
-  for(var y=y0;y<y0+10;y++){var s=((y-4)%10+10)%10,b=((y-4)%12+12)%12;var g1=pkTen(d,s),g2=pkTen(d,PK_MAIN[b]);
+  var d=day.s,y0=pkNowYear()+((new Date().getMonth()+1)>=10?1:0),money=0,love=0;
+  for(var y=y0;y<y0+5;y++){var s=((y-4)%10+10)%10,b=((y-4)%12+12)%12;var g1=pkTen(d,s),g2=pkTen(d,PK_MAIN[b]);
     if(/재/.test(g1)||/재/.test(g2))money++;
     if(/관/.test(g1)||/관/.test(g2)||pkIs(b,day.b,PK_HAP6,PK_BR))love++;}
   var cnt={목:0,화:0,토:0,금:0,수:0};P.forEach(function(x){cnt[PK_EL[x.s]]++;cnt[PK_BEL[x.b]]++;});
   var arr=Object.keys(cnt).map(function(k){return [k,cnt[k]];}).sort(function(a,b){return b[1]-a[1];});
   var top=arr[0],low=arr[arr.length-1];
   var rows=[
-    ['💰','앞으로 10년 중 <b>돈 기운(재성)이 들어오는 해가 '+money+'번</b> 있어요.','어느 해에 연봉 협상·이직·부업을 하면 좋은지는 재물운에서 연도로 짚어 줘요 🔒'],
-    ['💞','<b>연애 기운이 들어오는 해가 '+love+'번</b> 보여요(관성이 들어오거나 일지와 합이 되는 해).','그중 언제가 가장 센지, 그때 뭘 하면 좋은지는 연애·결혼운에서 🔒'],
+    ['💰','앞으로 5년('+y0+'~'+(y0+4)+') 중 <b>돈 기운(재성)이 들어오는 해가 '+money+'번</b> 있어요.','어느 해에 연봉 협상·이직·부업을 하면 좋은지는 재물운에서 연도로 짚어 줘요 🔒'],
+    ['💞','앞으로 5년 중 <b>연애 기운이 들어오는 해가 '+love+'번</b> 보여요(관성이 들어오거나 일지와 합이 되는 해).','그중 언제가 가장 센지, 그때 뭘 하면 좋은지는 연애·결혼운에서 🔒'],
     ['🌗','<b>'+top[0]+' '+top[1]+'자로 가장 많고, '+low[0]+(low[0]==='금'||low[0]==='목'?'은 ':'는 ')+low[1]+'자</b>예요.','이 쏠림이 성격·일·연애에서 어떻게 나오는지, 채우는 습관은 뭔지 🔒']
   ];
   return pkBox('내 사주에서 미리 찾은 것',rows);
@@ -138,6 +144,19 @@ function compatPeek(m){
   ];
   return pkBox('두 사람 사주에서 미리 찾은 것',rows);
 }
+/* 잠긴 풀이 미리 보기: 실제 풀이 첫 문장에서 핵심 단어만 가리고, 뒤는 흐리게 */
+function lockPreview(c){
+  var A=root.GuiinAnswers;if(!A||!c)return '';var rows;try{rows=A.build(c)||[];}catch(_){return '';}
+  var get=function(id){return rows.filter(function(r){return r.id===id;})[0];},items=[];
+  var mo=get('ans-money');if(mo){var ml=(mo.paragraphs||[]).filter(function(p){return /^가까운 달로 좁히면/.test(p);})[0];
+    if(ml){var vis=ml.split('. ')[0].replace(/(\d{1,2})월\([^)]*\)/g,'●●월');items.push(['재물운',vis+'.','이 달엔 견적을 내고, 제안을 하고, 미뤄 둔 정산을 받아 내. 반대로 조심할 달도 같이 짚어 줄게.']);}}
+  var lo=get('ans-love');if(lo){var LL=(lo.paragraphs||[]).filter(function(p){return /^\d{4}년\([^)]*\)에는 .+ 겹쳐/.test(p);}),ll=LL.filter(function(p){return lo.yr&&p.indexOf(lo.yr+'년')===0;})[0]||LL[0];
+    if(ll){var m=ll.match(/^(\d{4}년\([^)]*\)에는) /);if(m)items.push(['연애·결혼운',m[1]+' ●●●●이 겹쳐.','그래서 이 해엔 인연이 들어오는 길이 평소와 달라. 어디서, 어떤 사람으로 오는지 이어서 풀어 줄게.']);}}
+  var mt=get('ans-match');if(mt&&mt.answer){var a=String(mt.answer).replace(/^결론부터\.\s*/,'').replace(/[가-힣]+\([목화토금수]\)/g,'●●(●)').replace(/[가-힣]+띠/g,'●●띠').replace(/[가-힣]+ 일간/g,'●● 일간');if(!/^너랑/.test(a))a='너랑 잘 맞는 건 '+a;
+    items.push(['곁에 두면 좋은 사람',a,'왜 그 사람인지, 반대로 끌림도 싸움도 센 조합은 누구인지까지 짚어 줘.']);}
+  if(!items.length)return '';
+  return '<div class="glfPrev"><b class="glfPrevT">🔒 잠긴 풀이 미리 보기</b>'+items.map(function(x){return '<div class="glfPrevI"><b>'+esc(x[0])+'</b><p>'+esc(x[1])+' <span class="glfBlr" aria-hidden="true">'+esc(x[2])+'</span></p></div>';}).join('')+'<small class="glfPrevS">●● 부분과 흐린 문장은 평생사주를 열면 전부 보여요</small></div>';
+}
 function pkBox(t,rows){return '<div class="glfPeek"><b class="glfPeekT">🔍 '+esc(t)+'</b>'+rows.map(function(r){return '<div class="glfPeekRow"><i>'+r[0]+'</i><div>'+r[1]+'<em>'+esc(r[2])+'</em></div></div>';}).join('')+'</div>';}
 function cardHTML(kind,paid,st,name){
   var toc=kind==='saju'?SAJU_TOC:COMPAT_TOC;
@@ -146,6 +165,7 @@ function cardHTML(kind,paid,st,name){
     return '<div class="glfMini">'+mini+'</div><h3 class="glfH">'+(kind==='saju'?esc(name||'나')+'님만을 위해 길게 써 내려간 '+toc.length+'개 이야기':'두 사람을 위한 '+toc.length+'개 이야기')+'</h3>'
       +'<p class="glfLead">'+(kind==='saju'?'타고난 오행과 일주, 쓴소리와 매력, 맞는 일·재물·연애·가족, 지금 대운과 나를 살리는 습관까지. 명식 근거를 하나하나 짚어 가며 길게 풀어 드려요.':'오행의 조화, 잘 맞는 부분과 부딪히는 부분, 연애·결혼·돈 궁합, 서로가 보는 나까지 두 사람의 명식으로 길게 풀어 드려요.')+'</p>'
       +(function(){try{return kind==='saju'?sajuPeek(getChart()):compatPeek(getMatch());}catch(_){return '';}})()
+      +(function(){try{return kind==='saju'?lockPreview(getChart()):'';}catch(_){return '';}})()
       +'<ul class="glfToc">'+toc.map(function(t,i){return '<li class="'+(i>1?'lock':'')+'">'+(i>1?'🔒 ':'')+esc(t)+'</li>';}).join('')+'</ul>'
       +'<button type="button" class="glfBtn" data-glf-buy="'+kind+'">'+(kind==='saju'?'평생사주로 장문 해설 열기 ›':'프리미엄 궁합으로 장문 해설 열기 ›')+'</button>';
   }
