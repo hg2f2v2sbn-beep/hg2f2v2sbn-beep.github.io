@@ -13018,7 +13018,7 @@ try{Object.assign(window,{guiinPaymentCenterStart});}catch(_e){}
 <script id="GUIIN_PRODUCTION_FLAGS">/* 운영 스위치: true=켜기, false=끄기(기존 화면·기존 해석으로 즉시 복귀) */window.GUIIN_INTERP_STAGE3_ON=true;window.GUIIN_HOME_V2_ON=true;window.GUIIN_THEME_V1_ON=true;</script>
 <script src="guiin-career-v1.js?v=20261106-c1"></script>
 <script src="guiin-interpretation-v4-b3.js?v=20261120-c2"></script>
-<script src="guiin-answers-v1.js?v=20261125-near3"></script>
+<script src="guiin-answers-v1.js?v=20261125-near5"></script>
 <script src="guiin-sharp-voice-v1.js?v=20261107-s4"></script>
 <script src="guiin-reading-core-v1.js?v=20261026-core3"></script>
 <script id="GUIIN_RELEASE_INTEGRATION">
@@ -14263,13 +14263,13 @@ window.addEventListener('pageshow',function(){setTimeout(refresh,300)});
 <script src="guiin-theme-voice-v1.js?v=20261103-tv1"></script>
 <script src="guiin-theme-v1.js?v=20261120-tv2"></script>
 <script src="guiin-theme-boost-v1.js?v=20261120-tb3"></script>
-<script src="guiin-portrait-v1.js?v=20261125-near3"></script>
+<script src="guiin-portrait-v1.js?v=20261125-near5"></script>
 <script src="guiin-past-daeun-v1.js?v=20261029-pd4"></script>
 <script src="guiin-ten-year-v1.js?v=20261029-ty3"></script>
 <script src="guiin-love-deep-v1.js?v=20261029-ld3"></script>
 <script src="guiin-pair-timing-v1.js?v=20261029-pt2"></script>
 <script src="guiin-chat-extras-v1.js?v=20261120-cx3"></script>
-<script src="guiin-longform-v1.js?v=20261120-lf3"></script>
+<script src="guiin-longform-v1.js?v=20261125-prev2"></script>
 <script src="guiin-home-daily-v1.js?v=20261101-hd1"></script>
 <script src="guiin-reading-polish-v1.js?v=20261028-p1"></script>
 <style id="GUIIN_BOTTOM_NAV_PIN">
@@ -14354,23 +14354,32 @@ window.addEventListener('pageshow',function(){setTimeout(refresh,300)});
 })();
 </script>
 <style>
-#result .manseSnapshot.gMsFold{max-height:470px;overflow:hidden;position:relative}
-#result .manseSnapshot.gMsFold:after{content:'';position:absolute;left:0;right:0;bottom:0;height:90px;background:linear-gradient(rgba(255,255,255,0),#fff);pointer-events:none}
-.gMsBtn{display:block;width:calc(100% - 24px);margin:8px auto 4px;padding:12px;border:1px solid #dfe6da;border-radius:14px;background:#fff;color:#2f5b43;font-size:14px;font-weight:800}
+#askPremNudge{display:flex;align-items:center;gap:10px;margin:8px 14px 0;padding:12px 12px 12px 14px;border-radius:16px;background:linear-gradient(135deg,#fff7e2,#fdeec8);border:1px solid #f0d9a0}
+#askPremNudge .t{flex:1;font-size:13px;line-height:1.5;color:#5b4416;word-break:keep-all}#askPremNudge .t b{display:block;font-size:14.5px;color:#3d2c08}
+#askPremNudge .go{border:0;border-radius:12px;padding:10px 12px;background:#2f7d55;color:#fff;font-size:13px;font-weight:800;white-space:nowrap}
+#askPremNudge .x{border:0;background:transparent;color:#a08a5a;font-size:18px;width:26px}
 </style>
 <script>
-/* 결과 화면: 만세력 표는 처음엔 접어 두고, 쉬운 풀이와 결제 안내가 더 빨리 보이게 */
+/* AI 상담 화면: 평생사주를 아직 안 연 사람에게 한 줄 안내 */
 (function(){
- function fold(){
-  var r=document.getElementById('result');if(!r)return;
-  var m=r.querySelector('.manseSnapshot');if(!m||m.dataset.gms)return;
-  if(m.scrollHeight<700)return;
-  m.dataset.gms='1';m.classList.add('gMsFold');
-  var b=document.createElement('button');b.type='button';b.className='gMsBtn';b.textContent='만세력 표·신살 전체 보기 ⌄';
-  b.addEventListener('click',function(){var shut=m.classList.toggle('gMsFold');b.textContent=shut?'만세력 표·신살 전체 보기 ⌄':'만세력 표 접기 ⌃';if(shut)m.scrollIntoView({block:'start',behavior:'smooth'});try{window.__guiinTrack&&__guiinTrack.once('screen','manse_open')}catch(_){}});
-  m.parentNode.insertBefore(b,m.nextSibling);
+ if(/demo\.html$/.test(location.pathname))return;
+ function paid(){try{var e=typeof GUIIN_VERIFIED_ENTITLEMENTS!=='undefined'?GUIIN_VERIFIED_ENTITLEMENTS:(window.GUIIN_VERIFIED_ENTITLEMENTS||{});return e&&e.lifetimeSaju===true}catch(_){return false}}
+ function hasC(){try{return typeof chart!=='undefined'&&chart&&chart.pillars}catch(_){return false}}
+ function closed(){try{return sessionStorage.getItem('askNudgeX')==='1'}catch(_){return false}}
+ function tick(){
+  var a=document.getElementById('ask'),n=document.getElementById('askPremNudge');
+  var show=a&&a.classList.contains('active')&&hasC()&&!paid()&&!closed();
+  if(!show){if(n)n.remove();return}
+  if(n)return;
+  var ref=document.getElementById('askContextCard');if(!ref)return;
+  n=document.createElement('div');n.id='askPremNudge';
+  n.innerHTML='<div class="t"><b>상담 전에 내 사주 전체부터 읽어 볼래?</b>평생사주 14개 이야기 · 돈·연애 들어오는 해와 달까지</div><button type="button" class="go">5,900원 ›</button><button type="button" class="x" aria-label="닫기">×</button>';
+  ref.parentNode.insertBefore(n,ref.nextSibling);
+  try{window.__guiinTrack&&__guiinTrack.once('screen','ask_nudge_seen')}catch(_){}
+  n.querySelector('.go').onclick=function(){try{window.__guiinTrack&&__guiinTrack.send('screen','ask_nudge_click')}catch(_){}if(typeof openPremiumPay==='function')openPremiumPay()};
+  n.querySelector('.x').onclick=function(){try{sessionStorage.setItem('askNudgeX','1')}catch(_){}n.remove()};
  }
- setInterval(fold,800);
+ setInterval(tick,1000);
 })();
 </script>
 </body>
