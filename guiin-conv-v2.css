@@ -38,3 +38,14 @@
 #premiumSheet #premiumPayBtn:disabled{pointer-events:none}
 #premiumSheet label.payConsent.gcvNudge{animation:gcvNudge .5s ease 2;border-color:#2f6b47!important;box-shadow:0 0 0 3px rgba(47,107,71,.25)}
 @keyframes gcvNudge{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+/* 무료 맛보기 1편 */
+#resultView .gcvSample{margin:14px 0;padding:18px 16px 16px;border-radius:18px;background:#fff;border:1.5px solid #cfe3d6;box-shadow:0 4px 14px rgba(47,107,71,.08);color:#2d261d}
+#resultView .gcvSample .gcvSK{margin:0 0 6px;font-size:13px;font-weight:800;color:#2f6b47;word-break:keep-all}
+#resultView .gcvSample .gcvSH{margin:0 0 8px;font-size:20px;font-weight:900;line-height:1.35;color:#1f2a22}
+#resultView .gcvSample .gcvSA{margin:0 0 12px;padding:10px 12px;border-radius:12px;background:#f1f7f3;font-size:15px;font-weight:800;line-height:1.55;color:#24412f;word-break:keep-all}
+#resultView .gcvSample .gcvSB p{margin:0 0 11px;font-size:15px;line-height:1.75;color:#3a3127;word-break:keep-all}
+#resultView .gcvSample .gcvSM{display:block;width:100%;margin:2px 0 12px;padding:10px;border:1px solid #e3d9c8;border-radius:12px;background:#faf6ee;color:#6b5a40;font-size:14px;font-weight:800;cursor:pointer}
+#resultView .gcvSample .gcvSN{margin:4px 0 12px;padding:12px 13px;border-radius:14px;background:#fff6e6;border:1px dashed #f0d29c;display:flex;flex-direction:column;gap:5px}
+#resultView .gcvSample .gcvSN b{font-size:14px;color:#8a5a1c;margin-bottom:2px}
+#resultView .gcvSample .gcvSN span{font-size:14px;color:#3a3127}
+#resultView .gcvSample .gcvGo{display:block;width:100%;min-height:50px;border:0;border-radius:14px;background:#2f6b47;color:#fff;font-size:16px;font-weight:900;cursor:pointer}
