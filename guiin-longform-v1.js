@@ -127,11 +127,17 @@ function sajuPeek(c){
   var cnt={목:0,화:0,토:0,금:0,수:0};P.forEach(function(x){cnt[PK_EL[x.s]]++;cnt[PK_BEL[x.b]]++;});
   var arr=Object.keys(cnt).map(function(k){return [k,cnt[k]];}).sort(function(a,b){return b[1]-a[1];});
   var top=arr[0],low=arr[arr.length-1];
-  var rows=[
+  /* v1.3: '5년 중 5번'처럼 누구에게나 맞는 숫자 대신, 풀이(GuiinAnswers)와 같은 계산으로 '가장 센 해 1개'를 연도만 가려서 보여 준다 */
+  var A=root.GuiinAnswers,mTop=0,lTop=0;
+  try{var inW=function(y){return y>=y0&&y<=y0+4;};mTop=(A.moneyYears(c)||[]).filter(inW)[0]||0;lTop=(A.loveYears(c)||[]).filter(inW)[0]||0;}catch(_){}
+  var rows=mTop&&lTop?[
+    ['💰','앞으로 5년('+y0+'~'+(y0+4)+') 중 <b>돈이 제일 크게 붙는 해는 20●●년</b>이에요.','그해 몇 월에 연봉 협상·이직·부업을 하면 좋은지는 재물운에서 🔒'],
+    ['💞',mTop===lTop?'<b>연애운이 제일 세게 들어오는 해도 같은 해</b>예요. 돈과 인연이 한 해에 몰려 있어요.':'<b>연애운이 제일 세게 들어오는 해는 20●●년</b>이고, 돈이 붙는 해와는 달라요.','그해 어디서, 어떤 사람으로 오는지는 연애·결혼운에서 🔒'],
+  ]:[
     ['💰','앞으로 5년('+y0+'~'+(y0+4)+') 중 <b>돈 기운(재성)이 들어오는 해가 '+money+'번</b> 있어요.','어느 해에 연봉 협상·이직·부업을 하면 좋은지는 재물운에서 연도로 짚어 줘요 🔒'],
     ['💞','앞으로 5년 중 <b>연애 기운이 들어오는 해가 '+love+'번</b> 보여요(관성이 들어오거나 일지와 합이 되는 해).','그중 언제가 가장 센지, 그때 뭘 하면 좋은지는 연애·결혼운에서 🔒'],
-    ['🌗','<b>'+top[0]+' '+top[1]+'자로 가장 많고, '+low[0]+(low[0]==='금'||low[0]==='목'?'은 ':'는 ')+low[1]+'자</b>예요.','이 쏠림이 성격·일·연애에서 어떻게 나오는지, 채우는 습관은 뭔지 🔒']
   ];
+  rows.push(['🌗','<b>'+top[0]+' '+top[1]+'자로 가장 많고, '+low[0]+(low[0]==='금'||low[0]==='목'?'은 ':'는 ')+low[1]+'자</b>예요.','이 쏠림이 성격·일·연애에서 어떻게 나오는지, 채우는 습관은 뭔지 🔒']);
   return pkBox('내 사주에서 미리 찾은 것',rows);
 }
 function compatPeek(m){
@@ -151,7 +157,7 @@ function lockPreview(c){
   var mo=get('ans-money');if(mo){var ml=(mo.paragraphs||[]).filter(function(p){return /^가까운 달로 좁히면/.test(p);})[0];
     if(ml){var vis=ml.split('. ')[0].replace(/(\d{1,2})월\([^)]*\)/g,'●●월');items.push(['재물운',vis+'.','이 달엔 견적을 내고, 제안을 하고, 미뤄 둔 정산을 받아 내. 반대로 조심할 달도 같이 짚어 줄게.']);}}
   var lo=get('ans-love');if(lo){var LL=(lo.paragraphs||[]).filter(function(p){return /^\d{4}년\([^)]*\)에는 .+ 겹쳐/.test(p);}),ll=LL.filter(function(p){return lo.yr&&p.indexOf(lo.yr+'년')===0;})[0]||LL[0];
-    if(ll){var m=ll.match(/^(\d{4}년\([^)]*\)에는) /);if(m)items.push(['연애·결혼운',m[1]+' ●●●●이 겹쳐.','그래서 이 해엔 인연이 들어오는 길이 평소와 달라. 어디서, 어떤 사람으로 오는지 이어서 풀어 줄게.']);}}
+    if(ll){var m=ll.match(/^(\d{4}년\([^)]*\)에는) /);if(m)items.push(['연애·결혼운',m[1].replace(/^\d{4}년\([^)]*\)/,'20●●년')+' ●●●●이 겹쳐.','그래서 이 해엔 인연이 들어오는 길이 평소와 달라. 어디서, 어떤 사람으로 오는지 이어서 풀어 줄게.']);}}
   var mt=get('ans-match');if(mt&&mt.answer){var a=String(mt.answer).replace(/^결론부터\.\s*/,'').replace(/[가-힣]+\([목화토금수]\)/g,'●●(●)').replace(/[가-힣]+띠/g,'●●띠').replace(/[가-힣]+ 일간/g,'●● 일간');if(!/^너랑/.test(a))a='너랑 잘 맞는 건 '+a;
     items.push(['곁에 두면 좋은 사람',a,'왜 그 사람인지, 반대로 끌림도 싸움도 센 조합은 누구인지까지 짚어 줘.']);}
   if(!items.length)return '';

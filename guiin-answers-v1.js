@@ -88,10 +88,10 @@ function secPersona(c,C){
  var ps=[];
  ps.push('결론부터 말할게. '+ans);
  ps.push('장점 첫째, '+sp.g+' '+st+SEL[st]+' 일간, 그러니까 '+IMG[st]+'로 태어난 사람의 기본값이야.');
- ps.push('장점 둘째, '+gp.g+' 원국에서 '+J(C.top,'이','가')+' 제일 커서 그래.'+(gp2&&C.pct[C.second]>=15?' 거기에 '+J(C.second,'이','가')+' 받쳐 줘서, '+gp2.g.split('.')[0]+'는 면도 같이 있어.':''));
+ ps.push('장점 둘째, '+gp.g+' 원국에서 '+J(C.top,'이','가')+' 제일 커서 그래.'+(gp2&&C.pct[C.second]>=15?' 거기에 '+J(C.second,'이','가')+' 받쳐 줘서 '+gp2.g.split('.')[0]+'. 이런 면도 같이 있어.':''));
  ps.push('이제 단점. 첫째, '+sp.b);
  ps.push('둘째, '+gp.b+' 장점이랑 같은 자리에서 나오는 거라, 고치려고 하기보다 "과해지는 순간"만 알아채면 돼.');
- if(DAYG[dg])ps.push('그리고 하나 더. '+DAYG[dg]+' 밖에서 보는 '+nm+'랑 가까운 사람이 보는 '+nm+'가 다르게 느껴지는 이유가 이거야.');
+ if(DAYG[dg])ps.push('그리고 하나 더. '+DAYG[dg]+' 밖에서 보는 '+J(nm,'이랑','랑')+' 가까운 사람이 보는 '+J(nm,'이가','가')+' 다르게 느껴지는 이유가 이거야.');
  return {id:'ans-persona',title:'그래서 내 성격, 장점과 단점은?',answer:ans,paragraphs:ps,evidence:'일간 '+st+SEL[st]+' · 가장 큰 힘 '+C.top+' · 일지 '+(dg||'')};
 }
 

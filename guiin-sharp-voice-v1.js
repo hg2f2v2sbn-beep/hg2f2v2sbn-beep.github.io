@@ -128,7 +128,7 @@ function assertive(t){
   if(last1==='을')return w.slice(0,-1)+'게 돼';
   var st=dropL(w);if(!st)return all;return st+'게 돼';
  });
- t=t.replace(/([가-힣]+)되기 쉬워/g,'$1돼').replace(/([가-힣]+)기 쉬워/g,'$1게 돼');
+ t=t.replace(/([가-힣]+)되기 쉬워(?![가-힣])/g,'$1돼').replace(/([가-힣]+)기 쉬워(?![가-힣])/g,'$1게 돼');
  t=t.replace(/([가-힣]+)하는 편이야/g,'$1해');
  t=t.replace(/([가-힣]+?)(으로|로) 읽혀/g,function(a,w){var c=w.charCodeAt(w.length-1)-44032;return w+(c>=0&&c<=11171&&c%28?'이야':'야')});
  return t;
