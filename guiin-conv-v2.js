@@ -9,7 +9,7 @@
   var UNPAID='[data-gptr-buy],.premiumPreview,[data-glf-buy="saju"]';
   var BTNS='[data-gptr-buy],[data-glf-buy="saju"],.premiumLock button';
   var LOCK={
-    '잘 맞는 일':'맞는 직업 이름까지 콕 집어 알려 줘요',
+    '잘 맞는 일':'아래에 1편 무료로 열어 뒀어요 ↓',
     '지금 대운':'지금 10년이 어떤 시기인지, 언제 바뀌는지',
     '잘 맞는 사람':'어떤 사람을 만나야 편하고 잘 풀리는지',
     '감정 패턴':'지치고 우울해질 때 왜 그런지, 푸는 법',
@@ -72,8 +72,9 @@
       var p=x.querySelector('p');
       if(p&&LOCK[k.trim()])p.textContent='🔒 '+LOCK[k.trim()];
       x.setAttribute('data-gcv','1');x.setAttribute('role','button');x.tabIndex=0;
-      x.addEventListener('click',function(){buy('rlock_buy');});
-      x.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();buy('rlock_buy');}});
+      var go=(k.trim()==='잘 맞는 일')?function(){var sm=doc.querySelector('#resultView > .gcvSample');if(sm){try{sm.scrollIntoView({behavior:'smooth',block:'start'});}catch(_e){sm.scrollIntoView();}T('rlock_sample');}else buy('rlock_buy');}:function(){buy('rlock_buy');};
+      x.addEventListener('click',go);
+      x.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});
     }
   }
 
@@ -208,12 +209,26 @@
     doc.addEventListener('change',function(e){if(e.target&&e.target.id==='premiumPayConsent'&&e.target.checked)T('psheet_consent');},true);
   }
 
+  /* 무료 화면 정리 (11/27)
+   * - '한눈에 보는 나'의 '돈과 연애가 들어오는 해' 줄: 연도와 직업 이름을 그대로 알려 줘서 맨 위 요약과 겹치고 결제 이유를 없앰 → 무료에선 뺀다
+   * - 십성 비율(비겁 43% / 31% / 32%)이 화면마다 다른 계산으로 달라 보여서, 무료 화면 문장에서는 비율 숫자만 뺀다 (만세력 표의 오행 %는 그대로) */
+  function freeTidy(v){
+    var li=v.querySelectorAll('.gptrCard .gptrList > li:not(.lock)');
+    for(var i=0;i<li.length;i++){var b=li[i].querySelector('b');if(b&&/돈과 연애가 들어오는 해/.test(b.textContent))li[i].remove();}
+    var G='(비겁|식상|재성|관성|인성)';
+    var R1=new RegExp(G+'([이가]) \\d+%로 ','g'),R2=new RegExp(G+' ?\\(\\d+%\\)','g'),R3=new RegExp('('+G+'(?:\\+'+G+')?) \\d+%','g');
+    var w=doc.createTreeWalker(v,4,null),n,list=[];
+    while((n=w.nextNode()))if(/\d+%/.test(n.nodeValue)&&!(n.parentNode&&n.parentNode.closest&&n.parentNode.closest('.manseSnapshot')))list.push(n);
+    list.forEach(function(t){var o=t.nodeValue,x=o.replace(R1,'$1$2 ').replace(R2,'$1').replace(R3,'$1');if(x!==o)t.nodeValue=x;});
+  }
+
   var busy=false;
   function apply(){
     busy=false;
     try{applyCompat();}catch(_e){}
     var v=doc.getElementById('resultView');if(!v)return;
     if(!v.querySelector(UNPAID)){
+      v.classList.remove('gcvFree');
       var o=v.querySelector(':scope > .gcvHook');if(o)o.remove();
       return;
     }
@@ -222,6 +237,8 @@
     try{trust(v);}catch(_e){}
     try{manse(v);}catch(_e){}
     try{sample(v);}catch(_e){}
+    try{freeTidy(v);}catch(_e){}
+    v.classList.add('gcvFree');
   }
   function schedule(){if(busy)return;busy=true;setTimeout(apply,150);}
   function start(){

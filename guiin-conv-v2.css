@@ -49,3 +49,12 @@
 #resultView .gcvSample .gcvSN b{font-size:14px;color:#8a5a1c;margin-bottom:2px}
 #resultView .gcvSample .gcvSN span{font-size:14px;color:#3a3127}
 #resultView .gcvSample .gcvGo{display:block;width:100%;min-height:50px;border:0;border-radius:14px;background:#2f6b47;color:#fff;font-size:16px;font-weight:900;cursor:pointer}
+
+/* 11/27 무료 화면 정리: 같은 결제 안내가 5번 반복되던 것을 줄임.
+ * 아래쪽 옛 프리미엄 안내(12개 심층영역·세운·월운 등 전문 용어)와, 장문 해설 카드 안의 중복 요약·버튼을 숨긴다.
+ * (요소는 남겨 둬야 미결제 판별이 그대로 동작하므로 display만 끈다) */
+#resultView.gcvFree > .premiumPreview,
+#resultView.gcvFree > .guiinFreePaid,
+#resultView.gcvFree .glfCard .glfPeek,
+#resultView.gcvFree .glfCard [data-glf-buy="saju"],
+#resultView.gcvFree .glfCard [data-glf-buy="saju"] + .gcvTrust{display:none!important}
